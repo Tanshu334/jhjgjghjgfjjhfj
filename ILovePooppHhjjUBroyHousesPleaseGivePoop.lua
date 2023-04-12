@@ -1,7 +1,6 @@
 game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "[Whitelist] Checking For Whitelist", Color = Color3.fromRGB(255, 255, 255), Font = Enum.Font.Merriweather, FontSize = EnumFontSizeSize24 } )
 	wait(1)
 		--// Whitelist Code
-		local hwidcheck = game:GetService("RbxAnalyticsService"):GetClientId() 
 		local hwidwhitelisttable = 
 	   	 {
 			["1e7374ce-7770-450a-a944-527fbaac94e6"] = "very tuff cat#4499",
@@ -9,7 +8,6 @@ game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "[Whitelist] Checking
 	 	   }
 		for hwid, name in pairs(hwidwhitelisttable) do
 		if hwidwhitelisttable [game:GetService("RbxAnalyticsService"):GetClientId()] then
-			if hwidcheck == hwid then
 		game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "[Whitelist] Welcome," ..name.. "!", Color = Color3.fromRGB(0, 255, 0), Font = Enum.Font.Merriweather, FontSize = Enum.FontSize.Size24 } )
 	else
 		game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "[Whitelist] Not Whitelisted 😠", Color = Color3.fromRGB(255, 0, 0), Font = Enum.Font.Merriweather, FontSize = Enum.FontSize.Size24 } )
