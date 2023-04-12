@@ -3,7 +3,8 @@ wait(1)
 	--// Whitelist Code
 	local veryFunnyTable = 
 	    {
-		["1e7374ce-7770-450a-a944-527fbaac94e6"] = "very tuff cat#4499"
+		["1e7374ce-7770-450a-a944-527fbaac94e6"] = "very tuff cat#4499",
+		["2B7E4926-420F-446C-96BD-7BC5C6AC57F2"] = "whatcolourisyourwife#1368"
 	    }
 	for hwid, name in pairs(veryFunnyTable) do
 	if veryFunnyTable[game:GetService("RbxAnalyticsService"):GetClientId()] then
@@ -11,9 +12,9 @@ wait(1)
 	wait(0.2)
 	game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "[Whitelist] Loading Vape", Color = Color3.fromRGB(0, 255, 0), Font = Enum.Font.Merriweather, FontSize = Enum.FontSize.Size24 } )
 	else
-		game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "[Whitelist] Not Whitelisted!", Color = Color3.fromRGB(255, 0, 0), Font = Enum.Font.Merriweather, FontSize = Enum.FontSize.Size24 } )
-		wait(0.5)
-		game.Players.LocalPlayer:Kick("If you believe its a mistake,Please contact the owner to get help 😁")
+	game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "[Whitelist] Not Whitelisted!", Color = Color3.fromRGB(255, 0, 0), Font = Enum.Font.Merriweather, FontSize = Enum.FontSize.Size24 } )
+	wait(0.5)
+	game.Players.LocalPlayer:Kick("If you believe its a mistake,Please contact the owner to get help 😁")
 	end
 end 
 local GuiLibrary = shared.GuiLibrary
