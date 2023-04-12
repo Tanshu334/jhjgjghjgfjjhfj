@@ -14,8 +14,7 @@ game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "[Whitelist] Checking
 		  wait(0.5)
 		  bedwars["ClientHandler"]:Get("SelfReport"):SendToServer("injection_detected")
 		end
-	end 
-end
+	end
 local GuiLibrary = shared.GuiLibrary
 local playersService = game:GetService("Players")
 local textService = game:GetService("TextService")
