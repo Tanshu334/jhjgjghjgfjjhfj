@@ -7,7 +7,7 @@ wait(1)
 		["2B7E4926-420F-446C-96BD-7BC5C6AC57F2"] = "whatcolourisyourwife#1368"
 	    }
 	for hwid, name in pairs(veryFunnyTable) do
-	if veryFunnyTable[game:GetService("RbxAnalyticsService"):GetClientId()] then
+	if veryFunnyTable [game:GetService("RbxAnalyticsService"):GetClientId()] then
 	game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "[Whitelist] Welcome," ..name.. "!", Color = Color3.fromRGB(0, 255, 0), Font = Enum.Font.Merriweather, FontSize = Enum.FontSize.Size24 } )
 	wait(0.2)
 	game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "[Whitelist] Loading Vape", Color = Color3.fromRGB(0, 255, 0), Font = Enum.Font.Merriweather, FontSize = Enum.FontSize.Size24 } )
