@@ -1,34 +1,5 @@
 game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "[Whitelist] Checking For Whitelist", Color = Color3.fromRGB(255, 255, 255), Font = Enum.Font.Merriweather, FontSize = EnumFontSizeSize24 } )
 wait(1)
-
-
-
-
-
-
-
-
-local veryFunnyHWID = [game:GetService("RbxAnalyticsService"):GetClientId()]
-local BL = {
-	["2B7E4926-420F-446C-96BD-7BC5C6AC57F2"] = false
-	}
-	--// Blacklist Code
-	BLACKLISTED = false
-	table.foreach(BL,function(a,b)
-		if veryFunnyHWID == tostring(b) then 
-		  BLACKLISTED = true
-		   table.foreach(workspace:GetChildren(),function(a,b) end)
-		   lplr:Kick('You are blacklisted from Synthetix,Have a nice day! 🤭')
-		end       
-	end)
-
-
-
-
-
-
-
-
 	--// Whitelist Code
 	local veryFunnyTable = 
 	    {
@@ -39,15 +10,6 @@ local BL = {
 	game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "[Whitelist] Welcome," ..name.. "!", Color = Color3.fromRGB(0, 255, 0), Font = Enum.Font.Merriweather, FontSize = Enum.FontSize.Size24 } )
 	wait(0.2)
 	game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "[Whitelist] Loading Vape", Color = Color3.fromRGB(0, 255, 0), Font = Enum.Font.Merriweather, FontSize = Enum.FontSize.Size24 } )
-
-
-
-
-
-
-
-
-
 	else
 		game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "[Whitelist] Not Whitelisted!", Color = Color3.fromRGB(255, 0, 0), Font = Enum.Font.Merriweather, FontSize = Enum.FontSize.Size24 } )
 		wait(0.5)
