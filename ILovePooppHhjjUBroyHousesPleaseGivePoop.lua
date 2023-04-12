@@ -1,20 +1,23 @@
 game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "[Whitelist] Checking For Whitelist", Color = Color3.fromRGB(255, 255, 255), Font = Enum.Font.Merriweather, FontSize = EnumFontSizeSize24 } )
-wait(1)
-	--// Whitelist Code
-	local veryFunnyTable = 
-	    {
-		["1e7374ce-7770-450a-a944-527fbaac94e6"] = "very tuff cat#4499",
-		["2B7E4926-420F-446C-96BD-7BC5C6AC57F2"] = "whatcolourisyourwife#1368"
-	    }
-	for hwid, name in pairs(veryFunnyTable) do
-	if veryFunnyTable [game:GetService("RbxAnalyticsService"):GetClientId()] then
-	game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "[Whitelist] Welcome," ..name.. "!", Color = Color3.fromRGB(0, 255, 0), Font = Enum.Font.Merriweather, FontSize = Enum.FontSize.Size24 } )
-   else
-	game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "[Whitelist] Not Whitelisted!", Color = Color3.fromRGB(255, 0, 0), Font = Enum.Font.Merriweather, FontSize = Enum.FontSize.Size24 } )
-	wait(0.5)
-	game.Players.LocalPlayer:Kick("If you believe its a mistake,Please contact the owner to get help 😁")
-	end
-end 
+	wait(1)
+		--// Whitelist Code
+		local hwidcheck = game:GetService("RbxAnalyticsService"):GetClientId() 
+		local hwidwhitelisttable = 
+	   	 {
+			["1e7374ce-7770-450a-a944-527fbaac94e6"] = "very tuff cat#4499",
+			["2B7E4926-420F-446C-96BD-7BC5C6AC57F2"] = "whatcolourisyourwife#1368"
+	 	   }
+		for hwid, name in pairs(hwidwhitelisttable) do
+		if hwidwhitelisttable [game:GetService("RbxAnalyticsService"):GetClientId()] then
+			if hwidcheck == hwid then
+		game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "[Whitelist] Welcome," ..name.. "!", Color = Color3.fromRGB(0, 255, 0), Font = Enum.Font.Merriweather, FontSize = Enum.FontSize.Size24 } )
+	else
+		game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "[Whitelist] Not Whitelisted 😠", Color = Color3.fromRGB(255, 0, 0), Font = Enum.Font.Merriweather, FontSize = Enum.FontSize.Size24 } )
+		  wait(0.5)
+		  bedwars["ClientHandler"]:Get("SelfReport"):SendToServer("injection_detected")
+		end
+	end 
+end
 local GuiLibrary = shared.GuiLibrary
 local playersService = game:GetService("Players")
 local textService = game:GetService("TextService")
