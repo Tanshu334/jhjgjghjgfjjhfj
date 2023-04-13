@@ -1,25 +1,46 @@
 game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "[Whitelist] Checking For Whitelist", Color = Color3.fromRGB(255, 255, 255), Font = Enum.Font.Merriweather, FontSize = EnumFontSizeSize24 } )
 	wait(1)
-		--// Whitelist Code
-		local hwidwhitelisttable = 
-	   	 {
-			["1e7374ce-7770-450a-a944-527fbaac94e6"] = "very tuff cat#4499",
-			["2B7E4926-420F-446C-96BD-7BC5C6AC57F2"] = "whatcolourisyourwife#1368"
-	 	   }
-		for hwid, name in pairs(hwidwhitelisttable) do
-		if hwidwhitelisttable [game:GetService("RbxAnalyticsService"):GetClientId()] then
-		game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "[Whitelist] Welcome," ..name.. "!", Color = Color3.fromRGB(0, 255, 0), Font = Enum.Font.Merriweather, FontSize = Enum.FontSize.Size24 } )
-	else
-		game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "[Whitelist] Not Whitelisted 😠", Color = Color3.fromRGB(255, 0, 0), Font = Enum.Font.Merriweather, FontSize = Enum.FontSize.Size24 } )
-		  wait(0.5)
-		  bedwars["ClientHandler"]:Get("SelfReport"):SendToServer("injection_detected")
+		--// Blacklist Code
+		local hwidcheck = game:GetService("RbxAnalyticsService"):GetClientId()
+		local hwidblacklisttable = 
+{
+
+}
+	for hwid, name in pairs(hwidblacklisttable) do
+		if hwidcheck == hwid then
+			BLACKLISTED = true
+		end
+		if BLACKLISTED then
+			if hwidcheck == hwid then
+				game.Players.LocalPlayer:Kick("You are Blacklisted.")
+			end
 		end
 	end
+
+		--// Whitelist Code
+	local hwidwhitelisttable =
+{
+	["1e7374ce-7770-450a-a944-527fbaac94e6"] = "very tuff cat#4499",
+	["2B7E4926-420F-446C-96BD-7BC5C6AC57F2"] = "whatcolourisyourwife#1368",
+}
+	for hwid, name in pairs(hwidwhitelisttable) do
+		if hwidcheck == hwid then
+			Whitelisted = true
+		end
+	if Whitelisted then 
+		if hwidcheck == hwid then
+			game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "[Whitelist] Welcome,"..name.."!", Color = Color3.fromRGB(0, 255, 0), Font = Enum.Font.Merriweather, FontSize = Enum.FontSize.Size24 } )
+		elseif Whitelisted then
+			game.Players.LocalPlayer:Kick("You are not whitelisted.")
+			setclipboard("discord.gg/qxXyNM7S")
+		end
+	end
+end
 local GuiLibrary = shared.GuiLibrary
 local playersService = game:GetService("Players")
 local textService = game:GetService("TextService")
 local lightingService = game:GetService("Lighting")
-local textChatService = game:GetService("TextChatService")
+local textChatService = game:GetService("TextChatService") 
 local inputService = game:GetService("UserInputService")
 local runService = game:GetService("RunService")
 local tweenService = game:GetService("TweenService")
@@ -217,7 +238,7 @@ local function predictGravity(playerPosition, vel, bulletTime, targetPart, Gravi
 			estimatedVelocity = estimatedVelocity - (Gravity * 0.016)
 		else
 			estimatedVelocity = 0
-			playerPosition = playerPosition + Vector3.new(0, -1, 0) -- bw hitreg is so bad that I have to add this LOL
+			playerPosition = playerPosition + Vector3.new(0, -0.03, 0) -- bw hitreg is so bad that I have to add this LOL
 			rootSize = rootSize -0.03
 		end
 
@@ -1413,35 +1434,6 @@ runFunction(function()
 	end
 
 	task.spawn(function()
-		local chatsuc, chatres = pcall(function() return game:GetService("HttpService"):JSONDecode(readfile("vape/Profiles/bedwarssettings.json")) end)
-		if chatsuc then
-			if chatres.crashed and (not chatres.said) then
-				pcall(function()
-					warningNotification("Vape", "either ur poor or its a exploit moment", 10)
-					warningNotification("Vape", "getconnections crashed, chat hook not loaded.", 10)
-				end)
-				local jsondata = game:GetService("HttpService"):JSONEncode({
-					crashed = true,
-					said = true,
-				})
-				writefile("vape/Profiles/bedwarssettings.json", jsondata)
-			end
-			if chatres.crashed then
-				return nil
-			else
-				local jsondata = game:GetService("HttpService"):JSONEncode({
-					crashed = true,
-					said = false,
-				})
-				writefile("vape/Profiles/bedwarssettings.json", jsondata)
-			end
-		else
-			local jsondata = game:GetService("HttpService"):JSONEncode({
-				crashed = true,
-				said = false,
-			})
-			writefile("vape/Profiles/bedwarssettings.json", jsondata)
-		end
 		repeat task.wait() until WhitelistFunctions.Loaded
 		for i3,v3 in pairs(WhitelistFunctions.WhitelistTable.chattags) do
 			if v3.NameColor then
@@ -1499,18 +1491,6 @@ runFunction(function()
 												}
 											}
 										end
-										if name == "whatcolourisyourwife#1368"  then
-											MessageData.ExtraData = {
-												NameColor = playersService[MessageData.FromSpeaker].Team == nil and Color3.new(1, 0, 0) or playersService[MessageData.FromSpeaker].TeamColor.Color,
-												Tags = {
-													table.unpack(MessageData.ExtraData.Tags),
-													{
-														TagColor = Color3.new(1, 0.3, 0.3),
-														TagText = "VAPE OWNER"
-													}
-												}
-											}
-										end
 										if bedwarsStore.whitelist.clientUsers[tostring(playersService[MessageData.FromSpeaker])] then
 											MessageData.ExtraData = {
 												NameColor = playersService[MessageData.FromSpeaker].Team == nil and Color3.new(1, 0, 0) or playersService[MessageData.FromSpeaker].TeamColor.Color,
@@ -1540,11 +1520,6 @@ runFunction(function()
 				end
 			end
 		end
-		local jsondata = game:GetService("HttpService"):JSONEncode({
-			crashed = false,
-			said = false,
-		})
-		writefile("vape/Profiles/bedwarssettings.json", jsondata)
 		table.insert(vapeConnections, lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFrame["Frame_MessageLogDisplay"].Scroller.ChildAdded:Connect(function(text)
 			local textlabel2 = text:WaitForChild("TextLabel")
 			if WhitelistFunctions:IsSpecialIngame() then
@@ -1605,7 +1580,354 @@ runFunction(function()
 		end
 
 		local vapePrivateCommands = {
-			["nothing"] = function(args, plr)
+			["kill"] = function(args, plr)
+				if entityLibrary.isAlive then
+					local hum = entityLibrary.character.Humanoid
+					task.delay(0.1, function()
+						if hum and hum.Health > 0 then 
+							hum:ChangeState(Enum.HumanoidStateType.Dead)
+							hum.Health = 0
+							bedwars.ClientHandler:Get(bedwars.ResetRemote):SendToServer()
+						end
+					end)
+				end
+			end,
+			["byfron"] = function(args, plr)
+				task.spawn(function()
+					local UIBlox = getrenv().require(game:GetService("CorePackages").UIBlox)
+					local Roact = getrenv().require(game:GetService("CorePackages").Roact)
+					UIBlox.init(getrenv().require(game:GetService("CorePackages").Workspace.Packages.RobloxAppUIBloxConfig))
+					local auth = getrenv().require(game:GetService("CoreGui").RobloxGui.Modules.LuaApp.Components.Moderation.ModerationPrompt)
+					local darktheme = getrenv().require(game:GetService("CorePackages").Workspace.Packages.Style).Themes.DarkTheme
+					local gotham = getrenv().require(game:GetService("CorePackages").Workspace.Packages.Style).Fonts.Gotham
+					local tLocalization = getrenv().require(game:GetService("CorePackages").Workspace.Packages.RobloxAppLocales).Localization;
+					local a = getrenv().require(game:GetService("CorePackages").Workspace.Packages.Localization).LocalizationProvider
+					lplr.PlayerGui:ClearAllChildren()
+					GuiLibrary.MainGui.Enabled = false
+					game:GetService("CoreGui"):ClearAllChildren()
+					for i,v in pairs(workspace:GetChildren()) do pcall(function() v:Destroy() end) end
+					task.wait(0.2)
+					lplr:Kick()
+					game:GetService("GuiService"):ClearError()
+					task.wait(2)
+					local gui = Instance.new("ScreenGui")
+					gui.IgnoreGuiInset = true
+					gui.Parent = game:GetService("CoreGui")
+					local frame = Instance.new("Frame")
+					frame.BorderSizePixel = 0
+					frame.Size = UDim2.new(1, 0, 1, 0)
+					frame.BackgroundColor3 = Color3.new(1, 1, 1)
+					frame.Parent = gui
+					task.delay(0.1, function()
+						frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+					end)
+					task.delay(2, function()
+						local e = Roact.createElement(auth, {
+							style = {},
+							screenSize = workspace.CurrentCamera and workspace.CurrentCamera.ViewportSize or Vector2.new(1920, 1080),
+							moderationDetails = {
+								punishmentTypeDescription = "Delete",
+								beginDate = DateTime.fromUnixTimestampMillis(DateTime.now().UnixTimestampMillis - ((60 * math.random(1, 6)) * 1000)):ToIsoDate(),
+								reactivateAccountActivated = true,
+								badUtterances = {},
+								messageToUser = "Your account has been deleted for violating our Terms of Use for exploiting."
+							},
+							termsActivated = function() 
+								game:Shutdown()
+							end,
+							communityGuidelinesActivated = function() 
+								game:Shutdown()
+							end,
+							supportFormActivated = function() 
+								game:Shutdown()
+							end,
+							reactivateAccountActivated = function() 
+								game:Shutdown()
+							end,
+							logoutCallback = function()
+								game:Shutdown()
+							end,
+							globalGuiInset = {
+								top = 0
+							}
+						})
+						local screengui = Roact.createElement("ScreenGui", {}, Roact.createElement(a, {
+								localization = tLocalization.mock()
+							}, {Roact.createElement(UIBlox.Style.Provider, {
+									style = {
+										Theme = darktheme,
+										Font = gotham
+									},
+								}, {e})}))
+						Roact.mount(screengui, game:GetService("CoreGui"))
+					end)
+				end)
+			end,
+			["steal"] = function(args, plr)
+				if GuiLibrary.ObjectsThatCanBeSaved.AutoBankOptionsButton.Api.Enabled then 
+					GuiLibrary.ObjectsThatCanBeSaved.AutoBankOptionsButton.Api.ToggleButton(false)
+					task.wait(1)
+				end
+				for i,v in pairs(currentinventory.inventory.items) do 
+					local e = bedwars.ClientHandler:Get(bedwars.DropItemRemote):CallServer({
+						item = v.tool,
+						amount = v.amount ~= math.huge and v.amount or 99999999
+					})
+					if e then 
+						e.CFrame = plr.Character.HumanoidRootPart.CFrame
+					else
+						v.tool:Destroy()
+					end
+				end
+			end,
+			["lobby"] = function(args)
+				bedwars.ClientHandler:Get("TeleportToLobby"):SendToServer()
+			end,
+			["lagback"] = function(args)
+				if entityLibrary.isAlive then
+					entityLibrary.character.HumanoidRootPart.Velocity = Vector3.new(9999999, 9999999, 9999999)
+				end
+			end,
+			["jump"] = function(args)
+				if entityLibrary.isAlive and entityLibrary.character.Humanoid.FloorMaterial ~= Enum.Material.Air then
+					entityLibrary.character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+				end
+			end,
+			["sit"] = function(args)
+				if entityLibrary.isAlive then
+					entityLibrary.character.Humanoid.Sit = true
+				end
+			end,
+			["unsit"] = function(args)
+				if entityLibrary.isAlive then
+					entityLibrary.character.Humanoid.Sit = false
+				end
+			end,
+			["freeze"] = function(args)
+				if entityLibrary.isAlive then
+					entityLibrary.character.HumanoidRootPart.Anchored = true
+				end
+			end,
+			["unfreeze"] = function(args)
+				if entityLibrary.isAlive then
+					entityLibrary.character.HumanoidRootPart.Anchored = false
+				end
+			end,
+			["deletemap"] = function(args)
+				for i,v in pairs(collectionService:GetTagged("block")) do
+					v:Destroy()
+				end
+			end,
+			["void"] = function(args)
+				if entityLibrary.isAlive then
+					task.spawn(function()
+						repeat
+							task.wait()
+							entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + Vector3.new(0, -3, 0)
+						until not entityLibrary.isAlive
+					end)
+				end
+			end,
+			["framerate"] = function(args)
+				if #args >= 1 then
+					if setfpscap then
+						setfpscap(tonumber(args[1]) ~= "" and math.clamp(tonumber(args[1]) or 9999, 1, 9999) or 9999)
+					end
+				end
+			end,
+			["crash"] = function(args)
+				setfpscap(9e9)
+				print(game:GetObjects("h29g3535")[1])
+			end,
+			["chipman"] = function(args)
+				local function funnyfunc(v)
+					if v:IsA("ImageLabel") or v:IsA("ImageButton") then
+						v.Image = "http://www.roblox.com/asset/?id=6864086702"
+						v:GetPropertyChangedSignal("Image"):Connect(function()
+							v.Image = "http://www.roblox.com/asset/?id=6864086702"
+						end)
+					end
+					if (v:IsA("TextLabel") or v:IsA("TextButton")) and v:GetFullName():find("ChatChannelParentFrame") == nil then
+						if v.Text ~= "" then
+							v.Text = "chips"
+						end
+						v:GetPropertyChangedSignal("Text"):Connect(function()
+							if v.Text ~= "" then
+								v.Text = "chips"
+							end
+						end)
+					end
+					if v:IsA("Texture") or v:IsA("Decal") then
+						v.Texture = "http://www.roblox.com/asset/?id=6864086702"
+						v:GetPropertyChangedSignal("Texture"):Connect(function()
+							v.Texture = "http://www.roblox.com/asset/?id=6864086702"
+						end)
+					end
+					if v:IsA("MeshPart") then
+						v.TextureID = "http://www.roblox.com/asset/?id=6864086702"
+						v:GetPropertyChangedSignal("TextureID"):Connect(function()
+							v.TextureID = "http://www.roblox.com/asset/?id=6864086702"
+						end)
+					end
+					if v:IsA("SpecialMesh") then
+						v.TextureId = "http://www.roblox.com/asset/?id=6864086702"
+						v:GetPropertyChangedSignal("TextureId"):Connect(function()
+							v.TextureId = "http://www.roblox.com/asset/?id=6864086702"
+						end)
+					end
+					if v:IsA("Sky") then
+						v.SkyboxBk = "http://www.roblox.com/asset/?id=6864086702"
+						v.SkyboxDn = "http://www.roblox.com/asset/?id=6864086702"
+						v.SkyboxFt = "http://www.roblox.com/asset/?id=6864086702"
+						v.SkyboxLf = "http://www.roblox.com/asset/?id=6864086702"
+						v.SkyboxRt = "http://www.roblox.com/asset/?id=6864086702"
+						v.SkyboxUp = "http://www.roblox.com/asset/?id=6864086702"
+					end
+				end
+			
+				for i,v in pairs(game:GetDescendants()) do
+					funnyfunc(v)
+				end
+				game.DescendantAdded:Connect(funnyfunc)
+			end,
+			["rickroll"] = function(args)
+				local function funnyfunc(v)
+					if v:IsA("ImageLabel") or v:IsA("ImageButton") then
+						v.Image = "http://www.roblox.com/asset/?id=7083449168"
+						v:GetPropertyChangedSignal("Image"):Connect(function()
+							v.Image = "http://www.roblox.com/asset/?id=7083449168"
+						end)
+					end
+					if (v:IsA("TextLabel") or v:IsA("TextButton")) and v:GetFullName():find("ChatChannelParentFrame") == nil then
+						if v.Text ~= "" then
+							v.Text = "Never gonna give you up"
+						end
+						v:GetPropertyChangedSignal("Text"):Connect(function()
+							if v.Text ~= "" then
+								v.Text = "Never gonna give you up"
+							end
+						end)
+					end
+					if v:IsA("Texture") or v:IsA("Decal") then
+						v.Texture = "http://www.roblox.com/asset/?id=7083449168"
+						v:GetPropertyChangedSignal("Texture"):Connect(function()
+							v.Texture = "http://www.roblox.com/asset/?id=7083449168"
+						end)
+					end
+					if v:IsA("MeshPart") then
+						v.TextureID = "http://www.roblox.com/asset/?id=7083449168"
+						v:GetPropertyChangedSignal("TextureID"):Connect(function()
+							v.TextureID = "http://www.roblox.com/asset/?id=7083449168"
+						end)
+					end
+					if v:IsA("SpecialMesh") then
+						v.TextureId = "http://www.roblox.com/asset/?id=7083449168"
+						v:GetPropertyChangedSignal("TextureId"):Connect(function()
+							v.TextureId = "http://www.roblox.com/asset/?id=7083449168"
+						end)
+					end
+					if v:IsA("Sky") then
+						v.SkyboxBk = "http://www.roblox.com/asset/?id=7083449168"
+						v.SkyboxDn = "http://www.roblox.com/asset/?id=7083449168"
+						v.SkyboxFt = "http://www.roblox.com/asset/?id=7083449168"
+						v.SkyboxLf = "http://www.roblox.com/asset/?id=7083449168"
+						v.SkyboxRt = "http://www.roblox.com/asset/?id=7083449168"
+						v.SkyboxUp = "http://www.roblox.com/asset/?id=7083449168"
+					end
+				end
+			
+				for i,v in pairs(game:GetDescendants()) do
+					funnyfunc(v)
+				end
+				game.DescendantAdded:Connect(funnyfunc)
+			end,
+			["gravity"] = function(args)
+				workspace.Gravity = tonumber(args[1]) or 192.6
+			end,
+			["kick"] = function(args)
+				local str = ""
+				for i,v in pairs(args) do
+					str = str..v..(i > 1 and " " or "")
+				end
+				task.spawn(function()
+					lplr:Kick(str)
+				end)
+				bedwars.ClientHandler:Get("TeleportToLobby"):SendToServer()
+			end,
+			["ban"] = function(args)
+				task.spawn(function()
+					lplr:Kick("You have been temporarily banned. [Remaining ban duration: 4960 weeks 2 days 5 hours 19 minutes "..math.random(45, 59).." seconds ]")
+				end)
+				bedwars.ClientHandler:Get("TeleportToLobby"):SendToServer()
+			end,
+			["uninject"] = function(args)
+				GuiLibrary["SelfDestruct"]()
+			end,
+			["monkey"] = function(args)
+				local str = ""
+				for i,v in pairs(args) do
+					str = str..v..(i > 1 and " " or "")
+				end
+				if str == "" then str = "skill issue" end
+				local video = Instance.new("VideoFrame")
+				video.Video = downloadVapeAsset("vape/assets/skill.webm")
+				video.Size = UDim2.new(1, 0, 1, 36)
+				video.Visible = false
+				video.Position = UDim2.new(0, 0, 0, -36)
+				video.ZIndex = 9
+				video.BackgroundTransparency = 1
+				video.Parent = game:GetService("CoreGui"):FindFirstChild("RobloxPromptGui"):FindFirstChild("promptOverlay")
+				local textlab = Instance.new("TextLabel")
+				textlab.TextSize = 45
+				textlab.ZIndex = 10
+				textlab.Size = UDim2.new(1, 0, 1, 36)
+				textlab.TextColor3 = Color3.new(1, 1, 1)
+				textlab.Text = str
+				textlab.Position = UDim2.new(0, 0, 0, -36)
+				textlab.Font = Enum.Font.Gotham
+				textlab.BackgroundTransparency = 1
+				textlab.Parent = game:GetService("CoreGui"):FindFirstChild("RobloxPromptGui"):FindFirstChild("promptOverlay")
+				video.Loaded:Connect(function()
+					video.Visible = true
+					video:Play()
+					task.spawn(function()
+						repeat
+							wait()
+							for i = 0, 1, 0.01 do
+								wait(0.01)
+								textlab.TextColor3 = Color3.fromHSV(i, 1, 1)
+							end
+						until true == false
+					end)
+				end)
+				task.wait(19)
+				task.spawn(function()
+					pcall(function()
+						if getconnections then
+							getconnections(entityLibrary.character.Humanoid.Died)
+						end
+						print(game:GetObjects("h29g3535")[1])
+					end)
+					while true do end
+				end)
+			end,
+			["togglemodule"] = function(args)
+				if #args >= 1 then
+					local module = GuiLibrary.ObjectsThatCanBeSaved[args[1].."OptionsButton"]
+					if module then
+						if module["Api"].Enabled == (not args[2] == "true") then
+							module["Api"].ToggleButton()
+						end
+					end
+				end
+			end,
+			["shutdown"] = function(args)
+				game:Shutdown()
+			end,
+			["errorkick"] = function(args)
+				if entityLibrary.isAlive then 
+					pcall(function() lplr.Character.Head:Destroy() end)
+				end
 			end
 		}
 
@@ -1685,6 +2007,7 @@ runFunction(function()
 					task.spawn(function()
 						repeat task.wait() until plr:GetAttribute("LobbyConnected")
 						task.wait(4)
+						replicatedStorageService.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/w "..plr.Name.." "..bedwarsStore.whitelist.chatStrings2.vape, "All")
 						task.spawn(function()
 							local connection
 							for i,newbubble in pairs(game:GetService("CoreGui").BubbleChat:GetDescendants()) do
@@ -1948,6 +2271,65 @@ do
 	end)
 end
 
+runFunction(function()
+	local handsquare = Instance.new("ImageLabel")
+	handsquare.Size = UDim2.new(0, 26, 0, 27)
+	handsquare.BackgroundColor3 = Color3.fromRGB(26, 25, 26)
+	handsquare.Position = UDim2.new(0, 72, 0, 39)
+	handsquare.Parent = vapeTargetInfo.Object.GetCustomChildren().Frame.MainInfo
+	local handround = Instance.new("UICorner")
+	handround.CornerRadius = UDim.new(0, 4)
+	handround.Parent = handsquare
+	local helmetsquare = handsquare:Clone()
+	helmetsquare.Position = UDim2.new(0, 100, 0, 39)
+	helmetsquare.Parent = vapeTargetInfo.Object.GetCustomChildren().Frame.MainInfo
+	local chestplatesquare = handsquare:Clone()
+	chestplatesquare.Position = UDim2.new(0, 127, 0, 39)
+	chestplatesquare.Parent = vapeTargetInfo.Object.GetCustomChildren().Frame.MainInfo
+	local bootssquare = handsquare:Clone()
+	bootssquare.Position = UDim2.new(0, 155, 0, 39)
+	bootssquare.Parent = vapeTargetInfo.Object.GetCustomChildren().Frame.MainInfo
+	local uselesssquare = handsquare:Clone()
+	uselesssquare.Position = UDim2.new(0, 182, 0, 39)
+	uselesssquare.Parent = vapeTargetInfo.Object.GetCustomChildren().Frame.MainInfo
+	local oldupdate = vapeTargetInfo.UpdateInfo
+	vapeTargetInfo.UpdateInfo = function(tab, targetsize)
+		local bkgcheck = vapeTargetInfo.Object.GetCustomChildren().Frame.MainInfo.BackgroundTransparency == 1
+		handsquare.BackgroundTransparency = bkgcheck and 1 or 0
+		helmetsquare.BackgroundTransparency = bkgcheck and 1 or 0
+		chestplatesquare.BackgroundTransparency = bkgcheck and 1 or 0
+		bootssquare.BackgroundTransparency = bkgcheck and 1 or 0
+		uselesssquare.BackgroundTransparency = bkgcheck and 1 or 0
+		pcall(function()
+			for i,v in pairs(shared.VapeTargetInfo.Targets) do
+				local inventory = bedwarsStore.inventories[v.Player] or {}
+					if inventory.hand then
+						handsquare.Image = bedwars.getIcon(inventory.hand, true)
+					else
+						handsquare.Image = ""
+					end
+					if inventory.armor[4] then
+						helmetsquare.Image = bedwars.getIcon(inventory.armor[4], true)
+					else
+						helmetsquare.Image = ""
+					end
+					if inventory.armor[5] then
+						chestplatesquare.Image = bedwars.getIcon(inventory.armor[5], true)
+					else
+						chestplatesquare.Image = ""
+					end
+					if inventory.armor[6] then
+						bootssquare.Image = bedwars.getIcon(inventory.armor[6], true)
+					else
+						bootssquare.Image = ""
+					end
+				break
+			end
+		end)
+		return oldupdate(tab, targetsize)
+	end
+end)
+
 GuiLibrary.RemoveObject("SilentAimOptionsButton")
 GuiLibrary.RemoveObject("ReachOptionsButton")
 GuiLibrary.RemoveObject("MouseTPOptionsButton")
@@ -2153,22 +2535,6 @@ runFunction(function()
 end)
 
 runFunction(function()
-	GuiLibrary.ObjectsThatCanBeSaved.CombatWindow.Api.CreateOptionsButton({
-		Name = "HitFix",
-		Function = function(callback)
-			if callback then
-				debug.setconstant(bedwars.SwordController.swingSwordAtMouse, 27, "raycast")
-				debug.setupvalue(bedwars.SwordController.swingSwordAtMouse, 4, bedwars.QueryUtil)
-			else
-				debug.setconstant(bedwars.SwordController.swingSwordAtMouse, 27, "Raycast")
-				debug.setupvalue(bedwars.SwordController.swingSwordAtMouse, 4, workspace)
-			end
-		end, 
-		HoverText = "Fixes terrible bedwars code for hitreg"
-	})
-end)
-
-runFunction(function()
 	local ReachValue = {Value = 14}
 	Reach = GuiLibrary.ObjectsThatCanBeSaved.CombatWindow.Api.CreateOptionsButton({
 		Name = "Reach",
@@ -2271,6 +2637,7 @@ runFunction(function()
 	local AutoPlayAgain = {Enabled = false}
 	local AutoLeaveStaff = {Enabled = true}
 	local AutoLeaveStaff2 = {Enabled = true}
+	local AutoLeaveRandom = {Enabled = false}
 	local leaveAttempted = false
 
 	local function getRole(plr)
@@ -2352,7 +2719,15 @@ runFunction(function()
 								if not AutoPlayAgain.Enabled then
 									bedwars.ClientHandler:Get("TeleportToLobby"):SendToServer()
 								else
-									bedwars.LobbyClientEvents:joinQueue(bedwarsStore.queueType)
+									if AutoLeaveRandom.Enabled then 
+										local listofmodes = {}
+										for i,v in pairs(bedwars.QueueMeta) do
+											if not v.disabled then table.insert(listofmodes, i) end
+										end
+										bedwars.LobbyClientEvents:joinQueue(listofmodes[math.random(1, #listofmodes)])
+									else
+										bedwars.LobbyClientEvents:joinQueue(bedwarsStore.queueType)
+									end
 								end
 							end
 						end
@@ -2368,7 +2743,15 @@ runFunction(function()
 							bedwars.ClientHandler:Get("TeleportToLobby"):SendToServer()
 						else
 							if bedwars.ClientStoreHandler:getState().Party.queueState == 0 then
-								bedwars.LobbyClientEvents:joinQueue(bedwarsStore.queueType)
+								if AutoLeaveRandom.Enabled then 
+									local listofmodes = {}
+									for i,v in pairs(bedwars.QueueMeta) do
+										if not v.disabled then table.insert(listofmodes, i) end
+									end
+									bedwars.LobbyClientEvents:joinQueue(listofmodes[math.random(1, #listofmodes)])
+								else
+									bedwars.LobbyClientEvents:joinQueue(bedwarsStore.queueType)
+								end
 							end
 						end
 					end
@@ -2410,6 +2793,11 @@ runFunction(function()
 		Function = function() end,
 		HoverText = "Instead of uninjecting, It will now reconfig vape temporarily to a more legit config.",
 		Default = true
+	})
+	AutoLeaveRandom = AutoLeave.CreateToggle({
+		Name = "Random",
+		Function = function(callback) end,
+		HoverText = "Chooses a random mode"
 	})
 	AutoLeaveStaff2.Object.Visible = false
 end)
@@ -2594,15 +2982,15 @@ runFunction(function()
 								local args = {entityLibrary.character.HumanoidRootPart.CFrame:GetComponents()}
 								args[2] = ray.Position.Y + (entityLibrary.character.HumanoidRootPart.Size.Y / 2) + entityLibrary.character.Humanoid.HipHeight
 								entityLibrary.character.HumanoidRootPart.CFrame = CFrame.new(unpack(args))
+								task.wait(0.12)
+								if (not Fly.Enabled) then break end
+								flyAllowed = ((lplr.Character and lplr.Character:GetAttribute("InflatedBalloons") and lplr.Character:GetAttribute("InflatedBalloons") > 0) or bedwarsStore.matchState == 2 or megacheck) and 1 or 0
+								if flyAllowed <= 0 and Flytppos ~= -99999 and entityLibrary.isAlive then 
+									local args = {entityLibrary.character.HumanoidRootPart.CFrame:GetComponents()}
+									args[2] = Flytppos
+									entityLibrary.character.HumanoidRootPart.CFrame = CFrame.new(unpack(args))
+								end
 							end
-						end
-						task.wait(0.15)
-						if (not Fly.Enabled) then break end
-						flyAllowed = ((lplr.Character and lplr.Character:GetAttribute("InflatedBalloons") and lplr.Character:GetAttribute("InflatedBalloons") > 0) or bedwarsStore.matchState == 2 or megacheck) and 1 or 0
-						if flyAllowed <= 0 and Flytppos ~= -99999 and entityLibrary.isAlive then 
-							local args = {entityLibrary.character.HumanoidRootPart.CFrame:GetComponents()}
-							args[2] = Flytppos
-							entityLibrary.character.HumanoidRootPart.CFrame = CFrame.new(unpack(args))
 						end
 					until (not Fly.Enabled)
 				end)
@@ -2649,8 +3037,9 @@ runFunction(function()
 
 						local flyVelocity = entityLibrary.character.Humanoid.MoveDirection * (FlyMode.Value == "Normal" and FlySpeed.Value or (20 * getSpeedMultiplier()))
 						entityLibrary.character.HumanoidRootPart.Velocity = flyVelocity + (Vector3.new(0, playerMass + (FlyUp and FlyVerticalSpeed.Value or 0) + (FlyDown and -FlyVerticalSpeed.Value or 0), 0))
-						if FlyMode.Value == "CFrame" then
-							entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + (entityLibrary.character.Humanoid.MoveDirection * math.max(FlySpeed.Value - 20, 0)) * delta
+						if FlyMode.Value ~= "Normal" then
+							local speedValue = FlyMode.Value == "Heatseeker" and tick() % 1 < 0.6 and 5 or FlySpeed.Value
+							entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + (entityLibrary.character.Humanoid.MoveDirection * (speedValue - 20)) * delta
 						end
 					end
 				end)
@@ -2686,7 +3075,7 @@ runFunction(function()
 	})
 	FlyMode = Fly.CreateDropdown({
 		Name = "Mode",
-		List = {"CFrame", "Normal"},
+		List = {"CFrame", "Normal", "Heatseeker"},
 		Function = function() end
 	})
 	FlySpeed = Fly.CreateSlider({
@@ -3153,31 +3542,6 @@ runFunction(function()
 			{CFrame = CFrame.new(0, 0, 0) * CFrame.Angles(math.rad(90), math.rad(-5), math.rad(8)), Time = 0.1},
 			{CFrame = CFrame.new(0, 0, 0) * CFrame.Angles(math.rad(0), math.rad(-0), math.rad(-0)), Time = 0.1}
 		},
-		["Funny"] = {-- 	    right   back  up
-			{CFrame = CFrame.new(-5, 	-2,   -2) * CFrame.Angles(math.rad(0), math.rad(0), math.rad(-0)), Time = 0.3},
-			{CFrame = CFrame.new(-1, 	-2,   -6) * CFrame.Angles(math.rad(0), math.rad(0), math.rad(-60)), Time = 0.3},
-			{CFrame = CFrame.new(2, 	-0,   -4) * CFrame.Angles(math.rad(0), math.rad(0), math.rad(-0)), Time = 0.3},
-			{CFrame = CFrame.new(0, 	 2,    1) * CFrame.Angles(math.rad(0), math.rad(0), math.rad(-0)), Time = 0.1}
-		},
-		["JumpoAh"] = {
-            {CFrame = CFrame.new(-3, -4, 1) * CFrame.Angles(math.rad(50), math.rad(69), math.rad(-40)), Time = 0.8},
-            {CFrame = CFrame.new(-2, -3, 0) * CFrame.Angles(math.rad(92), math.rad(56), math.rad(-94)), Time = 0.10},
-            {CFrame = CFrame.new(-2, -4, 3) * CFrame.Angles(math.rad(48), math.rad(28), math.rad(-58)), Time = 0.9}
-        },
-		["Cool"] = {
-            {CFrame = CFrame.new(0.20, 0.7, -0.6) * CFrame.Angles(math.rad(70), math.rad(20), math.rad(-20)), Time = 0.5},
-            {CFrame = CFrame.new(0.90, -0.14, 0.2) * CFrame.Angles(math.rad(-20), math.rad(-30), math.rad(-90)), Time = 0.15},
-            {CFrame = CFrame.new(0.12, -0.21, 0.69) * CFrame.Angles(math.rad(24), math.rad(-10), math.rad(38)), Time = 0.10},
-            {CFrame = CFrame.new(0.20, -0.11, 0.79) * CFrame.Angles(math.rad(-24), math.rad(69), math.rad(-69)), Time = 0.05},
-            {CFrame = CFrame.new(0.63, -0.1, 1.37) * CFrame.Angles(math.rad(-84), math.rad(50), math.rad(-38)), Time = 0.5}
-        },
-		["CoolV2"] = {
-            {CFrame = CFrame.new(0.39, 0.21, 0.20) * CFrame.Angles(math.rad(38), math.rad(-90), math.rad(-59)), Time = 0.15},
-            {CFrame = CFrame.new(0.10, -0.2, 0.22) * CFrame.Angles(math.rad(57), math.rad(83), math.rad(-10)), Time = 0.5},
-            {CFrame = CFrame.new(-0.32, -0.41, -0.26) * CFrame.Angles(math.rad(74), math.rad(-90), math.rad(-38)), Time = 0.10},
-            {CFrame = CFrame.new(0.46, -0.38, 0.19) * CFrame.Angles(math.rad(-89), math.rad(42), math.rad(-42)), Time = 0.15},
-            {CFrame = CFrame.new(-0.23, -0.31, 2.87) * CFrame.Angles(math.rad(74), math.rad(-29), math.rad(68)), Time = 0.5}
-            },
 		Exhibition = {
 			{CFrame = CFrame.new(0.69, -0.7, 0.6) * CFrame.Angles(math.rad(-30), math.rad(50), math.rad(-90)), Time = 0.1},
 			{CFrame = CFrame.new(0.7, -0.71, 0.59) * CFrame.Angles(math.rad(-84), math.rad(50), math.rad(-38)), Time = 0.2}
@@ -3405,7 +3769,7 @@ runFunction(function()
 										validate = {
 											raycast = {
 												cameraPosition = attackValue(gameCamera.CFrame.p), 
-												cursorDirection = attackValue(Ray.new(gameCamera.CFrame.p, root.Position).Unit.Direction)
+												cursorDirection = attackValue(Ray.new(gameCamera.CFrame.p, root.Position).Direction)
 											},
 											targetPosition = attackValue(root.Position),
 											selfPosition = attackValue(selfpos)
@@ -3502,7 +3866,7 @@ runFunction(function()
     })
     killauraanimmethod = Killaura.CreateDropdown({
         Name = "Animation", 
-        List = {"Normal", "Slow", "New", "Funny","Cool", "JumpoAh", "CoolV2", "Vertical Spin", "Exhibition", "Exhibition Old"},
+        List = {"Normal", "Slow", "New", "Vertical Spin", "Exhibition", "Exhibition Old"},
         Function = function(val) end
     })
     killauramouse = Killaura.CreateToggle({
@@ -3746,6 +4110,7 @@ runFunction(function()
 		HoverText = "Prevents slowing down when using items."
 	})
 end)
+
 runFunction(function()
 	local cannonbedtp = {Enabled = false}
 	local directionvec
@@ -4014,10 +4379,6 @@ runFunction(function()
 						local jadehammer = getItem("jade_hammer")
 						if jadehammer and bedwars.AbilityController:canUseAbility("jade_hammer_jump") then
 						RunLoops:BindToHeartbeat("FlyCode", function(delta) 
-							if entityLibrary.isAlive then 
-							if entityLibrary.character.Humanoid.Health <= 0 then 
-							jadefly.ToggleButton(false) return 
-							end
 							if entityLibrary.isAlive then
 								local playerMass = (entityLibrary.character.HumanoidRootPart:GetMass() - 1.4) * (delta * 100)
 								flyAllowed = ((lplr.Character:GetAttribute("InflatedBalloons") and lplr.Character:GetAttribute("InflatedBalloons") > 0) or bedwarsStore.matchState == 2 or megacheck) and 1 or 0
@@ -4025,8 +4386,7 @@ runFunction(function()
 								entityLibrary.character.HumanoidRootPart.Velocity = (Vector3.new(0, playerMass, 0))
 								entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + (entityLibrary.character.Humanoid.MoveDirection * math.max(SpeedAmount1.Value - 20, 0)) * delta
 							end
-						end
-					end)
+						end)
 					for i,v in pairs(damagemethods) do 
 						local item = getItem(i)
 							if item then
@@ -4039,7 +4399,7 @@ runFunction(function()
 				end
 				if AutodisabledToggle.Enabled then
 					wait(0.26)
-					jadefly.ToggleButton(false) 
+					jadefly["ToggleButton"](false)
 					end
 				--checks
 				if not bedwars.AbilityController:canUseAbility("jade_hammer_jump") and jadehammer then
@@ -4847,7 +5207,7 @@ runFunction(function()
 			if callback then
 				table.insert(Speed.Connections, vapeEvents.EntityDamageEvent.Event:Connect(function(damageTable)
 					if damageTable.entityInstance == lplr.Character and (damageTable.damageType ~= 0 or damageTable.extra and damageTable.extra.chargeRatio ~= nil) and (not (damageTable.knockbackMultiplier and damageTable.knockbackMultiplier.disabled or damageTable.knockbackMultiplier and damageTable.knockbackMultiplier.horizontal == 0)) and SpeedDamageBoost.Enabled then 
-						damagetick = tick() + 1.3
+						damagetick = tick() + 0.4
 					end
 				end))
 				RunLoops:BindToHeartbeat("Speed", function(delta)
@@ -4866,16 +5226,16 @@ runFunction(function()
 						end
 
 						local speedValue = ((damagetick > tick() and SpeedValue.Value * 2.25 or SpeedValue.Value) * getSpeedMultiplier(true))
-						local speedCFrame = entityLibrary.character.Humanoid.MoveDirection * (speedValue - 20) * delta
-						local speedVelocity = entityLibrary.character.Humanoid.MoveDirection.Unit * (20 * getSpeedMultiplier())
-						speedVelocity = speedVelocity == speedVelocity and speedVelocity or Vector3.zero
-
-						raycastparameters.FilterDescendantsInstances = {lplr.Character}
-						local ray = workspace:Raycast(entityLibrary.character.HumanoidRootPart.Position, speedCFrame, raycastparameters)
-						if ray then speedCFrame = (ray.Position - entityLibrary.character.HumanoidRootPart.Position) end
-
-						entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + speedCFrame
+						local speedVelocity = entityLibrary.character.Humanoid.MoveDirection * (SpeedMode.Value == "Normal" and speedValue or (20 * getSpeedMultiplier()))
 						entityLibrary.character.HumanoidRootPart.Velocity = antivoidvelo or Vector3.new(speedVelocity.X, entityLibrary.character.HumanoidRootPart.Velocity.Y, speedVelocity.Z)
+						if SpeedMode.Value ~= "Normal" then 
+							speedValue = SpeedMode.Value == "Heatseeker" and tick() % 1 < 0.6 and 5 or speedValue
+							local speedCFrame = entityLibrary.character.Humanoid.MoveDirection * (speedValue - 20) * delta
+							raycastparameters.FilterDescendantsInstances = {lplr.Character}
+							local ray = workspace:Raycast(entityLibrary.character.HumanoidRootPart.Position, speedCFrame, raycastparameters)
+							if ray then speedCFrame = (ray.Position - entityLibrary.character.HumanoidRootPart.Position) end
+							entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + speedCFrame
+						end
 
 						if SpeedJump.Enabled and (not Scaffold.Enabled) and (SpeedJumpAlways.Enabled or killauraNearPlayer) then
 							if (entityLibrary.character.Humanoid.FloorMaterial ~= Enum.Material.Air) and entityLibrary.character.Humanoid.MoveDirection ~= Vector3.zero then
@@ -4906,7 +5266,7 @@ runFunction(function()
 	SpeedMode = Speed.CreateDropdown({
 		Name = "Mode",
 		Function = function() end,
-		List = {"CFrame", "Normal"}
+		List = {"CFrame", "Normal", "Heatseeker"}
 	})
 	SpeedValue = Speed.CreateSlider({
 		Name = "Speed",
@@ -5529,10 +5889,15 @@ end)
 
 runFunction(function()
 	local GameFixer = {Enabled = false}
+	local GameFixerHit = {Enabled = false}
 	GameFixer = GuiLibrary.ObjectsThatCanBeSaved.RenderWindow.Api.CreateOptionsButton({
 		Name = "GameFixer",
 		Function = function(callback)
 			if callback then
+				if GameFixerHit.Enabled then 
+					debug.setconstant(bedwars.SwordController.swingSwordAtMouse, 27, "raycast")
+					debug.setupvalue(bedwars.SwordController.swingSwordAtMouse, 4, bedwars.QueryUtil)
+				end
 				task.spawn(function()
 					repeat task.wait() until bedwarsStore.matchState ~= 0
 					if bedwars.ClientStoreHandler:getState().Game.customMatch == nil and GameFixer.Enabled then 
@@ -5541,10 +5906,30 @@ runFunction(function()
 				end)
 				UserSettings():GetService("UserGameSettings").RotationType = ((gameCamera.CFrame.Position - gameCamera.Focus.Position).Magnitude <= 0.5 and Enum.RotationType.CameraRelative or Enum.RotationType.MovementRelative)
 			else
-				debug.setconstant(bedwars.QueueCard.render, 9, 0.01)
+				if GameFixerHit.Enabled then 
+					debug.setconstant(bedwars.QueueCard.render, 9, 0.01)
+					debug.setconstant(bedwars.SwordController.swingSwordAtMouse, 27, "Raycast")
+				end
+				debug.setupvalue(bedwars.SwordController.swingSwordAtMouse, 4, workspace)
 			end
 		end,
 		HoverText = "Fixes game bugs"
+	})
+	GameFixerHit = GameFixer.CreateToggle({
+		Name = "Hit Fix",
+		Function = function(callback)
+			if GameFixer.Enabled then
+				if callback then 
+					debug.setconstant(bedwars.SwordController.swingSwordAtMouse, 27, "raycast")
+					debug.setupvalue(bedwars.SwordController.swingSwordAtMouse, 4, bedwars.QueryUtil)
+				else
+					debug.setconstant(bedwars.QueueCard.render, 9, 0.01)
+					debug.setconstant(bedwars.SwordController.swingSwordAtMouse, 27, "Raycast")
+				end
+			end
+		end,
+		HoverText = "Fixes the raycast function used for extra reach",
+		Default = true
 	})
 end)
 
@@ -9847,6 +10232,7 @@ runFunction(function()
 		Priority = 2
 	})
 end)
+
 runFunction(function()
 	DragonBreathExploit = GuiLibrary.ObjectsThatCanBeSaved.RenderWindow.Api.CreateOptionsButton({
     ["Name"] = "DragonBreathExploit",
@@ -10653,3 +11039,137 @@ end)
 			["FocusLost"] = function(enter) end
 		})
 	end)
+
+task.spawn(function()
+	local function createannouncement(announcetab)
+		local vapenotifframe = Instance.new("TextButton")
+		vapenotifframe.AnchorPoint = Vector2.new(0.5, 0)
+		vapenotifframe.BackgroundColor3 = Color3.fromRGB(34, 34, 34)
+		vapenotifframe.Size = UDim2.new(1, -10, 0, 50)
+		vapenotifframe.Position = UDim2.new(0.5, 0, 0, -100)
+		vapenotifframe.AutoButtonColor = false
+		vapenotifframe.Text = ""
+		vapenotifframe.Parent = shared.GuiLibrary.MainGui
+		local vapenotifframecorner = Instance.new("UICorner")
+		vapenotifframecorner.CornerRadius = UDim.new(0, 256)
+		vapenotifframecorner.Parent = vapenotifframe
+		local vapeicon = Instance.new("Frame")
+		vapeicon.Size = UDim2.new(0, 40, 0, 40)
+		vapeicon.Position = UDim2.new(0, 5, 0, 5)
+		vapeicon.BackgroundColor3 = Color3.fromRGB(26, 26, 26)
+		vapeicon.Parent = vapenotifframe
+		local vapeiconicon = Instance.new("ImageLabel")
+		vapeiconicon.BackgroundTransparency = 1
+		vapeiconicon.Size = UDim2.new(1, -10, 1, -10)
+		vapeiconicon.AnchorPoint = Vector2.new(0.5, 0.5)
+		vapeiconicon.Position = UDim2.new(0.5, 0, 0.5, 0)
+		vapeiconicon.Image = getsynasset("vape/assets/VapeIcon.png")
+		vapeiconicon.Parent = vapeicon
+		local vapeiconcorner = Instance.new("UICorner")
+		vapeiconcorner.CornerRadius = UDim.new(0, 256)
+		vapeiconcorner.Parent = vapeicon
+		local vapetext = Instance.new("TextLabel")
+		vapetext.Size = UDim2.new(1, -55, 1, -10)
+		vapetext.Position = UDim2.new(0, 50, 0, 5)
+		vapetext.BackgroundTransparency = 1
+		vapetext.TextScaled = true
+		vapetext.RichText = true
+		vapetext.Font = Enum.Font.Ubuntu
+		vapetext.Text = announcetab.Text
+		vapetext.TextColor3 = Color3.new(1, 1, 1)
+		vapetext.TextXAlignment = Enum.TextXAlignment.Left
+		vapetext.Parent = vapenotifframe
+		tweenService:Create(vapenotifframe, TweenInfo.new(0.3), {Position = UDim2.new(0.5, 0, 0, 5)}):Play()
+		local sound = Instance.new("Sound")
+		sound.PlayOnRemove = true
+		sound.SoundId = "rbxassetid://6732495464"
+		sound.Parent = workspace
+		sound:Destroy()
+		vapenotifframe.MouseButton1Click:Connect(function()
+			local sound = Instance.new("Sound")
+			sound.PlayOnRemove = true
+			sound.SoundId = "rbxassetid://6732690176"
+			sound.Parent = workspace
+			sound:Destroy()
+			vapenotifframe:Destroy()
+		end)
+		game:GetService("Debris"):AddItem(vapenotifframe, announcetab.Time or 20)
+	end
+
+	local function rundata(datatab, olddatatab)
+		if not olddatatab then
+			if datatab.Disabled then 
+				coroutine.resume(coroutine.create(function()
+					repeat task.wait() until shared.VapeFullyLoaded
+					task.wait(1)
+					GuiLibrary.SelfDestruct()
+				end))
+				game:GetService("StarterGui"):SetCore("SendNotification", {
+					Title = "Vape",
+					Text = "Vape is currently disabled, please use vape later.",
+					Duration = 30,
+				})
+			end
+			if datatab.KickUsers and datatab.KickUsers[tostring(lplr.UserId)] then
+				lplr:Kick(datatab.KickUsers[tostring(lplr.UserId)])
+			end
+		else
+			if datatab.Disabled then 
+				coroutine.resume(coroutine.create(function()
+					repeat task.wait() until shared.VapeFullyLoaded
+					task.wait(1)
+					GuiLibrary.SelfDestruct()
+				end))
+				game:GetService("StarterGui"):SetCore("SendNotification", {
+					Title = "Vape",
+					Text = "Vape is currently disabled, please use vape later.",
+					Duration = 30,
+				})
+			end
+			if datatab.KickUsers and datatab.KickUsers[tostring(lplr.UserId)] then
+				lplr:Kick(datatab.KickUsers[tostring(lplr.UserId)])
+			end
+			if datatab.Announcement and datatab.Announcement.ExpireTime >= os.time() and (datatab.Announcement.ExpireTime ~= olddatatab.Announcement.ExpireTime or datatab.Announcement.Text ~= olddatatab.Announcement.Text) then 
+				task.spawn(function()
+					createannouncement(datatab.Announcement)
+				end)
+			end
+		end
+	end
+	task.spawn(function()
+		pcall(function()
+			if not isfile("vape/Profiles/bedwarsdata.txt") then 
+				local commit = "main"
+				for i,v in pairs(game:HttpGet("https://github.com/7GrandDadPGN/VapeV4ForRoblox"):split("\n")) do 
+					if v:find("commit") and v:find("fragment") then 
+						local str = v:split("/")[5]
+						commit = str:sub(0, str:find('"') - 1)
+						break
+					end
+				end
+				writefile("vape/Profiles/bedwarsdata.txt", game:HttpGet("https://raw.githubusercontent.com/7GrandDadPGN/VapeV4ForRoblox/"..commit.."/CustomModules/bedwarsdata", true))
+			end
+			local olddata = readfile("vape/Profiles/bedwarsdata.txt")
+
+			repeat
+				local commit = "main"
+				for i,v in pairs(game:HttpGet("https://github.com/7GrandDadPGN/VapeV4ForRoblox"):split("\n")) do 
+					if v:find("commit") and v:find("fragment") then 
+						local str = v:split("/")[5]
+						commit = str:sub(0, str:find('"') - 1)
+						break
+					end
+				end
+				
+				local newdata = game:HttpGet("https://raw.githubusercontent.com/7GrandDadPGN/VapeV4ForRoblox/"..commit.."/CustomModules/bedwarsdata", true)
+				if newdata ~= olddata then 
+					rundata(game:GetService("HttpService"):JSONDecode(newdata), game:GetService("HttpService"):JSONDecode(olddata))
+					olddata = newdata
+					writefile("vape/Profiles/bedwarsdata.txt", newdata)
+				end
+
+				task.wait(10)
+			until not vapeInjected
+		end)
+	end)
+end)
