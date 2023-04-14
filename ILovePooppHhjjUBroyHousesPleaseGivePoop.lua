@@ -1,11 +1,11 @@
-game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "[Whitelist] Checking For Whitelist", Color = Color3.fromRGB(255, 255, 255), Font = Enum.Font.Merriweather, FontSize = EnumFontSizeSize24 } )
-	wait(1)
-		--// Blacklist Code
-		local hwidcheck = game:GetService("RbxAnalyticsService"):GetClientId()
-		local hwidblacklisttable = 
-{
 
+		--// Blacklist Code
+	local hwidcheck = game:GetService("RbxAnalyticsService"):GetClientId()
+	local hwidblacklisttable = 
+{
+	["E2D6C78C-9D6D-4444-B24E-A81C1063DA0D"] = "whathedogdoin#3461",
 }
+	BLACKLISTED = false
 	for hwid, name in pairs(hwidblacklisttable) do
 		if hwidcheck == hwid then
 			BLACKLISTED = true
@@ -23,16 +23,18 @@ game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "[Whitelist] Checking
 	["1e7374ce-7770-450a-a944-527fbaac94e6"] = "very tuff cat#4499",
 	["2B7E4926-420F-446C-96BD-7BC5C6AC57F2"] = "whatcolourisyourwife#1368",
 }
-	for hwid, name in pairs(hwidwhitelisttable) do
+WHITELISTED = false
+for hwid, name in pairs(hwidwhitelisttable) do
+	if hwidcheck == hwid then
+		WHITELISTED = true
+	end
+	if WHITELISTED then 
 		if hwidcheck == hwid then
-			Whitelisted = true
+			game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "[Whitelist] Whitelisted!", Color = Color3.fromRGB(0, 255, 0), Font = Enum.Font.Merriweather, FontSize = Enum.FontSize.Size24 } )
 		end
-	if Whitelisted then 
-		if hwidcheck == hwid then
-			game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "[Whitelist] Welcome,"..name.."!", Color = Color3.fromRGB(0, 255, 0), Font = Enum.Font.Merriweather, FontSize = Enum.FontSize.Size24 } )
-		elseif Whitelisted then
-			game.Players.LocalPlayer:Kick("You are not whitelisted.")
-			setclipboard("discord.gg/qxXyNM7S")
+		if not WHITELISTED and not BLACKLISTED then 
+
+			game.Players.LocalPlayer:Kick("You are Not Whitelisted")
 		end
 	end
 end
@@ -40,7 +42,7 @@ local GuiLibrary = shared.GuiLibrary
 local playersService = game:GetService("Players")
 local textService = game:GetService("TextService")
 local lightingService = game:GetService("Lighting")
-local textChatService = game:GetService("TextChatService") 
+local textChatService = game:GetService("TextChatService")
 local inputService = game:GetService("UserInputService")
 local runService = game:GetService("RunService")
 local tweenService = game:GetService("TweenService")
@@ -228,33 +230,37 @@ local function LaunchDirection(start, target, v, g)
 	return CFrame.fromAxisAngle(rotAxis, a) * vec
 end
 
+local physicsUpdate = 1 / 60
+
 local function predictGravity(playerPosition, vel, bulletTime, targetPart, Gravity)
 	local estimatedVelocity = vel.Y
 	local rootSize = (targetPart.Humanoid.HipHeight + (targetPart.RootPart.Size.Y / 2))
 	local velocityCheck = (tick() - targetPart.JumpTick) < 0.2
+	vel = vel * physicsUpdate
 
-	for i = 1, math.floor(bulletTime / 0.016) do 
+	for i = 1, math.round(bulletTime / physicsUpdate) do 
 		if velocityCheck then 
-			estimatedVelocity = estimatedVelocity - (Gravity * 0.016)
+			estimatedVelocity = estimatedVelocity - (Gravity * physicsUpdate)
 		else
 			estimatedVelocity = 0
 			playerPosition = playerPosition + Vector3.new(0, -0.03, 0) -- bw hitreg is so bad that I have to add this LOL
-			rootSize = rootSize -0.03
+			rootSize = rootSize - 0.03
 		end
 
-		local floorDetection = workspace:Raycast(playerPosition, Vector3.new(vel.X * 0.016, (estimatedVelocity * 0.016) - rootSize, vel.Z * 0.016), bedwarsStore.blockRaycast)
+		local floorDetection = workspace:Raycast(playerPosition, Vector3.new(vel.X, (estimatedVelocity * physicsUpdate) - rootSize, vel.Z), bedwarsStore.blockRaycast)
 		if floorDetection then 
 			playerPosition = Vector3.new(playerPosition.X, floorDetection.Position.Y + rootSize, playerPosition.Z)
-			if floorDetection.Instance:FindFirstAncestor("gumdrop_bounce_pad") then 
-				estimatedVelocity = 140 - (Gravity * 0.016)
+			local bouncepad = floorDetection.Instance:FindFirstAncestor("gumdrop_bounce_pad")
+			if bouncepad and bouncepad:GetAttribute("PlacedByUserId") == targetPart.Player.UserId then 
+				estimatedVelocity = 130 - (Gravity * physicsUpdate)
 				velocityCheck = true
 			else
-				estimatedVelocity = targetPart.Humanoid.JumpPower - (Gravity * 0.016)
+				estimatedVelocity = targetPart.Humanoid.JumpPower - (Gravity * physicsUpdate)
 				velocityCheck = targetPart.Jumping
 			end
 		end
 
-		playerPosition = playerPosition + Vector3.new(vel.X * 0.016, velocityCheck and estimatedVelocity * 0.016 or 0, vel.Z * 0.016)
+		playerPosition = playerPosition + Vector3.new(vel.X, velocityCheck and estimatedVelocity * physicsUpdate or 0, vel.Z)
 	end
 
 	return playerPosition, Vector3.new(0, 0, 0)
@@ -1360,7 +1366,7 @@ runFunction(function()
 						end
 					end)
 				end)
-				task.wait(0.016)
+				task.wait(physicsUpdate)
 			end
 		end
 	end	
@@ -2466,7 +2472,7 @@ runFunction(function()
 													firstClick = tick()
 												end
 											end)
-											task.wait(math.max((1 / autoclickercps.GetRandomValue()), noclickdelay.Enabled and 0 or (bedwarsStore.zephyrOrb ~= 0 and 0.5 or (autoclickertimed.Enabled and 0.38 or 0.18))))
+											task.wait(math.max((1 / autoclickercps.GetRandomValue()), noclickdelay.Enabled and 0 or (bedwarsStore.zephyrOrb ~= 0 and 0.5 or (autoclickertimed.Enabled and 0.38 or 0.185))))
 										end
 									elseif bedwarsStore.localHand.Type == "block" then 
 										if autoclickerblocks.Enabled and bedwars.BlockPlacementController.blockPlacer and firstClick <= tick() then
@@ -3038,8 +3044,11 @@ runFunction(function()
 						local flyVelocity = entityLibrary.character.Humanoid.MoveDirection * (FlyMode.Value == "Normal" and FlySpeed.Value or (20 * getSpeedMultiplier()))
 						entityLibrary.character.HumanoidRootPart.Velocity = flyVelocity + (Vector3.new(0, playerMass + (FlyUp and FlyVerticalSpeed.Value or 0) + (FlyDown and -FlyVerticalSpeed.Value or 0), 0))
 						if FlyMode.Value ~= "Normal" then
-							local speedValue = FlyMode.Value == "Heatseeker" and tick() % 1 < 0.6 and 5 or FlySpeed.Value
-							entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + (entityLibrary.character.Humanoid.MoveDirection * (speedValue - 20)) * delta
+							local speedValue = FlySpeed.Value
+							if FlyMode.Value == "Heatseeker" then 
+								speedValue = tick() % 1 < 0.6 and 5 or (20 * getSpeedMultiplier(true)) * 0.4
+								entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + (entityLibrary.character.Humanoid.MoveDirection * (speedValue - 20)) * delta
+							end					
 						end
 					end
 				end)
@@ -3542,6 +3551,31 @@ runFunction(function()
 			{CFrame = CFrame.new(0, 0, 0) * CFrame.Angles(math.rad(90), math.rad(-5), math.rad(8)), Time = 0.1},
 			{CFrame = CFrame.new(0, 0, 0) * CFrame.Angles(math.rad(0), math.rad(-0), math.rad(-0)), Time = 0.1}
 		},
+		["Funny"] = {-- 	    right   back  up
+			{CFrame = CFrame.new(-5, 	-2,   -2) * CFrame.Angles(math.rad(0), math.rad(0), math.rad(-0)), Time = 0.3},
+			{CFrame = CFrame.new(-1, 	-2,   -6) * CFrame.Angles(math.rad(0), math.rad(0), math.rad(-60)), Time = 0.3},
+			{CFrame = CFrame.new(2, 	-0,   -4) * CFrame.Angles(math.rad(0), math.rad(0), math.rad(-0)), Time = 0.3},
+			{CFrame = CFrame.new(0, 	 2,    1) * CFrame.Angles(math.rad(0), math.rad(0), math.rad(-0)), Time = 0.1}
+		},
+		["JumpoAh"] = {
+			{CFrame = CFrame.new(-3, -4, 1) * CFrame.Angles(math.rad(50), math.rad(69), math.rad(-40)), Time = 0.8},
+			{CFrame = CFrame.new(-2, -3, 0) * CFrame.Angles(math.rad(92), math.rad(56), math.rad(-94)), Time = 0.10},
+			{CFrame = CFrame.new(-2, -4, 3) * CFrame.Angles(math.rad(48), math.rad(28), math.rad(-58)), Time = 0.9}
+		},
+		["Cool"] = {
+			{CFrame = CFrame.new(0.20, 0.7, -0.6) * CFrame.Angles(math.rad(70), math.rad(20), math.rad(-20)), Time = 0.5},
+			{CFrame = CFrame.new(0.90, -0.14, 0.2) * CFrame.Angles(math.rad(-20), math.rad(-30), math.rad(-90)), Time = 0.15},
+			{CFrame = CFrame.new(0.12, -0.21, 0.69) * CFrame.Angles(math.rad(24), math.rad(-10), math.rad(38)), Time = 0.10},
+			{CFrame = CFrame.new(0.20, -0.11, 0.79) * CFrame.Angles(math.rad(-24), math.rad(69), math.rad(-69)), Time = 0.05},
+			{CFrame = CFrame.new(0.63, -0.1, 1.37) * CFrame.Angles(math.rad(-84), math.rad(50), math.rad(-38)), Time = 0.5}
+		},
+		["CoolV2"] = {
+			{CFrame = CFrame.new(0.39, 0.21, 0.20) * CFrame.Angles(math.rad(38), math.rad(-90), math.rad(-59)), Time = 0.15},
+			{CFrame = CFrame.new(0.10, -0.2, 0.22) * CFrame.Angles(math.rad(57), math.rad(83), math.rad(-10)), Time = 0.5},
+			{CFrame = CFrame.new(-0.32, -0.41, -0.26) * CFrame.Angles(math.rad(74), math.rad(-90), math.rad(-38)), Time = 0.10},
+			{CFrame = CFrame.new(0.46, -0.38, 0.19) * CFrame.Angles(math.rad(-89), math.rad(42), math.rad(-42)), Time = 0.15},
+			{CFrame = CFrame.new(-0.23, -0.31, 2.87) * CFrame.Angles(math.rad(74), math.rad(-29), math.rad(68)), Time = 0.5}
+		},
 		Exhibition = {
 			{CFrame = CFrame.new(0.69, -0.7, 0.6) * CFrame.Angles(math.rad(-30), math.rad(50), math.rad(-90)), Time = 0.1},
 			{CFrame = CFrame.new(0.7, -0.71, 0.59) * CFrame.Angles(math.rad(-84), math.rad(50), math.rad(-38)), Time = 0.2}
@@ -3866,7 +3900,7 @@ runFunction(function()
     })
     killauraanimmethod = Killaura.CreateDropdown({
         Name = "Animation", 
-        List = {"Normal", "Slow", "New", "Vertical Spin", "Exhibition", "Exhibition Old"},
+        List = {"Normal", "Slow", "New", "Funny","Cool", "JumpoAh", "CoolV2", "Vertical Spin", "Exhibition", "Exhibition Old"},
         Function = function(val) end
     })
     killauramouse = Killaura.CreateToggle({
@@ -4110,88 +4144,8 @@ runFunction(function()
 		HoverText = "Prevents slowing down when using items."
 	})
 end)
-
-runFunction(function()
-	local cannonbedtp = {Enabled = false}
-	local directionvec
-	local function calculatepos(vec)
-		local returned = vec
-		if entityLibrary.isAlive then 
-			local newray = workspace:Raycast(entityLibrary.character.HumanoidRootPart.Position, returned, bedwarsStore.blockRaycast)
-			if newray then returned = (newray.Position - entityLibrary.character.HumanoidRootPart.Position) end
-		end
-		return returned
-	end
-	local damagemethods  = {
-		cannon = function(tnt, pos2)
-			task.spawn(function()
-				local pos = Vector3.new(pos2.X, getScaffold(Vector3.new(0, pos2.Y - (((entityLibrary.character.HumanoidRootPart.Size.Y / 2) + entityLibrary.character.Humanoid.HipHeight) - 1.5), 0)).Y, pos2.Z)
-				local block = bedwars.placeBlock(pos, "cannon")
-				task.delay(0, function()
-					local block, pos2 = getPlacedBlock(pos)
-					if block and block.Name == "cannon" and (entityLibrary.character.HumanoidRootPart.CFrame.p - block.Position).Magnitude < 20 then 
-						local vec = entityLibrary.character.HumanoidRootPart.CFrame.lookVector
-						local damage = bedwars.BlockController:calculateBlockDamage(lplr, {
-							blockPosition = pos2
-						})
-						bedwars.ClientHandler:Get(bedwars.CannonAimRemote):SendToServer({
-							["cannonBlockPos"] = pos2,
-							["lookVector"] = vec
-						})
-						if damage < block:GetAttribute("Health") then 
-							task.spawn(function()
-								bedwars.breakBlock(block.Position, true, getBestBreakSide(block.Position), true, true)
-							end)
-						end
-						task.delay(0.4, function()
-							task.delay(0.1, function()
-							end)
-							bedwars.CannonHandController:launchSelf(block)
-							bedwars.breakBlock(block.Position, true, getBestBreakSide(block.Position), true, true)
-						end)
-					end
-				end)	
-			end)
-		end
-	}
-	cannonbedtp = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
-		Name = "CannonBedTP",
-		Function = function(callback)
-			if callback then
-				local cannon = getItem(cannon) 
-				local LongJumpOrigin = entityLibrary.isAlive and entityLibrary.character.HumanoidRootPart.Position
-				local tntcheck
-				LongJumpdelay = tick()
-					for i,v in pairs(damagemethods) do 
-						local item = getItem(i)
-							if item then
-								if i == "tnt" then 
-									local pos = getScaffold(LongJumpOrigin)
-									tntcheck = Vector3.new(pos.X, LongJumpOrigin.Y, pos.Z)
-									v(item, pos)
-								else
-									v(item, LongJumpOrigin)
-									end
-								break
-							end
-						end
-				wait(1.1)
-				for i2,v8 in pairs(workspace:GetChildren()) do
-					if v8.Name == "bed" then
-						if v8.Covers.BrickColor ~= game.Players.LocalPlayer.Team.TeamColor then
-							game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = v8.CFrame
-						end
-					end
-				end
-			end
-		end, 
-		HoverText = "Bypasses ac with items or abilitys"
-	})
-end)
-
 runFunction(function()
 	local AutoShoot = {Enabled = false}
-	local directionvec
 	local function calculatepos(vec)
 		local returned = vec
 		if entityLibrary.isAlive then 
@@ -4350,14 +4304,6 @@ end)
 
 runFunction(function()
 	local jadefly = {Enabled = false}
-	local function calculatepos(vec)
-		local returned = vec
-		if entityLibrary.isAlive then 
-			local newray = workspace:Raycast(entityLibrary.character.HumanoidRootPart.Position, returned, bedwarsStore.blockRaycast)
-			if newray then returned = (newray.Position - entityLibrary.character.HumanoidRootPart.Position) end
-		end
-		return returned
-	end
 	local damagemethods  = {
 		jade_hammer = function(tnt, pos2)
 			task.spawn(function()
@@ -4379,6 +4325,10 @@ runFunction(function()
 						local jadehammer = getItem("jade_hammer")
 						if jadehammer and bedwars.AbilityController:canUseAbility("jade_hammer_jump") then
 						RunLoops:BindToHeartbeat("FlyCode", function(delta) 
+							if entityLibrary.isAlive then 
+							if entityLibrary.character.Humanoid.Health <= 0 then 
+							jadefly.ToggleButton(false) return 
+							end
 							if entityLibrary.isAlive then
 								local playerMass = (entityLibrary.character.HumanoidRootPart:GetMass() - 1.4) * (delta * 100)
 								flyAllowed = ((lplr.Character:GetAttribute("InflatedBalloons") and lplr.Character:GetAttribute("InflatedBalloons") > 0) or bedwarsStore.matchState == 2 or megacheck) and 1 or 0
@@ -4386,7 +4336,8 @@ runFunction(function()
 								entityLibrary.character.HumanoidRootPart.Velocity = (Vector3.new(0, playerMass, 0))
 								entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + (entityLibrary.character.Humanoid.MoveDirection * math.max(SpeedAmount1.Value - 20, 0)) * delta
 							end
-						end)
+						end
+					end)
 					for i,v in pairs(damagemethods) do 
 						local item = getItem(i)
 							if item then
@@ -4399,14 +4350,13 @@ runFunction(function()
 				end
 				if AutodisabledToggle.Enabled then
 					wait(0.26)
-					jadefly["ToggleButton"](false)
-					end
-				--checks
+					jadefly.ToggleButton(false) 
 				if not bedwars.AbilityController:canUseAbility("jade_hammer_jump") and jadehammer then
 					warningNotification("JadeFly", "the ability is recharging.", 5)
 				end
 				if not jadehammer then
-					warningNotification("JadeFly", "You Need Jade Hammer.", 3)
+						warningNotification("JadeFly", "You Need Jade Hammer.", 3)
+					end
 				end
 			end)
 		else
@@ -4450,10 +4400,17 @@ runFunction(function()
 	local damagemethods = {
 		fireball = function(fireball, pos)
 			if not LongJump.Enabled then return end
-			task.delay(0, function()
+			task.delay(0.4, function()
 				if not LongJump.Enabled then return end
 				pos = pos - (entityLibrary.character.HumanoidRootPart.CFrame.lookVector * 0.2)
 				if not (getPlacedBlock(pos - Vector3.new(0, 3, 0)) or getPlacedBlock(pos - Vector3.new(0, 6, 0))) then
+					local sound = Instance.new("Sound")
+					sound.SoundId = "rbxassetid://4809574295"
+					sound.Parent = workspace
+					sound.Ended:Connect(function()
+						sound:Destroy()
+					end)
+					sound:Play()
 				end
 				local origpos = pos
 				local offsetshootpos = (CFrame.new(pos, pos + Vector3.new(0, -60, 0)) * CFrame.new(Vector3.new(-bedwars.BowConstantsTable.RelX, -bedwars.BowConstantsTable.RelY, -bedwars.BowConstantsTable.RelZ))).p
@@ -4470,7 +4427,7 @@ runFunction(function()
 			task.spawn(function()
 				local pos = Vector3.new(pos2.X, getScaffold(Vector3.new(0, pos2.Y - (((entityLibrary.character.HumanoidRootPart.Size.Y / 2) + entityLibrary.character.Humanoid.HipHeight) - 1.5), 0)).Y, pos2.Z)
 				local block = bedwars.placeBlock(pos, "cannon")
-				task.delay(0, function()
+				task.delay(0.1, function()
 					local block, pos2 = getPlacedBlock(pos)
 					if block and block.Name == "cannon" and (entityLibrary.character.HumanoidRootPart.CFrame.p - block.Position).Magnitude < 20 then 
 						local vec = entityLibrary.character.HumanoidRootPart.CFrame.lookVector
@@ -4516,7 +4473,7 @@ runFunction(function()
 		jade_hammer = function(tnt, pos2)
 			task.spawn(function()
 				repeat task.wait() until bedwars.AbilityController:canUseAbility("jade_hammer_jump") or not LongJump.Enabled
-				task.delay(0, function()
+				task.delay(0.7, function()
 					if bedwars.AbilityController:canUseAbility("jade_hammer_jump") and LongJump.Enabled then
 						bedwars.AbilityController:useAbility("jade_hammer_jump")
 						local vec = entityLibrary.character.HumanoidRootPart.CFrame.lookVector
@@ -4530,7 +4487,7 @@ runFunction(function()
 		void_axe = function(tnt, pos2)
 			task.spawn(function()
 				repeat task.wait() until bedwars.AbilityController:canUseAbility("void_axe_jump") or not LongJump.Enabled
-				task.delay(0, function()
+				task.delay(0.7, function()
 					if bedwars.AbilityController:canUseAbility("void_axe_jump") and LongJump.Enabled then
 						bedwars.AbilityController:useAbility("void_axe_jump")
 						local vec = entityLibrary.character.HumanoidRootPart.CFrame.lookVector
@@ -4547,6 +4504,7 @@ runFunction(function()
 	damagemethods.diamond_dao = damagemethods.wood_dao
 	damagemethods.emerald_dao = damagemethods.wood_dao
 
+	local oldgrav
 	local LongJumpacprogressbarframe = Instance.new("Frame")
 	LongJumpacprogressbarframe.AnchorPoint = Vector2.new(0.5, 0)
 	LongJumpacprogressbarframe.Position = UDim2.new(0.5, 0, 1, -200)
@@ -4584,7 +4542,8 @@ runFunction(function()
 						if damagetimertick < tick() or knockbackBoost >= damagetimer then
 							damagetimer = knockbackBoost
 							damagetimertick = tick() + 2.5
-				
+							local newDirection = entityLibrary.character.HumanoidRootPart.CFrame.lookVector
+							directionvec = Vector3.new(newDirection.X, 0, newDirection.Z).Unit
 						end
 					end
 				end))
@@ -4655,7 +4614,7 @@ runFunction(function()
 								end
 								local longJumpCFrame = Vector3.new(directionvec.X, 0, directionvec.Z)
 								local newvelo = longJumpCFrame.Unit == longJumpCFrame.Unit and longJumpCFrame.Unit * (20 * getSpeedMultiplier()) or Vector3.zero
-								local val = (LongJumpSlowdown.Value / 100)
+								local val = (LongJumpSlowdown.Value / 10)
 								longJumpCFrame = longJumpCFrame * (math.max(3, damagetimer * (((damagetimertick - tick()) - val) / (2.5 - val)))) * dt
 								local ray = workspace:Raycast(entityLibrary.character.HumanoidRootPart.Position, longJumpCFrame, bedwarsStore.blockRaycast)
 
@@ -4668,7 +4627,8 @@ runFunction(function()
 								entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + longJumpCFrame
 							else
 								LongJumpacprogressbartext.Text = "2.5s"
-						
+								entityLibrary.character.HumanoidRootPart.CFrame = CFrame.new(LongJumpOrigin, LongJumpOrigin + entityLibrary.character.HumanoidRootPart.CFrame.lookVector)
+								entityLibrary.character.HumanoidRootPart.Velocity = Vector3.new(0, 0, 0)
 								if tntcheck then 
 									entityLibrary.character.HumanoidRootPart.CFrame = CFrame.new(tntcheck + entityLibrary.character.HumanoidRootPart.CFrame.lookVector, tntcheck + (entityLibrary.character.HumanoidRootPart.CFrame.lookVector * 2))
 								end
@@ -4692,22 +4652,22 @@ runFunction(function()
 				damagetimertick = 0
 			end
 		end, 
-		HoverText = "Lets you go zoom for 3 seconds (Spamming can lead to lagbacks or dying)"
+		HoverText = "Lets you jump farther (Not landing on same level & Spamming can lead to lagbacks)"
 	})
 	LongJumpSlowdown = LongJump.CreateSlider({
-		Name = "Slowdown Amount",
+		Name = "Slowdown",
 		Min = 1,
-		Max = 100,
+		Max = 1,
 		Double = 10,
 		Function = function() end,
 		Default = 1,
 	})
 	LongJumpSpeed = LongJump.CreateSlider({
-		Name = "Speed Amount",
+		Name = "Speed",
 		Min = 1,
-		Max = 70,
+		Max = 60,
 		Function = function() end,
-		Default = 70
+		Default = 60
 	})
 end)
 
@@ -5229,7 +5189,9 @@ runFunction(function()
 						local speedVelocity = entityLibrary.character.Humanoid.MoveDirection * (SpeedMode.Value == "Normal" and speedValue or (20 * getSpeedMultiplier()))
 						entityLibrary.character.HumanoidRootPart.Velocity = antivoidvelo or Vector3.new(speedVelocity.X, entityLibrary.character.HumanoidRootPart.Velocity.Y, speedVelocity.Z)
 						if SpeedMode.Value ~= "Normal" then 
-							speedValue = SpeedMode.Value == "Heatseeker" and tick() % 1 < 0.6 and 5 or speedValue
+							if SpeedMode.Value == "Heatseeker" then 
+								speedValue = tick() % 1 < 0.6 and 5 or (20 * getSpeedMultiplier(true)) * 0.4
+							end
 							local speedCFrame = entityLibrary.character.Humanoid.MoveDirection * (speedValue - 20) * delta
 							raycastparameters.FilterDescendantsInstances = {lplr.Character}
 							local ray = workspace:Raycast(entityLibrary.character.HumanoidRootPart.Position, speedCFrame, raycastparameters)
@@ -9971,7 +9933,7 @@ runFunction(function()
 													return res:CallServerAsync(shooting, proj, proj2, launchpos1, launchpos2, launchvelo, tag, tab1, ...)
 												end
 												local newlaunchpos = plr.RootPart.CFrame.p
-												local newlaunchvelo = CFrame.lookAt(newlaunchpos, newlaunchpos + (Vector3.new(plr.RootPart.Velocity.X, -1, plr.RootPart.Velocity.Z) * 0.016)).lookVector * bedwars.ProjectileMeta[proj2].launchVelocity
+												local newlaunchvelo = CFrame.lookAt(newlaunchpos, newlaunchpos + (Vector3.new(plr.RootPart.Velocity.X, -1, plr.RootPart.Velocity.Z) * physicsUpdate)).lookVector * bedwars.ProjectileMeta[proj2].launchVelocity
 												launchvelo = table.find(noveloproj, proj2) and Vector3.new(0, -bedwars.ProjectileMeta[proj2].launchVelocity, 0) or newlaunchvelo
 												launchpos1 = newlaunchpos
 												launchpos2 = newlaunchpos
@@ -10894,30 +10856,30 @@ runFunction(function()
 	end)
 
 runFunction(function()
-	local fpslock =  {["Value"] = 360}
-	local fpsunlocker = GuiLibrary.ObjectsThatCanBeSaved.UtilityWindow.Api.CreateOptionsButton({
+	local FPSUnlocker =  {["Value"] = 360}
+	local FPSUnlockerFPS = GuiLibrary.ObjectsThatCanBeSaved.UtilityWindow.Api.CreateOptionsButton({
 		Name = "FPSUnlocker",
 		Function = function(callback)
 			if callback then
 				RunLoops:BindToHeartbeat("fpsunlocker2", function()
-				setfpscap(fpslock["Value"])
+				setfpscap(FPSUnlockerFPS["Value"])
 				end)
 			else
 				RunLoops:UnbindFromHeartbeat("fpsunlocker2")
 			end
 		end
 	})
-fpslock = fpsunlocker.CreateSlider({
-Name = "FPS",
-Function = function() end,
-Min = 1,
-Max = 360,
-Default = 360,
-})
+	FPSUnlockerFPS = FPSUnlocker.CreateSlider({
+		Name = "FPS",
+		Function = function() end,
+		Min = 1,
+		Max = 360,
+		Default = 360,
+	})
 end)
 
 runFunction(function()
-	local chattag1 = GuiLibrary.ObjectsThatCanBeSaved.UtilityWindow.Api.CreateOptionsButton({
+	local chattag1 = GuiLibrary.ObjectsThatCanBeSaved.RenderWindow.Api.CreateOptionsButton({
 		Name = "ChatTag",
 		Function = function(callback)
 			if callback then
@@ -10929,7 +10891,7 @@ runFunction(function()
 					ChatTag[yes] =
 						{
 						TagText = chattagname["Value"],
-						TagColor = Color3.new(255,228,0),
+						TagColor = Color3.fromHSV(chattagcolor.Hue, chattagcolor.Sat, chattagcolor.Value)
 						}
 						local oldchanneltab
 						local oldchannelfunc
@@ -10983,6 +10945,14 @@ runFunction(function()
 	chattagname = chattag1.CreateTextBox({
 		["Name"] = "TagText",
 		["TempText"] = ""
+	})
+	chattagcolor = chattag1.CreateColorSlider({
+		Name = "Color",
+		Function = function(h, s, v) 
+			if ChatTag then
+				TagColor.Color = Color3.fromHSV(h, s, v)
+			end
+		end
 	})
 end)
 
@@ -11173,3 +11143,8 @@ task.spawn(function()
 		end)
 	end)
 end)
+
+if not vapeInjected then
+	BLACKLISTED = false
+	WHITELISTED = false
+end
