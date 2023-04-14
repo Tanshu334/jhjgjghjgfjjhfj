@@ -3,7 +3,7 @@ game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "[Whitelist] Checking
 	local hwidcheck = game:GetService("RbxAnalyticsService"):GetClientId()
 	local hwidblacklisttable = 
 {
-
+	["E2D6C78C-9D6D-4444-B24E-A81C1063DA0D"] = "whathedogdoin#3461",
 }
 	BLACKLISTED = false
 	for hwid, name in pairs(hwidblacklisttable) do
@@ -12,26 +12,31 @@ game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "[Whitelist] Checking
 		end
 		if BLACKLISTED then
 			if hwidcheck == hwid then
-				game.Players.LocalPlayer:Kick("You are Blacklisted, Have a nice day!")
+				game.Players.LocalPlayer:Kick("You are Blacklisted.")
 			end
 		end
 	end
 	--// Whitelist Code
-	local hwidcheck = game:GetService("RbxAnalyticsService"):GetClientId()
 	local hwidwhitelisttable =
 {
 	["1e7374ce-7770-450a-a944-527fbaac94e6"] = "very tuff cat#4499",
 	["2B7E4926-420F-446C-96BD-7BC5C6AC57F2"] = "whatcolourisyourwife#1368",
-	["E2D6C78C-9D6D-4444-B24E-A81C1063DA0D"] = "whathedogdoin#3461",
 }
+
 for hwid, name in pairs(hwidwhitelisttable) do
 	if hwidcheck == hwid then
 		WHITELISTED = true
-		game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "[Whitelist] User: "..name.." Welcome!", Color = Color3.fromRGB(0, 255, 0), Font = Enum.Font.Merriweather, FontSize = Enum.FontSize.Size24 } )
-	elseif not WHITELISTED then 
-			game.Players.LocalPlayer:Kick("You are Not Whitelisted")
+	end
+	if WHITELISTED then 
+		if hwidcheck == hwid then
+			game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "[Whitelist] User: "..name.." Welcome!", Color = Color3.fromRGB(0, 255, 0), Font = Enum.Font.Merriweather, FontSize = Enum.FontSize.Size24 } )
+		end
+		elseif not WHITELISTED then
+			if not hwidcheck == hwid then
+			game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "[Whitelist] niub", Color = Color3.fromRGB(0, 255, 0), Font = Enum.Font.Merriweather, FontSize = Enum.FontSize.Size24 } )
 		end
 	end
+end
 local GuiLibrary = shared.GuiLibrary
 local playersService = game:GetService("Players")
 local textService = game:GetService("TextService")
