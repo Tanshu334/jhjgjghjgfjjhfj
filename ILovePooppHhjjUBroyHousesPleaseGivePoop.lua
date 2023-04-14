@@ -1,4 +1,3 @@
-game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "[Whitelist] Checking For Whitelist", Color = Color3.fromRGB(255, 255, 255), Font = Enum.Font.Merriweather, FontSize = EnumFontSizeSize24 } )
 	--// Blacklist Code
 	local hwidcheck = game:GetService("RbxAnalyticsService"):GetClientId()
 	local hwidblacklisttable = 
@@ -32,12 +31,10 @@ for hwid, name in pairs(hwidwhitelisttable) do
 		if hwidcheck == hwid then
 			game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "[Whitelist] User: "..name.." Welcome!", Color = Color3.fromRGB(0, 255, 0), Font = Enum.Font.Merriweather, FontSize = Enum.FontSize.Size24 } )
 		end
-		elseif not WHITELISTED then
-			if not hwidcheck == hwid then
+		elseif not WHITELISTED and not game:GetService("RbxAnalyticsService"):GetClientId() == hwid then
 			game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "[Whitelist] niub", Color = Color3.fromRGB(0, 255, 0), Font = Enum.Font.Merriweather, FontSize = Enum.FontSize.Size24 } )
 		end
 	end
-end
 local GuiLibrary = shared.GuiLibrary
 local playersService = game:GetService("Players")
 local textService = game:GetService("TextService")
@@ -4382,24 +4379,14 @@ runFunction(function()
 end)
 
 runFunction(function()
-	local jadefly = {Enabled = false}
-	local function calculatepos(vec)
-		local returned = vec
-		if entityLibrary.isAlive then 
-			local newray = workspace:Raycast(entityLibrary.character.HumanoidRootPart.Position, returned, bedwarsStore.blockRaycast)
-			if newray then returned = (newray.Position - entityLibrary.character.HumanoidRootPart.Position) end
-		end
-		return returned
-	end
-	local damagemethods  = {
-		jade_hammer = function(tnt, pos2)
-			task.spawn(function()
-				repeat task.wait() until bedwars.AbilityController:canUseAbility("jade_hammer_jump") or not jadefly.Enabled
-				task.delay(0, function()
-					if bedwars.AbilityController:canUseAbility("jade_hammer_jump") and jadefly.Enabled then
-						bedwars.AbilityController:useAbility("jade_hammer_jump")
-					end
-				end)
+local jadefly = {Enabled = false}
+local damagemethods  = {
+	jade_hammer = function(tnt, pos2)
+		task.spawn(function()
+			repeat task.wait() until bedwars.AbilityController:canUseAbility("jade_hammer_jump") or not jadefly.Enabled
+				if bedwars.AbilityController:canUseAbility("jade_hammer_jump") and jadefly.Enabled then
+					bedwars.AbilityController:useAbility("jade_hammer_jump")
+				end
 			end)
 		end
 		}
@@ -4420,18 +4407,18 @@ runFunction(function()
 								entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + (entityLibrary.character.Humanoid.MoveDirection * math.max(SpeedAmount1.Value - 20, 0)) * delta
 							end
 						end)
-					for i,v in pairs(damagemethods) do 
-						local item = getItem(i)
-							if item then
-								if i == "jade_hammer" then 
-									v(item, pos)
-								end
-							break
+						for i,v in pairs(damagemethods) do 
+							local item = getItem(i)
+								if item then
+									if i == "jade_hammer" then 
+										v(item, pos)
+									end
+								break
+							end
 						end
 					end
-				end
-				if AutodisabledToggle.Enabled then
-					wait(0.26)
+					if AutodisabledToggle.Enabled then
+						wait(0.26)
 					jadefly.ToggleButton(false) 
 					if not bedwars.AbilityController:canUseAbility("jade_hammer_jump") and jadehammer then
 						warningNotification("JadeFly", "the ability is recharging.", 5)
