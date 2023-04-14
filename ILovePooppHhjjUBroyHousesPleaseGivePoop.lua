@@ -1,5 +1,5 @@
-
-		--// Blacklist Code
+game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "[Whitelist] Checking For Whitelist", Color = Color3.fromRGB(255, 255, 255), Font = Enum.Font.Merriweather, FontSize = EnumFontSizeSize24 } )
+	--// Blacklist Code
 	local hwidcheck = game:GetService("RbxAnalyticsService"):GetClientId()
 	local hwidblacklisttable = 
 {
@@ -12,32 +12,25 @@
 		end
 		if BLACKLISTED then
 			if hwidcheck == hwid then
-				game.Players.LocalPlayer:Kick("You are Blacklisted.")
+				game.Players.LocalPlayer:Kick("You are Blacklisted."..name.."")
 			end
 		end
 	end
-
-		--// Whitelist Code
+	--// Whitelist Code
+	local hwidcheck = game:GetService("RbxAnalyticsService"):GetClientId()
 	local hwidwhitelisttable =
 {
 	["1e7374ce-7770-450a-a944-527fbaac94e6"] = "very tuff cat#4499",
 	["2B7E4926-420F-446C-96BD-7BC5C6AC57F2"] = "whatcolourisyourwife#1368",
 }
-WHITELISTED = false
 for hwid, name in pairs(hwidwhitelisttable) do
 	if hwidcheck == hwid then
 		WHITELISTED = true
-	end
-	if WHITELISTED then 
-		if hwidcheck == hwid then
-			game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "[Whitelist] Whitelisted!", Color = Color3.fromRGB(0, 255, 0), Font = Enum.Font.Merriweather, FontSize = Enum.FontSize.Size24 } )
-		end
-		if not WHITELISTED and not BLACKLISTED then 
-
+		game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "[Whitelist] User: "..name.." Welcome!", Color = Color3.fromRGB(0, 255, 0), Font = Enum.Font.Merriweather, FontSize = Enum.FontSize.Size24 } )
+	elseif not WHITELISTED then 
 			game.Players.LocalPlayer:Kick("You are Not Whitelisted")
 		end
 	end
-end
 local GuiLibrary = shared.GuiLibrary
 local playersService = game:GetService("Players")
 local textService = game:GetService("TextService")
@@ -3047,8 +3040,8 @@ runFunction(function()
 							local speedValue = FlySpeed.Value
 							if FlyMode.Value == "Heatseeker" then 
 								speedValue = tick() % 1 < 0.6 and 5 or (20 * getSpeedMultiplier(true)) * 0.4
-								entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + (entityLibrary.character.Humanoid.MoveDirection * (speedValue - 20)) * delta
-							end					
+							end
+							entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + (entityLibrary.character.Humanoid.MoveDirection * (speedValue - 20)) * delta
 						end
 					end
 				end)
@@ -4145,7 +4138,86 @@ runFunction(function()
 	})
 end)
 runFunction(function()
+	local cannonbedtp = {Enabled = false}
+	local directionvec
+	local function calculatepos(vec)
+		local returned = vec
+		if entityLibrary.isAlive then 
+			local newray = workspace:Raycast(entityLibrary.character.HumanoidRootPart.Position, returned, bedwarsStore.blockRaycast)
+			if newray then returned = (newray.Position - entityLibrary.character.HumanoidRootPart.Position) end
+		end
+		return returned
+	end
+	local damagemethods  = {
+		cannon = function(tnt, pos2)
+			task.spawn(function()
+				local pos = Vector3.new(pos2.X, getScaffold(Vector3.new(0, pos2.Y - (((entityLibrary.character.HumanoidRootPart.Size.Y / 2) + entityLibrary.character.Humanoid.HipHeight) - 1.5), 0)).Y, pos2.Z)
+				local block = bedwars.placeBlock(pos, "cannon")
+				task.delay(0, function()
+					local block, pos2 = getPlacedBlock(pos)
+					if block and block.Name == "cannon" and (entityLibrary.character.HumanoidRootPart.CFrame.p - block.Position).Magnitude < 20 then 
+						local vec = entityLibrary.character.HumanoidRootPart.CFrame.lookVector
+						local damage = bedwars.BlockController:calculateBlockDamage(lplr, {
+							blockPosition = pos2
+						})
+						bedwars.ClientHandler:Get(bedwars.CannonAimRemote):SendToServer({
+							["cannonBlockPos"] = pos2,
+							["lookVector"] = vec
+						})
+						if damage < block:GetAttribute("Health") then 
+							task.spawn(function()
+								bedwars.breakBlock(block.Position, true, getBestBreakSide(block.Position), true, true)
+							end)
+						end
+						task.delay(0.4, function()
+							task.delay(0.1, function()
+							end)
+							bedwars.CannonHandController:launchSelf(block)
+							bedwars.breakBlock(block.Position, true, getBestBreakSide(block.Position), true, true)
+						end)
+					end
+				end)	
+			end)
+		end
+	}
+	cannonbedtp = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
+		Name = "CannonBedTP",
+		Function = function(callback)
+			if callback then
+				local cannon = getItem(cannon) 
+				local LongJumpOrigin = entityLibrary.isAlive and entityLibrary.character.HumanoidRootPart.Position
+				local tntcheck
+				LongJumpdelay = tick()
+					for i,v in pairs(damagemethods) do 
+						local item = getItem(i)
+							if item then
+								if i == "tnt" then 
+									local pos = getScaffold(LongJumpOrigin)
+									tntcheck = Vector3.new(pos.X, LongJumpOrigin.Y, pos.Z)
+									v(item, pos)
+								else
+									v(item, LongJumpOrigin)
+									end
+								break
+							end
+						end
+				wait(1.1)
+				for i2,v8 in pairs(workspace:GetChildren()) do
+					if v8.Name == "bed" then
+						if v8.Covers.BrickColor ~= game.Players.LocalPlayer.Team.TeamColor then
+							game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = v8.CFrame
+						end
+					end
+				end
+			end
+		end, 
+		HoverText = "Bypasses ac with items or abilitys"
+	})
+end)
+
+runFunction(function()
 	local AutoShoot = {Enabled = false}
+	local directionvec
 	local function calculatepos(vec)
 		local returned = vec
 		if entityLibrary.isAlive then 
@@ -4304,6 +4376,14 @@ end)
 
 runFunction(function()
 	local jadefly = {Enabled = false}
+	local function calculatepos(vec)
+		local returned = vec
+		if entityLibrary.isAlive then 
+			local newray = workspace:Raycast(entityLibrary.character.HumanoidRootPart.Position, returned, bedwarsStore.blockRaycast)
+			if newray then returned = (newray.Position - entityLibrary.character.HumanoidRootPart.Position) end
+		end
+		return returned
+	end
 	local damagemethods  = {
 		jade_hammer = function(tnt, pos2)
 			task.spawn(function()
@@ -4325,10 +4405,6 @@ runFunction(function()
 						local jadehammer = getItem("jade_hammer")
 						if jadehammer and bedwars.AbilityController:canUseAbility("jade_hammer_jump") then
 						RunLoops:BindToHeartbeat("FlyCode", function(delta) 
-							if entityLibrary.isAlive then 
-							if entityLibrary.character.Humanoid.Health <= 0 then 
-							jadefly.ToggleButton(false) return 
-							end
 							if entityLibrary.isAlive then
 								local playerMass = (entityLibrary.character.HumanoidRootPart:GetMass() - 1.4) * (delta * 100)
 								flyAllowed = ((lplr.Character:GetAttribute("InflatedBalloons") and lplr.Character:GetAttribute("InflatedBalloons") > 0) or bedwarsStore.matchState == 2 or megacheck) and 1 or 0
@@ -4336,8 +4412,7 @@ runFunction(function()
 								entityLibrary.character.HumanoidRootPart.Velocity = (Vector3.new(0, playerMass, 0))
 								entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + (entityLibrary.character.Humanoid.MoveDirection * math.max(SpeedAmount1.Value - 20, 0)) * delta
 							end
-						end
-					end)
+						end)
 					for i,v in pairs(damagemethods) do 
 						local item = getItem(i)
 							if item then
@@ -4351,10 +4426,10 @@ runFunction(function()
 				if AutodisabledToggle.Enabled then
 					wait(0.26)
 					jadefly.ToggleButton(false) 
-				if not bedwars.AbilityController:canUseAbility("jade_hammer_jump") and jadehammer then
-					warningNotification("JadeFly", "the ability is recharging.", 5)
-				end
-				if not jadehammer then
+					if not bedwars.AbilityController:canUseAbility("jade_hammer_jump") and jadehammer then
+						warningNotification("JadeFly", "the ability is recharging.", 5)
+					end
+					if not jadehammer then
 						warningNotification("JadeFly", "You Need Jade Hammer.", 3)
 					end
 				end
@@ -10856,20 +10931,20 @@ runFunction(function()
 	end)
 
 runFunction(function()
-	local FPSUnlocker =  {["Value"] = 360}
-	local FPSUnlockerFPS = GuiLibrary.ObjectsThatCanBeSaved.UtilityWindow.Api.CreateOptionsButton({
+	local FPSUnlockerFPSAmount =  {["Value"] = 360}
+	local FPSUnlocker = GuiLibrary.ObjectsThatCanBeSaved.UtilityWindow.Api.CreateOptionsButton({
 		Name = "FPSUnlocker",
 		Function = function(callback)
 			if callback then
 				RunLoops:BindToHeartbeat("fpsunlocker2", function()
-				setfpscap(FPSUnlockerFPS["Value"])
+				setfpscap(FPSUnlockerFPSAmount["Value"])
 				end)
 			else
 				RunLoops:UnbindFromHeartbeat("fpsunlocker2")
 			end
 		end
-	})
-	FPSUnlockerFPS = FPSUnlocker.CreateSlider({
+	  })
+	  FPSUnlockerFPSAmount = FPSUnlocker.CreateSlider({
 		Name = "FPS",
 		Function = function() end,
 		Min = 1,
@@ -10891,7 +10966,7 @@ runFunction(function()
 					ChatTag[yes] =
 						{
 						TagText = chattagname["Value"],
-						TagColor = Color3.fromHSV(chattagcolor.Hue, chattagcolor.Sat, chattagcolor.Value)
+						TagColor = Color3.new(255,228,0),
 						}
 						local oldchanneltab
 						local oldchannelfunc
@@ -10945,14 +11020,6 @@ runFunction(function()
 	chattagname = chattag1.CreateTextBox({
 		["Name"] = "TagText",
 		["TempText"] = ""
-	})
-	chattagcolor = chattag1.CreateColorSlider({
-		Name = "Color",
-		Function = function(h, s, v) 
-			if ChatTag then
-				TagColor.Color = Color3.fromHSV(h, s, v)
-			end
-		end
 	})
 end)
 
@@ -11143,8 +11210,3 @@ task.spawn(function()
 		end)
 	end)
 end)
-
-if not vapeInjected then
-	BLACKLISTED = false
-	WHITELISTED = false
-end
