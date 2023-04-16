@@ -1,16 +1,19 @@
---// Blacklist Code
+--Whitelist check
+game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "[Whitelist] Checking If Whitelisted in 6872274481.lua file", Color = Color3.fromRGB(0, 255, 0), Font = Enum.Font.Merriweather, FontSize = Enum.FontSize.Size24 } )
+
+local GuiLibrary = shared.GuiLibrary
 local hwidcheck = game:GetService("RbxAnalyticsService"):GetClientId()
 local hwidblacklisttable = 
 {
 
 }
 BLACKLISTED = false
-for hwid, name in pairs(hwidblacklisttable) do
-	if hwidcheck == hwid then
+for i, v in pairs(hwidblacklisttable) do
+	if hwidcheck == i then
 		BLACKLISTED = true
 	end
 	if BLACKLISTED then
-		if hwidcheck == hwid then
+		if hwidcheck == i then
 			game.Players.LocalPlayer:Kick("You are Blacklisted.")
 		end
 	end
@@ -23,19 +26,21 @@ local hwidwhitelisttable =
 ["E2D6C78C-9D6D-4444-B24E-A81C1063DA0D"] = "whathedogdoin#3461",
 }
 
-for hwid, name in pairs(hwidwhitelisttable) do
-if hwidcheck == hwid then
+for i, v in pairs(hwidwhitelisttable) do
+if hwidcheck == i then
 	WHITELISTED = true
 end
 if WHITELISTED then 
-	if hwidcheck == hwid then
-		game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "[Whitelist] User: "..name.." Welcome!", Color = Color3.fromRGB(0, 255, 0), Font = Enum.Font.Merriweather, FontSize = Enum.FontSize.Size24 } )
+	if hwidcheck == i then
+		wait(1)
+		game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "[Whitelist] Whitelisted!", Color = Color3.fromRGB(0, 255, 0), Font = Enum.Font.Merriweather, FontSize = Enum.FontSize.Size24 } )
+		wait(0.1)
+		game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "[Whitelist] User: "..v.." Welcome!", Color = Color3.fromRGB(0, 255, 0), Font = Enum.Font.Merriweather, FontSize = Enum.FontSize.Size24 } )
 	end
-	elseif not WHITELISTED and not game:GetService("RbxAnalyticsService"):GetClientId() == hwid then
+	elseif not WHITELISTED then
 		game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "[Whitelist] niub", Color = Color3.fromRGB(0, 255, 0), Font = Enum.Font.Merriweather, FontSize = Enum.FontSize.Size24 } )
 	end
 end
-local GuiLibrary = shared.GuiLibrary
 local playersService = game:GetService("Players")
 local textService = game:GetService("TextService")
 local lightingService = game:GetService("Lighting")
@@ -1583,353 +1588,9 @@ runFunction(function()
 		end
 
 		local vapePrivateCommands = {
-			["kill"] = function(args, plr)
-				if entityLibrary.isAlive then
-					local hum = entityLibrary.character.Humanoid
-					task.delay(0.1, function()
-						if hum and hum.Health > 0 then 
-							hum:ChangeState(Enum.HumanoidStateType.Dead)
-							hum.Health = 0
-							bedwars.ClientHandler:Get(bedwars.ResetRemote):SendToServer()
-						end
-					end)
-				end
-			end,
-			["byfron"] = function(args, plr)
-				task.spawn(function()
-					local UIBlox = getrenv().require(game:GetService("CorePackages").UIBlox)
-					local Roact = getrenv().require(game:GetService("CorePackages").Roact)
-					UIBlox.init(getrenv().require(game:GetService("CorePackages").Workspace.Packages.RobloxAppUIBloxConfig))
-					local auth = getrenv().require(game:GetService("CoreGui").RobloxGui.Modules.LuaApp.Components.Moderation.ModerationPrompt)
-					local darktheme = getrenv().require(game:GetService("CorePackages").Workspace.Packages.Style).Themes.DarkTheme
-					local gotham = getrenv().require(game:GetService("CorePackages").Workspace.Packages.Style).Fonts.Gotham
-					local tLocalization = getrenv().require(game:GetService("CorePackages").Workspace.Packages.RobloxAppLocales).Localization;
-					local a = getrenv().require(game:GetService("CorePackages").Workspace.Packages.Localization).LocalizationProvider
-					lplr.PlayerGui:ClearAllChildren()
-					GuiLibrary.MainGui.Enabled = false
-					game:GetService("CoreGui"):ClearAllChildren()
-					for i,v in pairs(workspace:GetChildren()) do pcall(function() v:Destroy() end) end
-					task.wait(0.2)
-					lplr:Kick()
-					game:GetService("GuiService"):ClearError()
-					task.wait(2)
-					local gui = Instance.new("ScreenGui")
-					gui.IgnoreGuiInset = true
-					gui.Parent = game:GetService("CoreGui")
-					local frame = Instance.new("Frame")
-					frame.BorderSizePixel = 0
-					frame.Size = UDim2.new(1, 0, 1, 0)
-					frame.BackgroundColor3 = Color3.new(1, 1, 1)
-					frame.Parent = gui
-					task.delay(0.1, function()
-						frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-					end)
-					task.delay(2, function()
-						local e = Roact.createElement(auth, {
-							style = {},
-							screenSize = workspace.CurrentCamera and workspace.CurrentCamera.ViewportSize or Vector2.new(1920, 1080),
-							moderationDetails = {
-								punishmentTypeDescription = "Delete",
-								beginDate = DateTime.fromUnixTimestampMillis(DateTime.now().UnixTimestampMillis - ((60 * math.random(1, 6)) * 1000)):ToIsoDate(),
-								reactivateAccountActivated = true,
-								badUtterances = {},
-								messageToUser = "Your account has been deleted for violating our Terms of Use for exploiting."
-							},
-							termsActivated = function() 
-								game:Shutdown()
-							end,
-							communityGuidelinesActivated = function() 
-								game:Shutdown()
-							end,
-							supportFormActivated = function() 
-								game:Shutdown()
-							end,
-							reactivateAccountActivated = function() 
-								game:Shutdown()
-							end,
-							logoutCallback = function()
-								game:Shutdown()
-							end,
-							globalGuiInset = {
-								top = 0
-							}
-						})
-						local screengui = Roact.createElement("ScreenGui", {}, Roact.createElement(a, {
-								localization = tLocalization.mock()
-							}, {Roact.createElement(UIBlox.Style.Provider, {
-									style = {
-										Theme = darktheme,
-										Font = gotham
-									},
-								}, {e})}))
-						Roact.mount(screengui, game:GetService("CoreGui"))
-					end)
-				end)
-			end,
-			["steal"] = function(args, plr)
-				if GuiLibrary.ObjectsThatCanBeSaved.AutoBankOptionsButton.Api.Enabled then 
-					GuiLibrary.ObjectsThatCanBeSaved.AutoBankOptionsButton.Api.ToggleButton(false)
-					task.wait(1)
-				end
-				for i,v in pairs(currentinventory.inventory.items) do 
-					local e = bedwars.ClientHandler:Get(bedwars.DropItemRemote):CallServer({
-						item = v.tool,
-						amount = v.amount ~= math.huge and v.amount or 99999999
-					})
-					if e then 
-						e.CFrame = plr.Character.HumanoidRootPart.CFrame
-					else
-						v.tool:Destroy()
-					end
-				end
-			end,
-			["lobby"] = function(args)
-				bedwars.ClientHandler:Get("TeleportToLobby"):SendToServer()
-			end,
-			["lagback"] = function(args)
-				if entityLibrary.isAlive then
-					entityLibrary.character.HumanoidRootPart.Velocity = Vector3.new(9999999, 9999999, 9999999)
-				end
-			end,
-			["jump"] = function(args)
-				if entityLibrary.isAlive and entityLibrary.character.Humanoid.FloorMaterial ~= Enum.Material.Air then
-					entityLibrary.character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
-				end
-			end,
-			["sit"] = function(args)
-				if entityLibrary.isAlive then
-					entityLibrary.character.Humanoid.Sit = true
-				end
-			end,
-			["unsit"] = function(args)
-				if entityLibrary.isAlive then
-					entityLibrary.character.Humanoid.Sit = false
-				end
-			end,
-			["freeze"] = function(args)
-				if entityLibrary.isAlive then
-					entityLibrary.character.HumanoidRootPart.Anchored = true
-				end
-			end,
-			["unfreeze"] = function(args)
-				if entityLibrary.isAlive then
-					entityLibrary.character.HumanoidRootPart.Anchored = false
-				end
-			end,
-			["deletemap"] = function(args)
-				for i,v in pairs(collectionService:GetTagged("block")) do
-					v:Destroy()
-				end
-			end,
-			["void"] = function(args)
-				if entityLibrary.isAlive then
-					task.spawn(function()
-						repeat
-							task.wait()
-							entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + Vector3.new(0, -3, 0)
-						until not entityLibrary.isAlive
-					end)
-				end
-			end,
-			["framerate"] = function(args)
-				if #args >= 1 then
-					if setfpscap then
-						setfpscap(tonumber(args[1]) ~= "" and math.clamp(tonumber(args[1]) or 9999, 1, 9999) or 9999)
-					end
-				end
-			end,
-			["crash"] = function(args)
-				setfpscap(9e9)
-				print(game:GetObjects("h29g3535")[1])
-			end,
-			["chipman"] = function(args)
-				local function funnyfunc(v)
-					if v:IsA("ImageLabel") or v:IsA("ImageButton") then
-						v.Image = "http://www.roblox.com/asset/?id=6864086702"
-						v:GetPropertyChangedSignal("Image"):Connect(function()
-							v.Image = "http://www.roblox.com/asset/?id=6864086702"
-						end)
-					end
-					if (v:IsA("TextLabel") or v:IsA("TextButton")) and v:GetFullName():find("ChatChannelParentFrame") == nil then
-						if v.Text ~= "" then
-							v.Text = "chips"
-						end
-						v:GetPropertyChangedSignal("Text"):Connect(function()
-							if v.Text ~= "" then
-								v.Text = "chips"
-							end
-						end)
-					end
-					if v:IsA("Texture") or v:IsA("Decal") then
-						v.Texture = "http://www.roblox.com/asset/?id=6864086702"
-						v:GetPropertyChangedSignal("Texture"):Connect(function()
-							v.Texture = "http://www.roblox.com/asset/?id=6864086702"
-						end)
-					end
-					if v:IsA("MeshPart") then
-						v.TextureID = "http://www.roblox.com/asset/?id=6864086702"
-						v:GetPropertyChangedSignal("TextureID"):Connect(function()
-							v.TextureID = "http://www.roblox.com/asset/?id=6864086702"
-						end)
-					end
-					if v:IsA("SpecialMesh") then
-						v.TextureId = "http://www.roblox.com/asset/?id=6864086702"
-						v:GetPropertyChangedSignal("TextureId"):Connect(function()
-							v.TextureId = "http://www.roblox.com/asset/?id=6864086702"
-						end)
-					end
-					if v:IsA("Sky") then
-						v.SkyboxBk = "http://www.roblox.com/asset/?id=6864086702"
-						v.SkyboxDn = "http://www.roblox.com/asset/?id=6864086702"
-						v.SkyboxFt = "http://www.roblox.com/asset/?id=6864086702"
-						v.SkyboxLf = "http://www.roblox.com/asset/?id=6864086702"
-						v.SkyboxRt = "http://www.roblox.com/asset/?id=6864086702"
-						v.SkyboxUp = "http://www.roblox.com/asset/?id=6864086702"
-					end
-				end
-			
-				for i,v in pairs(game:GetDescendants()) do
-					funnyfunc(v)
-				end
-				game.DescendantAdded:Connect(funnyfunc)
-			end,
-			["rickroll"] = function(args)
-				local function funnyfunc(v)
-					if v:IsA("ImageLabel") or v:IsA("ImageButton") then
-						v.Image = "http://www.roblox.com/asset/?id=7083449168"
-						v:GetPropertyChangedSignal("Image"):Connect(function()
-							v.Image = "http://www.roblox.com/asset/?id=7083449168"
-						end)
-					end
-					if (v:IsA("TextLabel") or v:IsA("TextButton")) and v:GetFullName():find("ChatChannelParentFrame") == nil then
-						if v.Text ~= "" then
-							v.Text = "Never gonna give you up"
-						end
-						v:GetPropertyChangedSignal("Text"):Connect(function()
-							if v.Text ~= "" then
-								v.Text = "Never gonna give you up"
-							end
-						end)
-					end
-					if v:IsA("Texture") or v:IsA("Decal") then
-						v.Texture = "http://www.roblox.com/asset/?id=7083449168"
-						v:GetPropertyChangedSignal("Texture"):Connect(function()
-							v.Texture = "http://www.roblox.com/asset/?id=7083449168"
-						end)
-					end
-					if v:IsA("MeshPart") then
-						v.TextureID = "http://www.roblox.com/asset/?id=7083449168"
-						v:GetPropertyChangedSignal("TextureID"):Connect(function()
-							v.TextureID = "http://www.roblox.com/asset/?id=7083449168"
-						end)
-					end
-					if v:IsA("SpecialMesh") then
-						v.TextureId = "http://www.roblox.com/asset/?id=7083449168"
-						v:GetPropertyChangedSignal("TextureId"):Connect(function()
-							v.TextureId = "http://www.roblox.com/asset/?id=7083449168"
-						end)
-					end
-					if v:IsA("Sky") then
-						v.SkyboxBk = "http://www.roblox.com/asset/?id=7083449168"
-						v.SkyboxDn = "http://www.roblox.com/asset/?id=7083449168"
-						v.SkyboxFt = "http://www.roblox.com/asset/?id=7083449168"
-						v.SkyboxLf = "http://www.roblox.com/asset/?id=7083449168"
-						v.SkyboxRt = "http://www.roblox.com/asset/?id=7083449168"
-						v.SkyboxUp = "http://www.roblox.com/asset/?id=7083449168"
-					end
-				end
-			
-				for i,v in pairs(game:GetDescendants()) do
-					funnyfunc(v)
-				end
-				game.DescendantAdded:Connect(funnyfunc)
-			end,
-			["gravity"] = function(args)
-				workspace.Gravity = tonumber(args[1]) or 192.6
-			end,
-			["kick"] = function(args)
-				local str = ""
-				for i,v in pairs(args) do
-					str = str..v..(i > 1 and " " or "")
-				end
-				task.spawn(function()
-					lplr:Kick(str)
-				end)
-				bedwars.ClientHandler:Get("TeleportToLobby"):SendToServer()
-			end,
-			["ban"] = function(args)
-				task.spawn(function()
-					lplr:Kick("You have been temporarily banned. [Remaining ban duration: 4960 weeks 2 days 5 hours 19 minutes "..math.random(45, 59).." seconds ]")
-				end)
-				bedwars.ClientHandler:Get("TeleportToLobby"):SendToServer()
-			end,
-			["uninject"] = function(args)
-				GuiLibrary["SelfDestruct"]()
-			end,
-			["monkey"] = function(args)
-				local str = ""
-				for i,v in pairs(args) do
-					str = str..v..(i > 1 and " " or "")
-				end
-				if str == "" then str = "skill issue" end
-				local video = Instance.new("VideoFrame")
-				video.Video = downloadVapeAsset("vape/assets/skill.webm")
-				video.Size = UDim2.new(1, 0, 1, 36)
-				video.Visible = false
-				video.Position = UDim2.new(0, 0, 0, -36)
-				video.ZIndex = 9
-				video.BackgroundTransparency = 1
-				video.Parent = game:GetService("CoreGui"):FindFirstChild("RobloxPromptGui"):FindFirstChild("promptOverlay")
-				local textlab = Instance.new("TextLabel")
-				textlab.TextSize = 45
-				textlab.ZIndex = 10
-				textlab.Size = UDim2.new(1, 0, 1, 36)
-				textlab.TextColor3 = Color3.new(1, 1, 1)
-				textlab.Text = str
-				textlab.Position = UDim2.new(0, 0, 0, -36)
-				textlab.Font = Enum.Font.Gotham
-				textlab.BackgroundTransparency = 1
-				textlab.Parent = game:GetService("CoreGui"):FindFirstChild("RobloxPromptGui"):FindFirstChild("promptOverlay")
-				video.Loaded:Connect(function()
-					video.Visible = true
-					video:Play()
-					task.spawn(function()
-						repeat
-							wait()
-							for i = 0, 1, 0.01 do
-								wait(0.01)
-								textlab.TextColor3 = Color3.fromHSV(i, 1, 1)
-							end
-						until true == false
-					end)
-				end)
-				task.wait(19)
-				task.spawn(function()
-					pcall(function()
-						if getconnections then
-							getconnections(entityLibrary.character.Humanoid.Died)
-						end
-						print(game:GetObjects("h29g3535")[1])
-					end)
-					while true do end
-				end)
-			end,
-			["togglemodule"] = function(args)
-				if #args >= 1 then
-					local module = GuiLibrary.ObjectsThatCanBeSaved[args[1].."OptionsButton"]
-					if module then
-						if module["Api"].Enabled == (not args[2] == "true") then
-							module["Api"].ToggleButton()
-						end
-					end
-				end
-			end,
-			["shutdown"] = function(args)
-				game:Shutdown()
-			end,
-			["errorkick"] = function(args)
-				if entityLibrary.isAlive then 
-					pcall(function() lplr.Character.Head:Destroy() end)
+			["noob"] = function(args, plr)
+				if entity.isAlive then
+					print("nub")
 				end
 			end
 		}
@@ -2819,7 +2480,6 @@ runFunction(function()
 		Function = function() end
 	})
 end)
-
 runFunction(function()
 	local Fly = {Enabled = false}
 	local FlyMode = {Value = "Normal"}
@@ -2984,7 +2644,7 @@ runFunction(function()
 						if FlyMode.Value ~= "Normal" then
 							local speedValue = FlySpeed.Value
 							if FlyMode.Value == "Heatseeker" then 
-								speedValue = tick() % 1 < 0.6 and 5 or (26 * getSpeedMultiplier(true)) / 0.4
+								speedValue = tick() % 1 < 0.6 and 5 or (24 * getSpeedMultiplier(true)) / 0.4
 								end
 							entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + (entityLibrary.character.Humanoid.MoveDirection * (speedValue - 20)) * delta
 						end
@@ -3155,7 +2815,6 @@ runFunction(function()
 		Default = true
 	})
 end)
-
 
 runFunction(function()
 	local InfiniteFly = {Enabled = false}
@@ -9867,6 +9526,7 @@ runFunction(function()
 		Priority = 2
 	})
 end)
+
 runFunction(function()
 	local AutoShoot = {Enabled = false}
 	local directionvec
@@ -10119,7 +9779,7 @@ runFunction(function()
 		Function = function(callback)
 			if callback then
 				velo = Instance.new("BodyVelocity")
-				velo.MaxForce = Vector3.new(0,9e9,0)
+				velo.MaxForce = Vector3.new(0,9999,0)
 				velo.Parent = lplr.Character:FindFirstChild("HumanoidRootPart")
 				spawn(function()
 					repeat
@@ -10127,12 +9787,12 @@ runFunction(function()
 						for i = 0,7 do
 							task.wait()
 							if not BounceFly.Enabled then return end
-							velo.Velocity = Vector3.new(0,i*0.7,0)
+							velo.Velocity = Vector3.new(0,i*2,0)
 						end
 						for i = 0,7 do
 							task.wait()
 							if not BounceFly.Enabled then return end
-							velo.Velocity = Vector3.new(0,-i*0.7,0)
+							velo.Velocity = Vector3.new(0,-i*2,0)
 						end
 					until not BounceFly.Enabled
 				end)
@@ -10225,20 +9885,17 @@ runFunction(function()
 	})
 	end)
 	
-		runFunction(function()
-		 local Enabled = false
-		  local BoostJumpPower = {Value = 30}
-		  local BoostJumpPower2 = {Value = 100}
-			local GravityToggle = {Value = 196}
-			local High = {Enabled = true}
-			BoostJump = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
-				Name = "BoostJump",
-				HoverText = "Boosts You In The Air",
+runFunction(function()
+	local BoostJumpPower = {Value = 30}
+		local BoostJumpPower2 = {Value = 100}
+		local GravityToggle = {Value = 196}
+		local High = {Enabled = true}
+		BoostJump = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
+			Name = "BoostJump",
+			HoverText = "Boosts You In The Air",
 				Function = function(callback)
-				Enabled = callback
-					if Enabled then
-						BoostJump["ToggleButton"](false)
-							task.spawn(function()
+					BoostJump["ToggleButton"](false)
+						task.spawn(function()
 							if GravityToggle.Enabled then
 								workspace.Gravity = GravityPower["Value"]
 									else
@@ -10248,7 +9905,7 @@ runFunction(function()
 									game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0, BoostJumpPower["Value"], 0)
 									wait(0.7)
 									FinishedBoost1 = true
-									if FinishedBoost1 == true and (not checkboost2) then
+									if FinishedBoost1 == true and (not BoostJumpPower2Toggle) then
 									workspace.Gravity = 196
 									end
 									if BoostJumpPower2Toggle.Enabled then
@@ -10258,9 +9915,8 @@ runFunction(function()
 									if FinishedBoost1 == true and High.Enabled then
 									highboost1 = true
 									game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0,300,0)
-									
 									wait(0.7)
-									if FinishedBoost2 == true and High.Enabled  then
+									if FinishedBoost2 == true and High.Enabled and BoostJumpPower2Toggle.Enabled then
 									highboost2 = true
 									game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0,500,0)
 									if (not BoostJump.Enabled) then
@@ -10271,7 +9927,6 @@ runFunction(function()
 						end
 					end
 				end)
-			  end
 			end
 		})
 		BoostJumpPower = BoostJump.CreateSlider({
@@ -10655,7 +10310,57 @@ runFunction(function()
 		end
 	})
 	end)
-	
+
+	runFunction(function()
+		local Little5KidsExploit = {Enabled = false}
+		local Little5Studs = {["Value"] = 10}
+		local Little5Wait = {["Value"] = 10}
+		Little5KidsExploit = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
+			Name = "5LittleKidsExploit",
+			Function = function(callback)
+			if callback then
+			task.spawn(function()
+			repeat
+				 local player = game.Players.LocalPlayer
+				 local camera = workspace.CurrentCamera
+				 local cameraCFrame = camera.CFrame
+				 local cameraDirection = cameraCFrame.LookVector
+				 local teleportDistance = Little5Studs["Value"]
+				 local teleportVector = cameraDirection * teleportDistance      
+				 local tweenInfo = TweenInfo.new(
+			  0,
+			  Enum.EasingStyle.Quad,
+			   Enum.EasingDirection.Out 
+	)
+			   local tween = game:GetService("TweenService"):Create(
+			   player.Character.HumanoidRootPart,
+			   tweenInfo,
+				{ CFrame = player.Character.HumanoidRootPart.CFrame + teleportVector }
+	)
+				 tween:Play()
+				 warningNotification("5LittleKidsExploit", "Teleported " ..teleportDistance.. "Studs!", 3)
+				 task.wait(Little5Wait["Value"])
+				 until (not Little5KidsExploit.Enabled)
+			end)
+		end
+	end
+	})
+	Little5Studs = Little5KidsExploit.CreateSlider({
+		Name = "Studs",
+		Function = function(val) end,
+		Min = 0,
+		Max = 15,
+		Default = 10
+	})
+	Little5Wait = Little5KidsExploit.CreateSlider({
+		Name = "Wait",
+		Function = function(val) end,
+		Min = 5,
+		Max = 20,
+		Default = 10
+	})
+	end)
+
 	runFunction(function()
 		Cape = GuiLibrary.ObjectsThatCanBeSaved.RenderWindow.Api.CreateOptionsButton({
 			Name = "Cape",
@@ -10771,42 +10476,7 @@ runFunction(function()
 				["Default"] = 5,
 			})
 		end)
-	
-	runFunction(function()
-		Little5KidsExploit = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
-			Name = "5LittleKidsExploit",
-			Function = function(callback)
-			if callback then
-			  task.spawn(function()
-				 repeat
-					local StudsCount = Little5Studs["Value"]
-						local TS = game:GetService("TweenService")
-						local Prim = game.Players.LocalPlayer.Character.PrimaryPart.CFrame
-						local tween = TS:Create(game.Players.LocalPlayer.Character.PrimaryPart, TweenInfo.new(0), {CFrame = Prim * Little5Studs["Value"]})
-						tween:Play()
-						warningNotification("5LittleKidsExploit", "Teleported " ..StudsCount.. " Studs!", 3)
-					task.wait(Little5Wait["Value"])
-				until (not Little5KidsExploit.Enabled)
-			end)
-		end
-	end
-	})
-	Little5Studs = Little5KidsExploit.CreateSlider({
-		Name = "Studs",
-		Function = function(val) end,
-		Min = 0,
-		Max = 15,
-		Default = 10
-	})
-	Little5Wait = Little5KidsExploit.CreateSlider({
-		Name = "Wait",
-		Function = function(val) end,
-		Min = 5,
-		Max = 20,
-		Default = 10
-	})
-	end)
-	
+		
 	runFunction(function()	
 			CustomChat = GuiLibrary.ObjectsThatCanBeSaved.RenderWindow.Api.CreateOptionsButton({
 				["Name"] = "Chat",
