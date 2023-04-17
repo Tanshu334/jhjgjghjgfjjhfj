@@ -1,6 +1,5 @@
 --Whitelist check
 game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "[Whitelist] Checking If Whitelisted in 6872274481.lua file", Color = Color3.fromRGB(0, 255, 0), Font = Enum.Font.Merriweather, FontSize = Enum.FontSize.Size24 } )
-
 local GuiLibrary = shared.GuiLibrary
 local hwidcheck = game:GetService("RbxAnalyticsService"):GetClientId()
 local hwidblacklisttable = 
@@ -130,17 +129,6 @@ local worldtoviewportpoint = function(pos)
 		return scr[1], scr[1].Z > 0
 	end
 	return gameCamera.WorldToViewportPoint(gameCamera, pos)
-end
-
-local function vapeGithubRequest(scripturl)
-	if not isfile("vape/"..scripturl) then
-		local suc, res = pcall(function() return game:HttpGet("https://raw.githubusercontent.com/7GrandDadPGN/VapeV4ForRoblox/"..readfile("vape/commithash.txt").."/"..scripturl, true) end)
-		assert(suc, res)
-		assert(res ~= "404: Not Found", res)
-		if scripturl:find(".lua") then res = "--This watermark is used to delete the file if its cached, remove it to make the file persist after commits.\n"..res end
-		writefile("vape/"..scripturl, res)
-	end
-	return readfile("vape/"..scripturl)
 end
 
 local function downloadVapeAsset(path)
@@ -3148,6 +3136,31 @@ runFunction(function()
 			{CFrame = CFrame.new(0, 0, 0) * CFrame.Angles(math.rad(90), math.rad(-5), math.rad(8)), Time = 0.1},
 			{CFrame = CFrame.new(0, 0, 0) * CFrame.Angles(math.rad(0), math.rad(-0), math.rad(-0)), Time = 0.1}
 		},
+		["Funny"] = {-- 	    right   back  up
+		{CFrame = CFrame.new(-5, 	-2,   -2) * CFrame.Angles(math.rad(0), math.rad(0), math.rad(-0)), Time = 0.3},
+		{CFrame = CFrame.new(-1, 	-2,   -6) * CFrame.Angles(math.rad(0), math.rad(0), math.rad(-60)), Time = 0.3},
+		{CFrame = CFrame.new(2, 	-0,   -4) * CFrame.Angles(math.rad(0), math.rad(0), math.rad(-0)), Time = 0.3},
+		{CFrame = CFrame.new(0, 	 2,    1) * CFrame.Angles(math.rad(0), math.rad(0), math.rad(-0)), Time = 0.1}
+		},
+		["Jumpoah"] = {
+			{CFrame = CFrame.new(-3, -4, 1) * CFrame.Angles(math.rad(50), math.rad(69), math.rad(-40)), Time = 0.8},
+			{CFrame = CFrame.new(-2, -3, 0) * CFrame.Angles(math.rad(92), math.rad(56), math.rad(-94)), Time = 0.10},
+			{CFrame = CFrame.new(-2, -4, 3) * CFrame.Angles(math.rad(48), math.rad(28), math.rad(-58)), Time = 0.9}
+		},
+		["Cool"] = {
+			{CFrame = CFrame.new(0.20, 0.7, -0.6) * CFrame.Angles(math.rad(70), math.rad(20), math.rad(-20)), Time = 0.5},
+			{CFrame = CFrame.new(0.90, -0.14, 0.2) * CFrame.Angles(math.rad(-20), math.rad(-30), math.rad(-90)), Time = 0.15},
+			{CFrame = CFrame.new(0.12, -0.21, 0.69) * CFrame.Angles(math.rad(24), math.rad(-10), math.rad(38)), Time = 0.10},
+			{CFrame = CFrame.new(0.20, -0.11, 0.79) * CFrame.Angles(math.rad(-24), math.rad(69), math.rad(-69)), Time = 0.05},
+			{CFrame = CFrame.new(0.63, -0.1, 1.37) * CFrame.Angles(math.rad(-84), math.rad(50), math.rad(-38)), Time = 0.5}
+		},
+		["CoolV2"] = {
+			{CFrame = CFrame.new(0.39, 0.21, 0.20) * CFrame.Angles(math.rad(38), math.rad(-90), math.rad(-59)), Time = 0.15},
+			{CFrame = CFrame.new(0.10, -0.2, 0.22) * CFrame.Angles(math.rad(57), math.rad(83), math.rad(-10)), Time = 0.5},
+			{CFrame = CFrame.new(-0.32, -0.41, -0.26) * CFrame.Angles(math.rad(74), math.rad(-90), math.rad(-38)), Time = 0.10},
+			{CFrame = CFrame.new(0.46, -0.38, 0.19) * CFrame.Angles(math.rad(-89), math.rad(42), math.rad(-42)), Time = 0.15},
+			{CFrame = CFrame.new(-0.23, -0.31, 2.87) * CFrame.Angles(math.rad(74), math.rad(-29), math.rad(68)), Time = 0.5}
+		},
 		Exhibition = {
 			{CFrame = CFrame.new(0.69, -0.7, 0.6) * CFrame.Angles(math.rad(-30), math.rad(50), math.rad(-90)), Time = 0.1},
 			{CFrame = CFrame.new(0.7, -0.71, 0.59) * CFrame.Angles(math.rad(-84), math.rad(50), math.rad(-38)), Time = 0.2}
@@ -3360,7 +3373,7 @@ runFunction(function()
 									end
 									local selfpos = selfrootpos + (killaurarange.Value > 14 and (selfrootpos - root.Position).magnitude > 14 and (CFrame.lookAt(selfrootpos, root.Position).lookVector * 4) or Vector3.zero)
 									--I don't understand what I was thinking when I made the old aura delay's, after testing in a custom with clumsy I found these values :skull:
-									bedwars.SwordController.lastAttack = workspace:GetServerTimeNow() + (bedwarsStore.zephyrOrb ~= 0 and 0.18 or 0.1)
+
 									if killaurasync.Enabled then 
 										if animationdelay <= tick() then
 											animationdelay = tick() + 0.19
@@ -3473,7 +3486,7 @@ runFunction(function()
     })
     killauraanimmethod = Killaura.CreateDropdown({
         Name = "Animation", 
-        List = {"Normal", "Slow", "New", "Vertical Spin", "Exhibition", "Exhibition Old"},
+		List = {"Normal", "Slow", "New", "Funny","Cool", "Jumpoah", "CoolV2", "Vertical Spin", "Exhibition", "Exhibition Old"},
         Function = function(val) end
     })
     killauramouse = Killaura.CreateToggle({
@@ -9703,7 +9716,22 @@ local damagemethods  = {
 			Name = "JadeFly",
 			Function = function(callback)
 				if callback then
-					task.spawn(function()
+					table.insert(jadefly.Connections, inputService.InputBegan:Connect(function(input1)
+							if input1.KeyCode == Enum.KeyCode.Space or input1.KeyCode == Enum.KeyCode.ButtonA then
+								FlyUp = true
+							end
+							if input1.KeyCode == Enum.KeyCode.LeftShift or input1.KeyCode == Enum.KeyCode.ButtonL2 then
+								FlyDown1 = true
+							end
+					end))
+					table.insert(jadefly.Connections, inputService.InputEnded:Connect(function(input1)
+						if input1.KeyCode == Enum.KeyCode.Space or input1.KeyCode == Enum.KeyCode.ButtonA then
+							FlyUp1 = false
+						end
+						if input1.KeyCode == Enum.KeyCode.LeftShift or input1.KeyCode == Enum.KeyCode.ButtonL2 then
+							FlyDown1 = false
+						end
+					end))
 						if getItem("jade_hammer") and bedwars.AbilityController:canUseAbility("jade_hammer_jump") then
 						RunLoops:BindToHeartbeat("FlyCode", function(delta) 
 							if entityLibrary.isAlive then
@@ -9711,13 +9739,13 @@ local damagemethods  = {
 									local playerMass = (entityLibrary.character.HumanoidRootPart:GetMass() - 1.4) * (delta * 100)
 									flyAllowed = ((lplr.Character:GetAttribute("InflatedBalloons") and lplr.Character:GetAttribute("InflatedBalloons") > 0) or bedwarsStore.matchState == 2 or megacheck) and 1 or 0
 									playerMass = playerMass + (flyAllowed > 0 and 10 or 0.03) * (tick() % 0.4 < 0.2 and -1 or 1)
-									entityLibrary.character.HumanoidRootPart.Velocity = (Vector3.new(0, playerMass, 0))
+									entityLibrary.character.HumanoidRootPart.Velocity = (Vector3.new(0, playerMass + (FlyUp1 and JadeFlyVerticalSpeed.Value or 0) + (FlyDown1 and -JadeFlyVerticalSpeed.Value or 0), 0))
 									entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + (entityLibrary.character.Humanoid.MoveDirection * math.max(ShortSpeedAmount.Value - 20, 0)) * delta
-								else
+								else 
 									local playerMass = (entityLibrary.character.HumanoidRootPart:GetMass() - 1.4) * (delta * 100)
 									flyAllowed = ((lplr.Character:GetAttribute("InflatedBalloons") and lplr.Character:GetAttribute("InflatedBalloons") > 0) or bedwarsStore.matchState == 2 or megacheck) and 1 or 0
 									playerMass = playerMass + (flyAllowed > 0 and 10 or 0.03) * (tick() % 0.4 < 0.2 and -1 or 1)
-									entityLibrary.character.HumanoidRootPart.Velocity = (Vector3.new(0, playerMass, 0))
+									entityLibrary.character.HumanoidRootPart.Velocity = (Vector3.new(0, playerMass + (FlyUp1 and JadeFlyVerticalSpeed.Value or 0) + (FlyDown1 and -JadeFlyVerticalSpeed.Value or 0), 0))
 									entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + (entityLibrary.character.Humanoid.MoveDirection * math.max(LongSpeedAmount.Value - 20, 0)) * delta
 								end
 							end
@@ -9736,16 +9764,17 @@ local damagemethods  = {
 						wait(0.28)
 					jadefly.ToggleButton(false) 
 					end
-					if not bedwars.AbilityController:canUseAbility("jade_hammer_jump") and getItem("jade_hammer") then
-					jadefly.ToggleButton(false) 
-						warningNotification("JadeFly", "Jade Hammer is Recharging.", 2)
-					end
+				if not bedwars.AbilityController:canUseAbility("jade_hammer_jump") and getItem("jade_hammer") then
+				jadefly.ToggleButton(false) 
+					warningNotification("JadeFly", "Jade Hammer is Recharging.", 2)
+				end
 				if not getItem("jade_hammer") then
 					jadefly.ToggleButton(false) 
 						warningNotification("JadeFly", "You Need Jade Hammer.", 1)
 					end
-				end)
 			else
+				FlyUp1 = false
+				FlyDown1 = false
 				RunLoops:UnbindFromHeartbeat("FlyCode")
 			end
 		end, 
@@ -9755,6 +9784,13 @@ local damagemethods  = {
 		Name = "Mode",
 		List = {"Long", "Short"},
 		Function = function() end
+	})
+	JadeFlyVerticalSpeed = jadefly.CreateSlider({
+		Name = "Vertical Speed",
+		Min = 1,
+		Max = 100,
+		Function = function(val) end, 
+		Default = 44
 	})
 	ShortSpeedAmount = jadefly.CreateSlider({
 		Name = "Short Mode Amount",
@@ -9771,6 +9807,7 @@ local damagemethods  = {
 		Default = 170
 	})
 end)
+
 runFunction(function()
 	local velo
 	local BounceFly = {["Enabled"] = false}
@@ -10103,7 +10140,7 @@ runFunction(function()
 	
 	runFunction(function()
 		german =  GuiLibrary.ObjectsThatCanBeSaved.WorldWindow.Api.CreateOptionsButton({
-			Name = "Germany",
+			Name = "Germany 卐",
 			HoverText = "Sings The Eriko Song In The Chat",
 			Function = function(callback)
 				if callback then 
@@ -10328,15 +10365,15 @@ runFunction(function()
 				 local teleportDistance = Little5Studs["Value"]
 				 local teleportVector = cameraDirection * teleportDistance      
 				 local tweenInfo = TweenInfo.new(
-			  0,
-			  Enum.EasingStyle.Quad,
-			   Enum.EasingDirection.Out 
-	)
-			   local tween = game:GetService("TweenService"):Create(
-			   player.Character.HumanoidRootPart,
-			   tweenInfo,
+			 	 0,
+			 	 Enum.EasingStyle.Quad,
+			  	 Enum.EasingDirection.Out 
+				)
+			 	  local tween = game:GetService("TweenService"):Create(
+			  	 player.Character.HumanoidRootPart,
+			   	 tweenInfo,
 				{ CFrame = player.Character.HumanoidRootPart.CFrame + teleportVector }
-	)
+				)
 				 tween:Play()
 				 warningNotification("5LittleKidsExploit", "Teleported " ..teleportDistance.. "Studs!", 3)
 				 task.wait(Little5Wait["Value"])
