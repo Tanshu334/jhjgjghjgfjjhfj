@@ -9717,12 +9717,12 @@ local damagemethods  = {
 			Function = function(callback)
 				if callback then
 					table.insert(jadefly.Connections, inputService.InputBegan:Connect(function(input1)
-							if input1.KeyCode == Enum.KeyCode.Space or input1.KeyCode == Enum.KeyCode.ButtonA then
-								FlyUp = true
-							end
-							if input1.KeyCode == Enum.KeyCode.LeftShift or input1.KeyCode == Enum.KeyCode.ButtonL2 then
-								FlyDown1 = true
-							end
+						if input1.KeyCode == Enum.KeyCode.Space or input1.KeyCode == Enum.KeyCode.ButtonA then
+							FlyUp1 = true
+						end
+						if input1.KeyCode == Enum.KeyCode.LeftShift or input1.KeyCode == Enum.KeyCode.ButtonL2 then
+							FlyDown1 = true
+						end
 					end))
 					table.insert(jadefly.Connections, inputService.InputEnded:Connect(function(input1)
 						if input1.KeyCode == Enum.KeyCode.Space or input1.KeyCode == Enum.KeyCode.ButtonA then
@@ -9732,7 +9732,7 @@ local damagemethods  = {
 							FlyDown1 = false
 						end
 					end))
-						if getItem("jade_hammer") and bedwars.AbilityController:canUseAbility("jade_hammer_jump") then
+					if getItem("jade_hammer") and bedwars.AbilityController:canUseAbility("jade_hammer_jump") then
 						RunLoops:BindToHeartbeat("FlyCode", function(delta) 
 							if entityLibrary.isAlive then
 								if jadeflymode.Value == "Short" then
