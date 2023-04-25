@@ -1,4 +1,3 @@
---// This is the source of Synthetix, If you leak this then your a nigger and i will get your liver and get ur lungs and leak your ip and sell them in the dark web
 local GuiLibrary = shared.GuiLibrary
 local playersService = game:GetService("Players")
 local lplr = playersService.LocalPlayer
