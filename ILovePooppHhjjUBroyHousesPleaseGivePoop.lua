@@ -11108,7 +11108,7 @@ end)
 							}
 						}
 						local currentOverlay = swordTable.Texturepack32x
-						Connection = workspace.CurrentCamera.Viewmodel.ChildAdded:Connect(function(v)
+						SwordTexturepack = workspace.CurrentCamera.Viewmodel.ChildAdded:Connect(function(v)
 							if v:IsA("Accessory") and v:FindFirstChild("Handle") then
 								for i, v2 in pairs(items) do
 									if string.find(v.Name, v2) then
@@ -11117,38 +11117,38 @@ end)
 												v.Handle:FindFirstChild("gem"):Destroy()
 											elseif v.Handle:FindFirstChild("Neon") then
 												v.Handle:FindFirstChild("Neon"):Destroy()
-												v.Handle.Size = v.Handle.Size * 3
+												v.Handle.Size = v.Handle.Size * 2.99996
 											end
 											v:FindFirstChild("Handle").MeshId = "rbxassetid://" .. currentOverlay[string.split(v.Name, "_")[1]][1]
 											v:FindFirstChild("Handle").TextureID = "rbxassetid://" .. currentOverlay[string.split(v.Name, "_")[1]][2]
 											if currentOverlay["downscale"] ~= nil then v.Handle.Size = v.Handle.Size / currentOverlay["downscale"] end
 											for i, v in pairs(lplr.Character:GetChildren()) do
-   											 if v.Name:find('sword') or v.Name:find('scythe') or v.Name:find('blade') then
-												if  v.Name:find('wood') then
+											if v.Name:find('wood') then
+												v.Handle.Size = v.Handle.Size * 0.8
+													v.Handle.MeshId = "rbxassetid://13156260367" v.Handle.TextureID = "rbxassetid://13156264394"
+												elseif v.Name:find('stone') then
 													v.Handle.Size = v.Handle.Size * 0.8
-														v.Handle.MeshId = "rbxassetid://13156260367" v.Handle.TextureID = "rbxassetid://13156264394"
-													elseif v.Name:find('stone') then
-														v.Handle.Size = v.Handle.Size * 0.8
-														v.Handle.MeshId = "rbxassetid://13156535067" v.Handle.TextureID = "rbxassetid://13156533518"
-													elseif v.Name:find('iron') then
-														v.Handle.Size = v.Handle.Size * 0.7
-														v.Handle.MeshId = "rbxassetid://13156652510" v.Handle.TextureID = "rbxassetid://13156654736"
-													elseif v.Name:find('diamond') then
-														v.Handle.Size = v.Handle.Size * 0.6
-														v.Handle.MeshId = "rbxassetid://13156798963" v.Handle.TextureID = "rbxassetid://13156800982"
-													elseif v.Name:find('emerald') then
-														v.Handle.Size = v.Handle.Size * 1
-														v.Handle.MeshId = "rbxassetid://13160122132" v.Handle.TextureID = "rbxassetid://13160122773"
-													end
+													v.Handle.MeshId = "rbxassetid://13156535067" v.Handle.TextureID = "rbxassetid://13156533518"
+												elseif v.Name:find('iron') then
+													v.Handle.Size = v.Handle.Size * 0.8
+													v.Handle.MeshId = "rbxassetid://13156652510" v.Handle.TextureID = "rbxassetid://13156654736"
+												elseif v.Name:find('diamond') then
+													v.Handle:FindFirstChild("gem"):Destroy()
+													v.Handle.Size = v.Handle.Size * 0.8
+													v.Handle.MeshId = "rbxassetid://13156798963" v.Handle.TextureID = "rbxassetid://13156800982"
+												elseif v.Name:find('emerald') then
+													v.Handle:FindFirstChild("Neon"):Destroy()
+													v.Handle.Size = v.Handle.Size * 2.2
+													v.Handle.MeshId = "rbxassetid://13160122132" v.Handle.TextureID = "rbxassetid://13160122773"
 												end
 											end
 										end    
 									end
-								end 
+								end
 							end
 						end)
 					else
-						Connection:Disconnect()
+						SwordTexturepack:Disconnect()
 					end
 				end
 			})
@@ -11171,17 +11171,10 @@ end)
 								["iron"] = {"13045938020", "13045940316"},
 								["diamond"] = {"13045611120", "13045612849"},
 								["emerald"] = {"13052515751", "13052517600"}
-							},
-							Texturepack32x = {
-								["wood"] = {"13156260367", "13156264394"},
-								["stone"] = {"13156535067", "13156533518"},
-								["iron"] = {"13156652510", "13156654736"},
-								["diamond"] = {"13156798963", "13156800982"},
-								["emerald"] = {"13160122132", "13160122773"}
 							}
 						}
 						local currentOverlay = swordTable.Exhibition
-						Connection = workspace.CurrentCamera.Viewmodel.ChildAdded:Connect(function(v)
+						SwordTexturepackx32 = workspace.CurrentCamera.Viewmodel.ChildAdded:Connect(function(v)
 							if v:IsA("Accessory") and v:FindFirstChild("Handle") then
 								for i, v2 in pairs(items) do
 									if string.find(v.Name, v2) then
@@ -11190,10 +11183,11 @@ end)
 												v.Handle:FindFirstChild("gem"):Destroy()
 											elseif v.Handle:FindFirstChild("Neon") then
 												v.Handle:FindFirstChild("Neon"):Destroy()
-												v.Handle.Size = v.Handle.Size * 3
+												v.Handle.Size = v.Handle.Size * 2.99996
 											end
 											v:FindFirstChild("Handle").MeshId = "rbxassetid://" .. currentOverlay[string.split(v.Name, "_")[1]][1]
 											v:FindFirstChild("Handle").TextureID = "rbxassetid://" .. currentOverlay[string.split(v.Name, "_")[1]][2]
+
 											if currentOverlay["downscale"] ~= nil then v.Handle.Size = v.Handle.Size / currentOverlay["downscale"] end
 											for i, v in pairs(lplr.Character:GetChildren()) do
    											 if v.Name:find('sword') or v.Name:find('scythe') or v.Name:find('blade') then
@@ -11211,12 +11205,14 @@ end)
 														v.Handle.TextureID = "rbxassetid://13045940316"
 													elseif v.Name:find('diamond') then
 														v.Handle.Size = v.Handle.Size * 1
+														v.Handle:FindFirstChild("gem"):Destroy()
 														v.Handle.MeshId = "rbxassetid://13045611120"
-														v.Handle.TextureID = "rbxassetid://13156800982"
+														v.Handle.TextureID = "rbxassetid://13045612849"
 													elseif v.Name:find('emerald') then
-														v.Handle.Size = v.Handle.Size * 3.8
-														v.Handle.MeshId = "rbxassetid://13160122132"
-														v.Handle.TextureID = "rbxassetid://13160122773"
+														v.Handle.Size = v.Handle.Size * 2.87
+														v.Handle:FindFirstChild("Neon"):Destroy()
+														v.Handle.MeshId = "rbxassetid://13052515751"
+														v.Handle.TextureID = "rbxassetid://13052517600"
 													end
 												end
 											end
@@ -11226,7 +11222,7 @@ end)
 							end
 						end)
 					else
-						Connection:Disconnect()
+						SwordTexturepackx32:Disconnect()
 					end
 				end
 			})
