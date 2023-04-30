@@ -9797,7 +9797,7 @@ end)
 runcode(function()
 	local BowExploit = {Enabled = false}
 	local BowExploitTarget = {Value = "Mouse"}
-	local BowExploitAutoShootFOV = {Value = 1000}
+	local BowExploitBetterLongJumpFOV = {Value = 1000}
 	local oldrealremote
 	local noveloproj = {
 		"fireball",
@@ -9821,7 +9821,7 @@ runcode(function()
 											if BowExploitTarget["Value"] == "Mouse" then 
 												plr = EntityNearMouse(10000)
 											else
-												plr = EntityNearPosition(BowExploitAutoShootFOV.Value)
+												plr = EntityNearPosition(BowExploitBetterLongJumpFOV.Value)
 											end
 											if plr then	
 												local playertype, playerattackable = WhitelistFunctions:CheckPlayerType(plr.Player)
@@ -9880,7 +9880,7 @@ runcode(function()
 		List = {"Mouse", "Range"},
 		Function = function() end
 	})
-	BowExploitAutoShootFOV = BowExploit.CreateSlider({
+	BowExploitBetterLongJumpFOV = BowExploit.CreateSlider({
 		Name = "FOV",
 		Function = function() end,
 		Min = 1,
@@ -10748,6 +10748,73 @@ end)
 	runcode(function()
 		local clone
 		local bypassing = false
+		local blink = {["Enabled"] = false}
+		blink = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
+			Name = "Blink",
+			Function = function(callback)
+				if callback then
+					bypassing = true
+					lplr.Character.Archivable = true
+					clone = lplr.Character:Clone()
+					clone.Parent = workspace
+					clone.Name = "blink"
+					workspace.Camera.CameraSubject = clone.Humanoid
+					game:GetService("Players").LocalPlayer.Character = clone
+					lplr.Character = clone
+					game.Players.LocalPlayer.Character = clone
+					clone.Animate.Disabled = true
+					repeat
+						wait()
+						clone.Animate.Disabled = false
+						if not bypassing then return end
+						if not bypassing then return end
+						workspace[lplr.Name].HumanoidRootPart.CFrame = clone.HumanoidRootPart.CFrame
+						for i,v in pairs(workspace[lplr.Name]:GetChildren()) do
+							if v:IsA("BasePart") then
+								v.Transparency = 1
+							end
+							if v:IsA("Accessory") then
+								v.Handle.Transparency = 1
+							end
+							if v.Name == "Head" then
+								v.face.Transparency = 1
+							end
+							if v.Name == "HumanoidRootPart" then
+								v.Transparency = 100
+							end
+						end
+						if not bypassing then return end
+					until not bypassing
+				else
+					bypassing = true
+					task.wait()
+					for i,v in pairs(workspace[lplr.Name]:GetChildren()) do
+						if v:IsA("BasePart") then
+							v.Transparency = 0
+						end
+						if v:IsA("Accessory") then
+							v.Handle.Transparency = 0
+						end
+						if v.Name == "Head" then
+							v.face.Transparency = 0
+						end
+						if v.Name == "HumanoidRootPart" then
+							v.Transparency = 100
+						end
+					end
+					game:GetService("Players").LocalPlayer.Character = workspace[lplr.Name]
+					lplr.Character = workspace[lplr.Name]
+					game.Players.LocalPlayer.Character = workspace[lplr.Name]
+					clone:Destroy()
+					workspace.Camera.CameraSubject = lplr.Character.Humanoid
+				end
+			end,
+		})
+	end)
+
+	runcode(function()
+		local clone
+		local bypassing = false
 		local FastFly = {["Enabled"] = false}
 		local function calculatepos(vec)
 			local returned = vec
@@ -10765,7 +10832,7 @@ end)
 				bedwars.ProjectileController:createLocalProjectile(bedwars.ProjectileMeta["fireball"], "fireball", "fireball", offsetshootpos, "", Vector3.new(0, -60, 0), {drawDurationSeconds = 1})
 				bedwars.ClientHandler:Get(bedwars.ProjectileRemote):CallServerAsync(fireball["tool"], "fireball", "fireball", offsetshootpos, pos, Vector3.new(0, -60, 0), game:GetService("HttpService"):GenerateGUID(true), {drawDurationSeconds = 1}, workspace:GetServerTimeNow() - 0.045)
 			end
-		   }
+		}
 		FastFly = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
 			Name = "FastFly",
 			Function = function(callback)
@@ -11093,12 +11160,10 @@ end)
 				Name = "Texturepack",
 				Function = function(callback)
 					if callback then
-						repeat task.wait() until game.ReplicatedStorage and game.ReplicatedStorage.Inventories and game.Players.LocalPlayer and game.ReplicatedStorage.Inventories:FindFirstChild(game.Players.LocalPlayer.Name) and workspace.CurrentCamera:FindFirstChild("Viewmodel")
-						local repstorage = game.ReplicatedStorage
-						items = {
+						local Textures = {
+							ItemType = {
 							"sword",
-						}
-						local swordTable = {
+							},
 							Texturepack32x = {
 								["wood"] = {"13156260367", "13156264394"},
 								["stone"] = {"13156535067", "13156533518"},
@@ -11107,11 +11172,11 @@ end)
 								["emerald"] = {"13160122132", "13160122773"}
 							}
 						}
-						local currentOverlay = swordTable.Texturepack32x
+						local texturepackMesh = Textures.Texturepack32x
 						SwordTexturepack = workspace.CurrentCamera.Viewmodel.ChildAdded:Connect(function(v)
 							if v:IsA("Accessory") and v:FindFirstChild("Handle") then
-								for i, v2 in pairs(items) do
-									if string.find(v.Name, v2) then
+								for i, v12 in pairs(Textures.ItemType) do
+									if string.find(v.Name, v12) then
 										if string.find(v.Name, "sword") then
 											if v.Handle:FindFirstChild("gem") then 
 												v.Handle:FindFirstChild("gem"):Destroy()
@@ -11119,9 +11184,9 @@ end)
 												v.Handle:FindFirstChild("Neon"):Destroy()
 												v.Handle.Size = v.Handle.Size * 2.99996
 											end
-											v:FindFirstChild("Handle").MeshId = "rbxassetid://" .. currentOverlay[string.split(v.Name, "_")[1]][1]
-											v:FindFirstChild("Handle").TextureID = "rbxassetid://" .. currentOverlay[string.split(v.Name, "_")[1]][2]
-											if currentOverlay["downscale"] ~= nil then v.Handle.Size = v.Handle.Size / currentOverlay["downscale"] end
+											v:FindFirstChild("Handle").MeshId = "rbxassetid://" .. texturepackMesh[string.split(v.Name, "_")[1]][1]
+											v:FindFirstChild("Handle").TextureID = "rbxassetid://" .. texturepackMesh[string.split(v.Name, "_")[1]][2]
+											if texturepackMesh["downscale"] ~= nil then v.Handle.Size = v.Handle.Size / texturepackMesh["downscale"] end
 											for i, v in pairs(lplr.Character:GetChildren()) do
 											if v.Name:find('wood') then
 												v.Handle.Size = v.Handle.Size * 0.8
@@ -11154,14 +11219,94 @@ end)
 			})
 		end)
 
+runcode(function()
+	local BetterLongJump = {Enabled = false}
+	local directionvec
+	local function calculatepos(vec)
+		local returned = vec
+		if entityLibrary.isAlive then 
+			local newray = workspace:Raycast(entityLibrary.character.HumanoidRootPart.Position, returned, bedwarsStore.blockRaycast)
+			if newray then returned = (newray.Position - entityLibrary.character.HumanoidRootPart.Position) end
+		end
+		return returned
+	end
+	local damagemethods  = {
+		fireball = function(fireball, pos)
+			if not BetterLongJump.Enabled then return end
+				local origpos = pos
+				local offsetshootpos = (CFrame.new(pos, pos + Vector3.new(0, -60, 0)) * CFrame.new(Vector3.new(-bedwars.BowConstantsTable.RelX, -bedwars.BowConstantsTable.RelY, -bedwars.BowConstantsTable.RelZ))).p
+				bedwars.ProjectileController:createLocalProjectile(bedwars.ProjectileMeta["fireball"], "fireball", "fireball", offsetshootpos, "", Vector3.new(0, -60, 0), {drawDurationSeconds = 1})
+				bedwars.ClientHandler:Get(bedwars.ProjectileRemote):CallServerAsync(fireball["tool"], "fireball", "fireball", offsetshootpos, pos, Vector3.new(0, -60, 0), game:GetService("HttpService"):GenerateGUID(true), {drawDurationSeconds = 1}, workspace:GetServerTimeNow() - 0.045)
+		end,
+		tnt = function(tnt, pos2)
+			if not BetterLongJump.Enabled then return end
+			local pos = Vector3.new(pos2.X, getScaffold(Vector3.new(0, pos2.Y - (((entityLibrary.character.HumanoidRootPart.Size.Y / 2) + entityLibrary.character.Humanoid.HipHeight) - 1.5), 0)).Y, pos2.Z)
+			local block = bedwars.placeBlock(pos, "tnt")
+		end
+		}
+
+		BetterLongJump = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
+			Name = "BetterLongJump",
+			Function = function(callback)
+				if callback then
+					local LongJumpOrigin = entityLibrary.isAlive and entityLibrary.character.HumanoidRootPart.Position
+					local tntcheck
+					LongJumpdelay = tick()
+						for i,v in pairs(damagemethods) do 
+							local item = getItem(i)
+								if item then
+									if i == "tnt" then 
+										local pos = getScaffold(LongJumpOrigin)
+										tntcheck = Vector3.new(pos.X, LongJumpOrigin.Y, pos.Z)
+										v(item, pos)
+									else
+										v(item, LongJumpOrigin)
+										end
+									break
+								end
+							end
+						RunLoops:BindToHeartbeat("Fly1", function(delta) 
+						if entityLibrary.isAlive then
+							local playerMass = (entityLibrary.character.HumanoidRootPart:GetMass() - 1.4) * (delta * 100)
+							flyAllowed = ((lplr.Character:GetAttribute("InflatedBalloons") and lplr.Character:GetAttribute("InflatedBalloons") > 0) or bedwarsStore.matchState == 2 or megacheck) and 1 or 0
+							playerMass = playerMass + (flyAllowed > 0 and 10 or 0.03) * (tick() % 0.4 < 0.2 and -1 or 1)
+							entityLibrary.character.HumanoidRootPart.Velocity = (Vector3.new(0, playerMass, 0))
+							entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + (entityLibrary.character.Humanoid.MoveDirection * math.max(SpeedAmount.Value - 20, 0)) * delta
+						end
+					end)
+					RunLoops:BindToHeartbeat("BetterLongJump", function(dt)
+						if entityLibrary.isAlive then 
+							if entityLibrary.character.Humanoid.Health <= 0 then 
+								BetterLongJump.ToggleButton(false) return end
+							if tntcheck then 
+							entityLibrary.character.HumanoidRootPart.CFrame = CFrame.new(tntcheck + entityLibrary.character.HumanoidRootPart.CFrame.lookVector, tntcheck + (entityLibrary.character.HumanoidRootPart.CFrame.lookVector * 2))
+						end
+					end
+				end)
+			else
+				RunLoops:UnbindFromHeartbeat("BetterLongJump")
+				RunLoops:UnbindFromHeartbeat("Fly1")
+				tntcheck = nil
+				LongJumpOrigin = nil
+			end
+		end, 
+		HoverText = "Bypasses ac with items or abilitys"
+	})
+	SpeedAmount = BetterLongJump.CreateSlider({
+		Name = "Speed Amount",
+		Min = 1,
+		Max = 70,
+		Function = function() end,
+		Default = 70
+	})
+end)
+
 		runcode(function()
 			local texturepack32x = GuiLibrary.ObjectsThatCanBeSaved.WorldWindow.Api.CreateOptionsButton({
 				Name = "Texturepack32x",
 				Function = function(callback)
 					if callback then
-						repeat task.wait() until game.ReplicatedStorage and game.ReplicatedStorage.Inventories and game.Players.LocalPlayer and game.ReplicatedStorage.Inventories:FindFirstChild(game.Players.LocalPlayer.Name) and workspace.CurrentCamera:FindFirstChild("Viewmodel")
-						local repstorage = game.ReplicatedStorage
-						items = {
+						itemtype = {
 							"sword",
 						}
 						local swordTable = {
@@ -11173,10 +11318,10 @@ end)
 								["emerald"] = {"13052515751", "13052517600"}
 							}
 						}
-						local currentOverlay = swordTable.Exhibition
+						local texturepackMesh = swordTable.Exhibition
 						SwordTexturepackx32 = workspace.CurrentCamera.Viewmodel.ChildAdded:Connect(function(v)
 							if v:IsA("Accessory") and v:FindFirstChild("Handle") then
-								for i, v2 in pairs(items) do
+								for i, v2 in pairs(itemtype) do
 									if string.find(v.Name, v2) then
 										if string.find(v.Name, "sword") then
 											if v.Handle:FindFirstChild("gem") then 
@@ -11185,14 +11330,14 @@ end)
 												v.Handle:FindFirstChild("Neon"):Destroy()
 												v.Handle.Size = v.Handle.Size * 2.99996
 											end
-											v:FindFirstChild("Handle").MeshId = "rbxassetid://" .. currentOverlay[string.split(v.Name, "_")[1]][1]
-											v:FindFirstChild("Handle").TextureID = "rbxassetid://" .. currentOverlay[string.split(v.Name, "_")[1]][2]
+											v:FindFirstChild("Handle").MeshId = "rbxassetid://" .. texturepackMesh[string.split(v.Name, "_")[1]][1]
+											v:FindFirstChild("Handle").TextureID = "rbxassetid://" .. texturepackMesh[string.split(v.Name, "_")[1]][2]
 
-											if currentOverlay["downscale"] ~= nil then v.Handle.Size = v.Handle.Size / currentOverlay["downscale"] end
+											if texturepackMesh["downscale"] ~= nil then v.Handle.Size = v.Handle.Size / texturepackMesh["downscale"] end
 											for i, v in pairs(lplr.Character:GetChildren()) do
-   											 if v.Name:find('sword') or v.Name:find('scythe') or v.Name:find('blade') then
+												if v.Name:find('sword') or v.Name:find('scythe') or v.Name:find('blade') then
 												if  v.Name:find('wood') then
-													v.Handle.Size = v.Handle.Size * 1
+														v.Handle.Size = v.Handle.Size * 1
 														v.Handle.MeshId = "rbxassetid://13052416562"
 														v.Handle.TextureID = "rbxassetid://13052417584"
 													elseif v.Name:find('stone') then
@@ -11209,11 +11354,11 @@ end)
 														v.Handle.MeshId = "rbxassetid://13045611120"
 														v.Handle.TextureID = "rbxassetid://13045612849"
 													elseif v.Name:find('emerald') then
-														v.Handle.Size = v.Handle.Size * 2.87
+														v.Handle.Size = v.Handle.Size * 3.16
 														v.Handle:FindFirstChild("Neon"):Destroy()
 														v.Handle.MeshId = "rbxassetid://13052515751"
 														v.Handle.TextureID = "rbxassetid://13052517600"
-													end
+													end											
 												end
 											end
 										end    
