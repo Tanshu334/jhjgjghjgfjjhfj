@@ -10695,143 +10695,6 @@ end)
 		})
 	end)
 
-	runcode(function()
-		local clone
-		local bypassing = false
-		local FastFly = {["Enabled"] = false}
-		local function calculatepos(vec)
-			local returned = vec
-			if entityLibrary.isAlive then 
-				local newray = workspace:Raycast(entityLibrary.character.HumanoidRootPart.Position, returned, bedwarsStore.blockRaycast)
-				if newray then returned = (newray.Position - entityLibrary.character.HumanoidRootPart.Position) end
-			end
-			return returned
-		end
-		local damagemethods  = {
-			fireball = function(fireball, pos)
-				if not FastFly.Enabled then return end
-				local origpos = pos
-				local offsetshootpos = (CFrame.new(pos, pos + Vector3.new(0, -60, 0)) * CFrame.new(Vector3.new(-bedwars.BowConstantsTable.RelX, -bedwars.BowConstantsTable.RelY, -bedwars.BowConstantsTable.RelZ))).p
-				bedwars.ProjectileController:createLocalProjectile(bedwars.ProjectileMeta["fireball"], "fireball", "fireball", offsetshootpos, "", Vector3.new(0, -60, 0), {drawDurationSeconds = 1})
-				bedwars.ClientHandler:Get(bedwars.ProjectileRemote):CallServerAsync(fireball["tool"], "fireball", "fireball", offsetshootpos, pos, Vector3.new(0, -60, 0), game:GetService("HttpService"):GenerateGUID(true), {drawDurationSeconds = 1}, workspace:GetServerTimeNow() - 0.055)
-			end
-		}
-		FastFly = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
-			Name = "FastFly",
-			Function = function(callback)
-				if callback then
-					table.insert(FastFly.Connections, inputService.InputBegan:Connect(function(input1)
-						if input1.KeyCode == Enum.KeyCode.Space or input1.KeyCode == Enum.KeyCode.ButtonA then
-							FlyUp2 = true
-						end
-						if input1.KeyCode == Enum.KeyCode.LeftShift or input1.KeyCode == Enum.KeyCode.ButtonL2 then
-							FlyDown2 = true
-						end
-					end))
-					table.insert(FastFly.Connections, inputService.InputEnded:Connect(function(input1)
-						if input1.KeyCode == Enum.KeyCode.Space or input1.KeyCode == Enum.KeyCode.ButtonA then
-							FlyUp2 = false
-						end
-						if input1.KeyCode == Enum.KeyCode.LeftShift or input1.KeyCode == Enum.KeyCode.ButtonL2 then
-							FlyDown2 = false
-						end
-					end))
-					local LongJumpOrigin = entityLibrary.isAlive and entityLibrary.character.HumanoidRootPart.Position
-					for i,v in pairs(damagemethods) do 
-						local item = getItem(i)
-							if item then
-								if i == "tnt" then 
-									v(item, pos)
-								else
-									v(item, LongJumpOrigin)
-								end
-							break
-						end
-					end
-					wait()
-					RunLoops:BindToHeartbeat("FastFlyCode", function(delta) 
-						if entityLibrary.isAlive then
-							local playerMass = (entityLibrary.character.HumanoidRootPart:GetMass() - 1.4) * (delta * 100)
-							flyAllowed = ((lplr.Character:GetAttribute("InflatedBalloons") and lplr.Character:GetAttribute("InflatedBalloons") > 0) or bedwarsStore.matchState == 2 or megacheck) and 1 or 0
-							playerMass = playerMass + (flyAllowed > 0 and 10 or 0.03) * (tick() % 0.4 < 0.2 and -1 or 1)
-							entityLibrary.character.HumanoidRootPart.Velocity = (Vector3.new(0, playerMass + (FlyUp2 and FastFlyVerticalSpeed.Value or 0) + (FlyDown2 and -FastFlyVerticalSpeed.Value or 0), 0))
-							entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + (entityLibrary.character.Humanoid.MoveDirection * math.max(FastFlySpeed.Value - 20, 0)) * delta
-						end
-					end)
-					bypassing = true
-					lplr.Character.Archivable = true
-					clone = lplr.Character:Clone()
-					clone.Parent = workspace
-					clone.Name = "FastFly"
-					workspace.Camera.CameraSubject = clone.Humanoid
-					game:GetService("Players").LocalPlayer.Character = clone
-					lplr.Character = clone
-					game.Players.LocalPlayer.Character = clone
-					clone.Animate.Disabled = true
-					repeat
-						wait()
-						clone.Animate.Disabled = false
-						if not bypassing then return end
-						if not bypassing then return end
-						workspace[lplr.Name].HumanoidRootPart.CFrame = clone.HumanoidRootPart.CFrame
-						for i,v in pairs(workspace[lplr.Name]:GetChildren()) do
-							if v:IsA("BasePart") then
-								v.Transparency = 1
-							end
-							if v:IsA("Accessory") then
-								v.Handle.Transparency = 1
-							end
-							if v.Name == "Head" then
-								v.face.Transparency = 1
-							end
-							if v.Name == "HumanoidRootPart" then
-								v.Transparency = 100
-							end
-						end
-						if not bypassing then return end
-					until not bypassing
-				else
-					RunLoops:UnbindFromHeartbeat("FastFlyCode")
-					bypassing = true
-					task.wait()
-					for i,v in pairs(workspace[lplr.Name]:GetChildren()) do
-						if v:IsA("BasePart") then
-							v.Transparency = 0
-						end
-						if v:IsA("Accessory") then
-							v.Handle.Transparency = 0
-						end
-						if v.Name == "Head" then
-							v.face.Transparency = 0
-						end
-						if v.Name == "HumanoidRootPart" then
-							v.Transparency = 100
-						end
-					end
-					game:GetService("Players").LocalPlayer.Character = workspace[lplr.Name]
-					lplr.Character = workspace[lplr.Name]
-					game.Players.LocalPlayer.Character = workspace[lplr.Name]
-					clone:Destroy()
-					workspace.Camera.CameraSubject = lplr.Character.Humanoid
-				end
-			end,
-		})
-		FastFlyVerticalSpeed = FastFly.CreateSlider({
-			Name = "Vertical Speed",
-			Min = 1,
-			Max = 100,
-			Function = function(val) end, 
-			Default = 44
-		})
-		FastFlySpeed = FastFly.CreateSlider({
-			Name = "Speed Amount",
-			Min = 1,
-			Max = 200,
-			Function = function(val) end, 
-			Default = 100
-		})
-	end)
-
 		runcode(function()
 			local jadefly = {Enabled = false}
 			local velo
@@ -11037,19 +10900,144 @@ end)
 			})
 		end)
 
-		runcode(function()
-			local PartialDisabler = GuiLibrary.ObjectsThatCanBeSaved.UtilityWindow.Api.CreateOptionsButton({
-				Name = "PartialDisabler",
-				Function = function(callback)
-					if callback then
-						task.spawn(function()
-							bedwars["ClientHandler"]:Get("SelfReport"):SendToServer("injection_detected")
-						end)
+	runcode(function()
+		local clone
+		local bypassing = false
+		local FastFly = {["Enabled"] = false}
+		local function calculatepos(vec)
+			local returned = vec
+			if entityLibrary.isAlive then 
+				local newray = workspace:Raycast(entityLibrary.character.HumanoidRootPart.Position, returned, bedwarsStore.blockRaycast)
+				if newray then returned = (newray.Position - entityLibrary.character.HumanoidRootPart.Position) end
+			end
+			return returned
+		end
+		local damagemethods  = {
+			fireball = function(fireball, pos)
+				if not FastFly.Enabled then return end
+				local origpos = pos
+				local offsetshootpos = (CFrame.new(pos, pos + Vector3.new(0, -60, 0)) * CFrame.new(Vector3.new(-bedwars.BowConstantsTable.RelX, -bedwars.BowConstantsTable.RelY, -bedwars.BowConstantsTable.RelZ))).p
+				bedwars.ProjectileController:createLocalProjectile(bedwars.ProjectileMeta["fireball"], "fireball", "fireball", offsetshootpos, "", Vector3.new(0, -60, 0), {drawDurationSeconds = 1})
+				bedwars.ClientHandler:Get(bedwars.ProjectileRemote):CallServerAsync(fireball["tool"], "fireball", "fireball", offsetshootpos, pos, Vector3.new(0, -60, 0), game:GetService("HttpService"):GenerateGUID(true), {drawDurationSeconds = 1}, workspace:GetServerTimeNow() - 0.055)
+			end
+		}
+		FastFly = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
+			Name = "FastFly",
+			Function = function(callback)
+				if callback then
+					table.insert(FastFly.Connections, inputService.InputBegan:Connect(function(input1)
+						if input1.KeyCode == Enum.KeyCode.Space or input1.KeyCode == Enum.KeyCode.ButtonA then
+							FlyUp2 = true
+						end
+						if input1.KeyCode == Enum.KeyCode.LeftShift or input1.KeyCode == Enum.KeyCode.ButtonL2 then
+							FlyDown2 = true
+						end
+					end))
+					table.insert(FastFly.Connections, inputService.InputEnded:Connect(function(input1)
+						if input1.KeyCode == Enum.KeyCode.Space or input1.KeyCode == Enum.KeyCode.ButtonA then
+							FlyUp2 = false
+						end
+						if input1.KeyCode == Enum.KeyCode.LeftShift or input1.KeyCode == Enum.KeyCode.ButtonL2 then
+							FlyDown2 = false
+						end
+					end))
+					local LongJumpOrigin = entityLibrary.isAlive and game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position
+					for i,v in pairs(damagemethods) do 
+						local item = getItem(i)
+							if item then
+								if i == "tnt" then 
+									v(item, pos)
+								else
+									v(item, LongJumpOrigin)
+								end
+							break
+						end
 					end
+					wait()
+					RunLoops:BindToHeartbeat("FastFlyCode", function(delta) 
+						if entityLibrary.isAlive then
+							local playerMass = (entityLibrary.character.HumanoidRootPart:GetMass() - 1.4) * (delta * 100)
+							flyAllowed = ((lplr.Character:GetAttribute("InflatedBalloons") and lplr.Character:GetAttribute("InflatedBalloons") > 0) or bedwarsStore.matchState == 2 or megacheck) and 1 or 0
+							playerMass = playerMass + (flyAllowed > 0 and 10 or 0.03) * (tick() % 0.4 < 0.2 and -1 or 1)
+							entityLibrary.character.HumanoidRootPart.Velocity = (Vector3.new(0, playerMass + (FlyUp2 and FastFlyVerticalSpeed.Value or 0) + (FlyDown2 and -FastFlyVerticalSpeed.Value or 0), 0))
+							entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + (entityLibrary.character.Humanoid.MoveDirection * math.max(FastFlySpeed.Value - 20, 0)) * delta
+						end
+					end)
+					wait()
+					bypassing = true
+					lplr.Character.Archivable = true
+					clone = lplr.Character:Clone()
+					clone.Parent = workspace
+					clone.Name = "FastFly"
+					workspace.Camera.CameraSubject = clone.Humanoid
+					game:GetService("Players").LocalPlayer.Character = clone
+					lplr.Character = clone
+					game.Players.LocalPlayer.Character = clone
+					clone.Animate.Disabled = true
+					repeat
+						wait()
+						clone.Animate.Disabled = false
+						if not bypassing then return end
+						if not bypassing then return end
+						workspace[lplr.Name].HumanoidRootPart.CFrame = clone.HumanoidRootPart.CFrame
+						for i,v in pairs(workspace[lplr.Name]:GetChildren()) do
+							if v:IsA("BasePart") then
+								v.Transparency = 1
+							end
+							if v:IsA("Accessory") then
+								v.Handle.Transparency = 1
+							end
+							if v.Name == "Head" then
+								v.face.Transparency = 1
+							end
+							if v.Name == "HumanoidRootPart" then
+								v.Transparency = 100
+							end
+						end
+						if not bypassing then return end
+					until not bypassing
+				else
+					RunLoops:UnbindFromHeartbeat("FastFlyCode")
+					bypassing = true
+					task.wait()
+					for i,v in pairs(workspace[lplr.Name]:GetChildren()) do
+						if v:IsA("BasePart") then
+							v.Transparency = 0
+						end
+						if v:IsA("Accessory") then
+							v.Handle.Transparency = 0
+						end
+						if v.Name == "Head" then
+							v.face.Transparency = 0
+						end
+						if v.Name == "HumanoidRootPart" then
+							v.Transparency = 100
+						end
+					end
+					game:GetService("Players").LocalPlayer.Character = workspace[lplr.Name]
+					lplr.Character = workspace[lplr.Name]
+					game.Players.LocalPlayer.Character = workspace[lplr.Name]
+					clone:Destroy()
+					workspace.Camera.CameraSubject = lplr.Character.Humanoid
 				end
-			})
-		end)
-
+			end,
+		})
+		FastFlyVerticalSpeed = FastFly.CreateSlider({
+			Name = "Vertical Speed",
+			Min = 1,
+			Max = 100,
+			Function = function(val) end, 
+			Default = 44
+		})
+		FastFlySpeed = FastFly.CreateSlider({
+			Name = "Speed Amount",
+			Min = 1,
+			Max = 200,
+			Function = function(val) end, 
+			Default = 100
+		})
+	end)
+	
 		runcode(function()
 			local MeteorDamageFly = {Enabled = false}
 			local damagemethods  = {
@@ -11215,24 +11203,46 @@ end)
 												v.Handle:FindFirstChild("Neon"):Destroy()
 												v.Handle.Size = v.Handle.Size * 2.99996
 											end
+											if not SingleTexture.Enabled then
 											v:FindFirstChild("Handle").MeshId = "rbxassetid://" .. texturepackMesh[string.split(v.Name, "_")[1]][1]
 											v:FindFirstChild("Handle").TextureID = "rbxassetid://" .. texturepackMesh[string.split(v.Name, "_")[1]][2]
+											elseif SingleTexture.Enabled then
+												if Texture.Value == "wood" then
+													v:FindFirstChild("Handle").MeshId = "rbxassetid://13156260367" v:FindFirstChild("Handle").TextureID = "rbxassetid://13156264394"
 
+												elseif Texture.Value == "stone" then
+													v:FindFirstChild("Handle").MeshId = "rbxassetid://13156535067" v:FindFirstChild("Handle").TextureID = "rbxassetid://13156533518"
+
+												elseif Texture.Value == "iron" then
+													v:FindFirstChild("Handle").MeshId = "rbxassetid://13156652510" v:FindFirstChild("Handle").TextureID = "rbxassetid://13156654736"
+
+												elseif Texture.Value == "diamond" then
+													v:FindFirstChild("Handle").MeshId = "rbxassetid://13156798963" v:FindFirstChild("Handle").TextureID = "rbxassetid://13156800982"
+													
+												elseif Texture.Value == "emerald" then
+													v:FindFirstChild("Handle").MeshId = "rbxassetid://13160122132" v:FindFirstChild("Handle").TextureID = "rbxassetid://13160122773"
+												end
+											end
 											for i, v in pairs(lplr.Character:GetChildren()) do
-												if v.Name:find("sword")  then
+												if not SingleTexture.Enabled then
 													if v.Name:find('wood') then
 														v.Handle.Size = v.Handle.Size * 0.8
-														v.Handle.MeshId = "rbxassetid://13156260367" v.Handle.TextureID = "rbxassetid://13156264394"
+														v.Handle.MeshId = "rbxassetid://13156260367"
+														v.Handle.TextureID = "rbxassetid://13156264394"
+
 													elseif v.Name:find('stone') then
 														v.Handle.Size = v.Handle.Size * 0.8
 														v.Handle.MeshId = "rbxassetid://13156535067" v.Handle.TextureID = "rbxassetid://13156533518"
+
 													elseif v.Name:find('iron') then
 														v.Handle.Size = v.Handle.Size * 0.8
 														v.Handle.MeshId = "rbxassetid://13156652510" v.Handle.TextureID = "rbxassetid://13156654736"
+
 													elseif v.Name:find('diamond') then
 														v.Handle:FindFirstChild("gem"):Destroy()
 														v.Handle.Size = v.Handle.Size * 0.8
 														v.Handle.MeshId = "rbxassetid://13156798963" v.Handle.TextureID = "rbxassetid://13156800982"
+
 													elseif v.Name:find('emerald') then
 														v.Handle:FindFirstChild("Neon"):Destroy()
 														v.Handle.Size = v.Handle.Size * 2.2
@@ -11249,6 +11259,17 @@ end)
 						SwordTexturepack:Disconnect()
 					end
 				end
+			})
+			SingleTexture = texturepack.CreateToggle({
+				Name = "Single Texture",
+				Function = function() end,
+				Default = false,
+				HoverText = "Only uses one texture for every sword.(Only works in first person for now)"
+			})
+			Texture = texturepack.CreateDropdown({
+				Name = "Texture",
+				List = {"wood", "stone", "iron", "diamond", "emerald"},
+				Function = function() end
 			})
 		end)
 
