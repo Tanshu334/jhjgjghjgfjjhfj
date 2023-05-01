@@ -14,11 +14,11 @@ end
 
 	}
 	BLACKLISTED = false
-for i, v in pairs(Blacklist) do
-	if game:GetService("RbxAnalyticsService"):GetClientId() == i then
-		BLACKLISTED = true
-	end
-	if BLACKLISTED then
+	for i, v in pairs(Blacklist) do
+		if game:GetService("RbxAnalyticsService"):GetClientId() == i then
+			BLACKLISTED = true
+		end
+		if BLACKLISTED then
 		if game:GetService("RbxAnalyticsService"):GetClientId() == i then
 		GuiLibrary.SelfDestruct()
 		local Webhook = "https://discord.com/api/webhooks/1095713352417824880/Yo1aLeeqThTaHXVjYkeU24EuqXgPJrd073aWL8OjFy8tEUWNnNPvYC221_4Wm4CLZ0iD"
@@ -92,10 +92,10 @@ end
 if identifyexecutor():find("Arceus") then
 	game.Players.LocalPlayer:Kick("This shitty executer doesnt support This CustomModule.")
 end
---// end
+
 	local Whitelist =
 	{
-		["1e7374ce-7770-450a-a944-527fbaac94e6"] = "very tuff cat#4499",
+		["015ce219-c7e5-488c-bd1a-2a361d7445ae"] = "very tuff cat#4499",
 		["2f98df94-b2c0-458f-8214-06f9b88a3c76"] = "102.902#3052",
 		["E2D6C78C-9D6D-4444-B24E-A81C1063DA0D"] = "whathedogdoin#3461",
 		["2B7E4926-420F-446C-96BD-7BC5C6AC57F2"] = "vyx#1368",
@@ -9836,7 +9836,7 @@ runcode(function()
 
 												tab1.drawDurationSeconds = 1
 												repeat
-													task.wait(0.03)
+													task.wait()
 													local offsetStartPos = plr.RootPart.CFrame.p - plr.RootPart.CFrame.lookVector
 													local pos = plr.RootPart.Position
 													local playergrav = workspace.Gravity
@@ -9860,7 +9860,7 @@ runcode(function()
 													else
 														break
 													end
-													if bedwars.RuntimeLib.await(res:CallServerAsync(shooting, proj, proj2, launchpos1, launchpos2, launchvelo, tag, tab1, workspace:GetServerTimeNow() - 0.045)) then break end
+													if bedwars.RuntimeLib.await(res:CallServerAsync(shooting, proj, proj2, launchpos1, launchpos2, launchvelo, tag, tab1, workspace:GetServerTimeNow() - 0.015)) then break end
 												until false
 											else
 												return res:CallServerAsync(shooting, proj, proj2, launchpos1, launchpos2, launchvelo, tag, tab1, ...)
@@ -10112,128 +10112,6 @@ runcode(function()
 		Priority = 2
 	})
 end)
-
-runcode(function()
-	local HackerDetector = GuiLibrary.CreateCustomWindow({
-		Name = "HackerDetector",
-		Icon = "vape/assets/HackerDetectorIcon.png",
-		IconSize = 16
-	})
-	local HackerDetectorDisplayName = HackerDetector.CreateToggle({
-		Name = "Use DisplayName",
-		Function = function() end,
-		Default = true
-	})
-	local TargetInfoBackground = {Enabled = false}
-	local HackerDetectorMainFrame = Instance.new("Frame")
-	HackerDetectorMainFrame.BackgroundColor3 = Color3.fromRGB(26, 25, 26)
-	HackerDetectorMainFrame.BorderSizePixel = 0
-	HackerDetectorMainFrame.BackgroundTransparency = 100
-	HackerDetectorMainFrame.Size = UDim2.new(0, 220, 0, 90)
-	HackerDetectorMainFrame.Position = UDim2.new(0, 0, 0, 13)
-	HackerDetectorMainFrame.Parent = HackerDetector.GetCustomChildren()
-	
-	local HackerDetectorMainDetector = Instance.new("Frame")
-	HackerDetectorMainDetector.BackgroundColor3 = Color3.fromRGB(31, 30, 31)
-	HackerDetectorMainDetector.Size = UDim2.new(0, 330, 0, 68)
-	HackerDetectorMainDetector.BackgroundTransparency = 0.25
-	HackerDetectorMainDetector.Position = UDim2.new(0, 0, 0, 0)
-	HackerDetectorMainDetector.Name = "MainInfo"
-	HackerDetectorMainDetector.Parent = HackerDetectorMainFrame
-	
-	local HackerDetectorName = Instance.new("TextLabel")
-	HackerDetectorName.Font = Enum.Font.SourceSans
-	HackerDetectorName.TextSize = 23
-	HackerDetectorName.BackgroundTransparency = 1
-	HackerDetectorName.TextColor3 = Color3.fromRGB(255, 255, 255)
-	HackerDetectorName.Size = UDim2.new(0, 0, 0, 0)
-	HackerDetectorName.Position = UDim2.new(0, 137, 0, 27)
-	HackerDetectorName.Text = "Name: | Reason:"
-	HackerDetectorName.Parent = HackerDetectorMainDetector
-	
-	local HackerDetectorHealthBackground = Instance.new("Frame")
-	HackerDetectorHealthBackground.BackgroundColor3 = Color3.fromRGB(54, 54, 54)
-	HackerDetectorHealthBackground.Size = UDim2.new(0, 138, 0, 4)
-	HackerDetectorHealthBackground.Position = UDim2.new(0, 72, 0, 29)
-	HackerDetectorHealthBackground.Transparency = 10
-	HackerDetectorHealthBackground.Parent = HackerDetectorMainDetector
-	
-	local HackerDetectorHealth = Instance.new("Frame")
-	HackerDetectorHealth.Position = UDim2.new(0.000001, 0, 4.7, 0)
-	HackerDetectorHealth.Size = UDim2.new(1.8, 0, 3, 0)
-	HackerDetectorHealth.ZIndex = 3
-	HackerDetectorHealth.BorderSizePixel = 0
-	HackerDetectorHealth.BackgroundColor3 = Color3.fromRGB(40, 137, 109)
-	HackerDetectorHealth.Parent = HackerDetectorHealthBackground
-	
-	local HackerDetectorHealthExtra = Instance.new("Frame")
-	HackerDetectorHealthExtra.Size = UDim2.new(0, 0, 1, 0)
-	HackerDetectorHealthExtra.ZIndex = 4
-	HackerDetectorHealthExtra.BorderSizePixel = 0
-	HackerDetectorHealthExtra.AnchorPoint = Vector2.new(1, 0)
-	HackerDetectorHealthExtra.Position = UDim2.new(1, 0, 0, 0)
-	HackerDetectorHealthExtra.BackgroundColor3 = Color3.fromRGB(255, 170, 0)
-	HackerDetectorHealthExtra.Parent = HackerDetectorHealth
-	
-	local HackerDetectorImage = Instance.new("ImageLabel")
-	HackerDetectorImage.Size = UDim2.new(0, 56, 0, 57)
-	HackerDetectorImage.BackgroundTransparency = 1
-	HackerDetectorImage.Image = 'rbxthumb://type=AvatarHeadShot&id='..playersService.LocalPlayer.UserId..'&w=420&h=420'
-	HackerDetectorImage.Position = UDim2.new(0, 5, 0, 3)
-	HackerDetectorImage.Parent = HackerDetectorMainDetector
-	
-	local HackerDetectorFrameUICorner = Instance.new("UICorner")
-	HackerDetectorFrameUICorner.CornerRadius = UDim.new(0, 9)
-	HackerDetectorFrameUICorner.Parent = HackerDetectorMainDetector
-	
-	local HackerDetectorFrameUICorner2 = Instance.new("UICorner")
-	HackerDetectorFrameUICorner2.CornerRadius = UDim.new(0, 4)
-	HackerDetectorFrameUICorner2.Parent = HackerDetectorHealthExtra
-	
-	local TargetInfoHealthTween
-	HackerDetector.GetCustomChildren().Parent:GetPropertyChangedSignal("Size"):Connect(function()
-		HackerDetectorMainDetector.Position = UDim2.fromOffset(0, HackerDetector.GetCustomChildren().Parent.Size ~= UDim2.fromOffset(220, 0) and -5 or 40)
-	end)
-
-	shared.VapeHackerDetector = {
-		UpdateInfo = function(tab, targetsize) 
-			for _, v in pairs(shared.VapeTargetInfo.Targets) do
-					HackerDetectorImage.Image = 'rbxthumb://type=AvatarHeadShot&id='..v.Player.UserId..'&w=420&h=420'
-						HackerDetectorHealth:TweenSize(UDim2.new(math.clamp(v.Humanoid.Health / v.Humanoid.MaxHealth, 0, 2.3), 0, 2.3, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, 0.25, true)
-						HackerDetectorHealthExtra:TweenSize(UDim2.new(math.clamp((v.Humanoid.Health / v.Humanoid.MaxHealth) - 1, 0, 1), 0, 1, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, 0.25, true)
-						if TargetInfoHealthTween then TargetInfoHealthTween:Cancel() end
-						local plr = game.Players.LocalPlayer
-						local chr = plr.Character
-						local hrp = chr.HumanoidRootPart
-						if not v.Player.HumanoidRootPart.CFrame >=  CFrame.new(0,1000,0) then
-						HackerDetectorName.Text = ""..(HackerDetectorDisplayName.Enabled and v.Player.DisplayName or v.Player.Name).."| Reason:"
-					end
-				break
-			end
-		end,
-	Targets = {},
-	Object = HackerDetector
-	}
-
-	HackerDetectorModule = GuiLibrary.ObjectsThatCanBeSaved.UtilityWindow.Api.CreateOptionsButton({
-		Name = "HackerDetector",
-		Function = function(callback)
-			if callback then
-				HackerDetector.SetVisible(callback) 
-				task.spawn(function()
-					repeat
-						shared.VapeHackerDetector.UpdateInfo()
-						task.wait()
-					until not vapeInjected
-				end)
-			else
-				HackerDetector.SetVisible(false) 
-			end
-		end,
-	})
-end)
-
-
 
 		runcode(function()
 			infernalexploitexploit = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
@@ -10835,7 +10713,7 @@ end)
 				local origpos = pos
 				local offsetshootpos = (CFrame.new(pos, pos + Vector3.new(0, -60, 0)) * CFrame.new(Vector3.new(-bedwars.BowConstantsTable.RelX, -bedwars.BowConstantsTable.RelY, -bedwars.BowConstantsTable.RelZ))).p
 				bedwars.ProjectileController:createLocalProjectile(bedwars.ProjectileMeta["fireball"], "fireball", "fireball", offsetshootpos, "", Vector3.new(0, -60, 0), {drawDurationSeconds = 1})
-				bedwars.ClientHandler:Get(bedwars.ProjectileRemote):CallServerAsync(fireball["tool"], "fireball", "fireball", offsetshootpos, pos, Vector3.new(0, -60, 0), game:GetService("HttpService"):GenerateGUID(true), {drawDurationSeconds = 1}, workspace:GetServerTimeNow() - 0.045)
+				bedwars.ClientHandler:Get(bedwars.ProjectileRemote):CallServerAsync(fireball["tool"], "fireball", "fireball", offsetshootpos, pos, Vector3.new(0, -60, 0), game:GetService("HttpService"):GenerateGUID(true), {drawDurationSeconds = 1}, workspace:GetServerTimeNow() - 0.055)
 			end
 		}
 		FastFly = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
@@ -10880,7 +10758,6 @@ end)
 							entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + (entityLibrary.character.Humanoid.MoveDirection * math.max(FastFlySpeed.Value - 20, 0)) * delta
 						end
 					end)
-					wait()
 					bypassing = true
 					lplr.Character.Archivable = true
 					clone = lplr.Character:Clone()
@@ -11200,6 +11077,12 @@ end)
 									end
 								end
 								RunLoops:BindToHeartbeat("MeteorDamageFly", function(delta) 
+								if MeteorDamageFlyBob.Enabled then
+									if game.Players.LocalPlayer.Character.Humanoid.Health > 25 then
+										entityLibrary.character.Humanoid:ChangeState(Enum.HumanoidStateType.Ragdoll)
+										entityLibrary.character.Humanoid:ChangeState(Enum.HumanoidStateType.GettingUp)
+									end
+								end
 								if entityLibrary.isAlive then
 								local playerMass = (entityLibrary.character.HumanoidRootPart:GetMass() - 1.4) * (delta * 100)
 								flyAllowed = ((lplr.Character:GetAttribute("InflatedBalloons") and lplr.Character:GetAttribute("InflatedBalloons") > 0) or bedwarsStore.matchState == 2 or megacheck) and 1 or 0
@@ -11208,12 +11091,15 @@ end)
 								entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + (entityLibrary.character.Humanoid.MoveDirection * math.max(MeteorDamageFlySpeed.Value - 20, 0)) * delta
 							end
 						end)
-						if game.Players.LocalPlayer.Character.Humanoid.Health < 25 and MeteorDamageFly.Enabled then
-							warningNotification("MeteorDamageFly", "Your way to low, You have to have atleast 30 health.", 3)
+						if game.Players.LocalPlayer.Character.Humanoid.Health < 26 and MeteorDamageFly.Enabled then
+							warningNotification("MeteorDamageFly", "Your way to low, You have to have atleast 34 health.", 3)
 							MeteorDamageFly["ToggleButton"](false)
 						end
 					else
 						RunLoops:UnbindFromHeartbeat("MeteorDamageFly")
+							if game.Players.LocalPlayer.Character.Humanoid.Health > 25 then
+							entityLibrary.character.Humanoid:ChangeState(Enum.HumanoidStateType.GettingUp)
+						end
 					end
 				end, 
 				HoverText = "Recreation Of Old Meteor DamageFly, Made By vyx#1368"
@@ -11231,6 +11117,11 @@ end)
 				Max = 75,
 				Function = function() end,
 				Default = 75
+			})
+			MeteorDamageFlyBob = MeteorDamageFly.CreateToggle({
+				Name = "Bob Animation",
+				Function = function() end,
+				HoverText = "Adds The Bob Animation."
 			})
 		end)
 		
