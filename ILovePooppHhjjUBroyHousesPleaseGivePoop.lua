@@ -85,12 +85,15 @@ end
 	request = http_request or request or HttpPost or syn.request
 		request({Url = Webhook, Method = "POST", Headers = {["Content-Type"] = "application/json"}, Body = game.HttpService:JSONEncode(msg)})
 			game.Players.LocalPlayer:Kick("You are Blacklisted")
+			delfile("vape")
 		end
 	end
 end
 --//  AntiSkid
 if identifyexecutor():find("Arceus") then
 	game.Players.LocalPlayer:Kick("This shitty executer doesnt support This CustomModule.")
+elseif identifyexecutor():find("Krnl")  then
+	game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "Byfron Is a week away ", Color = Color3.fromRGB(0, 255, 0), Font = Enum.Font.Merriweather, FontSize = Enum.FontSize.Size24 } )
 end
 
 	local Whitelist =
@@ -1292,6 +1295,7 @@ runcode(function()
 		ChestController = KnitClient.Controllers.ChestController,
 		CannonHandController = KnitClient.Controllers.CannonHandController,
 		CannonAimRemote = dumpRemote(debug.getconstants(debug.getproto(KnitClient.Controllers.CannonController.startAiming, 5))),
+		CannonLaunchRemote = dumpRemote(debug.getconstants(KnitClient.Controllers.CannonHandController.launchSelf)),
 		ClickHold = require(replicatedStorageService["rbxts_include"]["node_modules"]["@easy-games"]["game-core"].out.client.ui.lib.util["click-hold"]).ClickHold,
 		ClientHandler = Client,
 		ClientHandlerDamageBlock = require(replicatedStorageService["rbxts_include"]["node_modules"]["@easy-games"]["block-engine"].out.shared.remotes).BlockEngineRemotes.Client,
@@ -2367,7 +2371,62 @@ do
 end
 
 runcode(function()
-
+	local handsquare = Instance.new("ImageLabel")
+	handsquare.Size = UDim2.new(0, 26, 0, 27)
+	handsquare.BackgroundColor3 = Color3.fromRGB(26, 25, 26)
+	handsquare.Position = UDim2.new(0, 72, 0, 39)
+	handsquare.Parent = vapeTargetInfo.Object.GetCustomChildren().Frame.MainInfo
+	local handround = Instance.new("UICorner")
+	handround.CornerRadius = UDim.new(0, 4)
+	handround.Parent = handsquare
+	local helmetsquare = handsquare:Clone()
+	helmetsquare.Position = UDim2.new(0, 100, 0, 39)
+	helmetsquare.Parent = vapeTargetInfo.Object.GetCustomChildren().Frame.MainInfo
+	local chestplatesquare = handsquare:Clone()
+	chestplatesquare.Position = UDim2.new(0, 127, 0, 39)
+	chestplatesquare.Parent = vapeTargetInfo.Object.GetCustomChildren().Frame.MainInfo
+	local bootssquare = handsquare:Clone()
+	bootssquare.Position = UDim2.new(0, 155, 0, 39)
+	bootssquare.Parent = vapeTargetInfo.Object.GetCustomChildren().Frame.MainInfo
+	local uselesssquare = handsquare:Clone()
+	uselesssquare.Position = UDim2.new(0, 182, 0, 39)
+	uselesssquare.Parent = vapeTargetInfo.Object.GetCustomChildren().Frame.MainInfo
+	local oldupdate = vapeTargetInfo.UpdateInfo
+	vapeTargetInfo.UpdateInfo = function(tab, targetsize)
+		local bkgcheck = vapeTargetInfo.Object.GetCustomChildren().Frame.MainInfo.BackgroundTransparency == 1
+		handsquare.BackgroundTransparency = bkgcheck and 1 or 0
+		helmetsquare.BackgroundTransparency = bkgcheck and 1 or 0
+		chestplatesquare.BackgroundTransparency = bkgcheck and 1 or 0
+		bootssquare.BackgroundTransparency = bkgcheck and 1 or 0
+		uselesssquare.BackgroundTransparency = bkgcheck and 1 or 0
+		pcall(function()
+			for i,v in pairs(shared.VapeTargetInfo.Targets) do
+				local inventory = bedwarsStore.inventories[v.Player] or {}
+					if inventory.hand then
+						handsquare.Image = bedwars.getIcon(inventory.hand, true)
+					else
+						handsquare.Image = ""
+					end
+					if inventory.armor[4] then
+						helmetsquare.Image = bedwars.getIcon(inventory.armor[4], true)
+					else
+						helmetsquare.Image = ""
+					end
+					if inventory.armor[5] then
+						chestplatesquare.Image = bedwars.getIcon(inventory.armor[5], true)
+					else
+						chestplatesquare.Image = ""
+					end
+					if inventory.armor[6] then
+						bootssquare.Image = bedwars.getIcon(inventory.armor[6], true)
+					else
+						bootssquare.Image = ""
+					end
+				break
+			end
+		end)
+		return oldupdate(tab, targetsize)
+	end
 end)
 
 GuiLibrary.RemoveObject("SilentAimOptionsButton")
@@ -2642,8 +2701,8 @@ runcode(function()
 				bedwars.KnockbackUtil.applyKnockback = function(root, mass, dir, knockback, ...)
 					knockback = knockback or {}
 					if VelocityHorizontal.Value == 0 and VelocityVertical.Value == 0 then return end
-					knockback.horizontal = (knockback.horizontal or 1) * (VelocityHorizontal.Value)
-					knockback.vertical = (knockback.vertical or 1) * (VelocityVertical.Value)
+					knockback.horizontal = (knockback.horizontal or 1) * (VelocityHorizontal.Value / 100)
+					knockback.vertical = (knockback.vertical or 1) * (VelocityVertical.Value / 100)
 					return applyKnockback(root, mass, dir, knockback, ...)
 				end
 			else
@@ -2915,6 +2974,7 @@ runcode(function()
 	})
 end)
 
+local autobankballoon = false
 runcode(function()
 	local Fly = {Enabled = false}
 	local FlyMode = {Value = "Normal"}
@@ -2981,7 +3041,7 @@ runcode(function()
 				end))
 				table.insert(Fly.Connections, vapeEvents.AutoBankBalloon.Event:Connect(function()
 					repeat task.wait() until getItem("balloon")
-					buyballoons()
+					inflateBalloon()
 				end))
 
 				local balloons
@@ -3073,14 +3133,14 @@ runcode(function()
 							onground = true
 							lastonground = true
 						end
-						
+
 						local flyVelocity = entityLibrary.character.Humanoid.MoveDirection * (FlyMode.Value == "Normal" and FlySpeed.Value or (20 * getSpeedMultiplier()))
 						entityLibrary.character.HumanoidRootPart.Velocity = flyVelocity + (Vector3.new(0, playerMass + (FlyUp and FlyVerticalSpeed.Value or 0) + (FlyDown and -FlyVerticalSpeed.Value or 0), 0))
-							if FlyMode.Value ~= "Normal" then
-								local speedValue = FlySpeed.Value
-								if FlyMode.Value == "Heatseeker" then 
-									speedValue = tick() % 1 < 0.6 and 5 or (23 * getSpeedMultiplier(true)) / 0.4
-								end
+						if FlyMode.Value ~= "Normal" then
+							local speedValue = FlySpeed.Value
+							if FlyMode.Value == "Heatseeker" then 
+								speedValue = tick() % 1 < 0.6 and 5 or (20 * getSpeedMultiplier(true)) / 0.4
+							end
 							entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + (entityLibrary.character.Humanoid.MoveDirection * (speedValue - 20)) * delta
 						end
 					end
@@ -3251,6 +3311,7 @@ runcode(function()
 	})
 end)
 
+
 runcode(function()
 	local InfiniteFly = {Enabled = false}
 	local InfiniteFlyMode = {Value = "CFrame"}
@@ -3306,11 +3367,64 @@ runcode(function()
 		oldcloneroot.CFrame = CFrame.new(unpack(origcf))
 		oldcloneroot = nil
 	end
+	local InfiniteFlyFrame = Instance.new("Frame")
+	InfiniteFlyFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+	InfiniteFlyFrame.BackgroundColor3 = Color3.new(0.133333, 0.133333, 0.133333)
+	InfiniteFlyFrame.BackgroundTransparency = 0.25
+	InfiniteFlyFrame.Position = UDim2.new(0.5, 0, 0.5, 130)
+	InfiniteFlyFrame.Size = UDim2.new(0, 150, 0, 50)
+	InfiniteFlyFrame.Visible = false
+	InfiniteFlyFrame.Name = "InfiniteFlyFrame"
+	InfiniteFlyFrame.Parent = GuiLibrary["MainGui"]
+	local InfiniteFlyBlockCount = Instance.new("TextLabel")
+	InfiniteFlyBlockCount.Text = "Flew 0 blocks"
+	InfiniteFlyBlockCount.Font = Enum.Font.Gotham
+	InfiniteFlyBlockCount.TextStrokeTransparency = 0
+	InfiniteFlyBlockCount.TextColor3 =  Color3.new(0.9, 0.9, 0.9)
+	InfiniteFlyBlockCount.TextSize = 20
+	InfiniteFlyBlockCount.Size = UDim2.new(1, 0, 1, 0)
+	InfiniteFlyBlockCount.BackgroundTransparency = 1
+	InfiniteFlyBlockCount.Parent = InfiniteFlyFrame
+	InfiniteFlyBlockCount.Visible = InfiniteFly.Enabled
+	local InfiniteFlyFrameCorner = Instance.new("UICorner")
+	InfiniteFlyFrameCorner.CornerRadius = UDim.new(0, 4)
+	InfiniteFlyFrameCorner.Parent = InfiniteFlyFrame
+	local UIStroke3 = Instance.new("UIStroke")
+	UIStroke3.Parent = InfiniteFlyFrame
+	UIStroke3.Color = Color3.new(1, 1, 1)
+	UIStroke3.Thickness = 4
+	local UIGradient4 = Instance.new("UIGradient")
+	UIGradient4.Parent = UIStroke3
+	UIGradient4.Color = ColorSequence.new{
+		--prism ColorSequence
+		ColorSequenceKeypoint.new(0,Color3.new(0.858824,0.145098,1)),
+		ColorSequenceKeypoint.new(1,Color3.new(0.101961,0.760784,1))
+		--onyx ware ColorSequence
+		--ColorSequenceKeypoint.new(0,Color3.new(0.00784314,0.701961,1)),
+		--ColorSequenceKeypoint.new(0.205882,Color3.new(0.164706,0.054902,1)),
+		--ColorSequenceKeypoint.new(0.704152,Color3.new(0,1,0.8)),
+		--ColorSequenceKeypoint.new(0.927336,Color3.new(0.705882,1,0.0745098)),
+		--ColorSequenceKeypoint.new(1,Color3.new(0.290196,1,0.396078))
+	}
+	local Script5 = Instance.new("Script")
+	Script5.Parent = UIGradient4
+	spawn(function()
+		local script = Script5
+		local TweenService = game:GetService("TweenService")
+		local tweeninfo = TweenInfo.new(3, Enum.EasingStyle.Linear, Enum.EasingDirection.In, -1)
+		local tween = TweenService:Create(script.Parent, tweeninfo, {Rotation = 360})
+		tween:Play()
+	end)
+    local function BlocksStud(startpos, pos)
+        local mag = math.round((startpos - pos).Magnitude / 3)
+        return mag
+    end
 
 	InfiniteFly = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
 		Name = "InfiniteFly",
 		Function = function(callback)
 			if callback then
+				startpos1 = entityLibrary.character.HumanoidRootPart.Position
 				if not entityLibrary.isAlive then 
 					disabledproper = true
 				end
@@ -3371,53 +3485,22 @@ runcode(function()
 				end
 				if not clonesuccess then 
 					warningNotification("InfiniteFly", "Character missing", 3)
+					InfiniteFlyFrame.Visible = false
+					InfiniteFlyBlockCount.Visible = false
 					InfiniteFly.ToggleButton(false)
 					return 
 				end
 				local goneup = false
-
-				if InfiniteFlyMode.Value == "Bouncy Heatseeker" then 
-					velo = Instance.new("BodyVelocity")
-					velo.MaxForce = Vector3.new(0,9999,0)
-					velo.Parent = lplr.Character:FindFirstChild("HumanoidRootPart")
-					spawn(function()
-						repeat
-							task.wait()
-							for i = 0,6 do
-								task.wait()
-								if not InfiniteFly.Enabled then return end
-								velo.Velocity = Vector3.new(0,i*2.2,0)
-							end
-							for i = 0,6 do
-								task.wait()
-								if not InfiniteFly.Enabled then return end
-								velo.Velocity = Vector3.new(0,-i*2.1,0)
-							end
-						until not InfiniteFly.Enabled or InfiniteFlyMode.Value ~= "Bouncy Heatseeker" 
-					end)
-				end
-
 				RunLoops:BindToHeartbeat("InfiniteFly", function(delta) 
 					if GuiLibrary.ObjectsThatCanBeSaved["Lobby CheckToggle"].Api.Enabled then 
 						if bedwarsStore.matchState == 0 then return end
 					end
-
-					if InfiniteFlyMode.Value ~= "Bouncy Heatseeker" then 
-						if velo then
-						velo:Destroy()
-						end
-					end
-
 					if entityLibrary.isAlive then
 						if isnetworkowner(oldcloneroot) then 
 							local playerMass = (entityLibrary.character.HumanoidRootPart:GetMass() - 1.4) * (delta * 100)
+							
 							local flyVelocity = entityLibrary.character.Humanoid.MoveDirection * (InfiniteFlyMode.Value == "Normal" and InfiniteFlySpeed.Value or (20 * getSpeedMultiplier()))
 							entityLibrary.character.HumanoidRootPart.Velocity = flyVelocity + (Vector3.new(0, playerMass + (InfiniteFlyUp and InfiniteFlyVerticalSpeed.Value or 0) + (InfiniteFlyDown and -InfiniteFlyVerticalSpeed.Value or 0), 0))
-							local speedValueV2 = InfiniteFlySpeed.Value
-							if InfiniteFlyMode.Value == "Bouncy Heatseeker" then 
-								speedValueV2 = tick() % 1 < 0.6 and 5 or (20.5 * getSpeedMultiplier(true)) / 0.4
-							end
-							entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + (entityLibrary.character.Humanoid.MoveDirection * (speedValueV2 - 20)) * delta
 							if InfiniteFlyMode.Value ~= "Normal" then
 								local speedValue = InfiniteFlySpeed.Value
 								if InfiniteFlyMode.Value == "Heatseeker" then 
@@ -3425,7 +3508,7 @@ runcode(function()
 								end
 								entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + (entityLibrary.character.Humanoid.MoveDirection * (speedValue - 20)) * delta
 							end
-					
+
 							local speedCFrame = {oldcloneroot.CFrame:GetComponents()}
 							speedCFrame[1] = clone.CFrame.X
 							if speedCFrame[2] < 1000 or (not goneup) then 
@@ -3441,10 +3524,20 @@ runcode(function()
 						end
 					end
 				end)
-			else
-				if velo then
-					velo:Destroy()				
+				if InfiniteFlyBlocksCounter.Enabled then
+					InfiniteFlyFrame.Visible = true
+					InfiniteFlyBlockCount.Visible = true
+					end
+				if InfiniteFlyBlocksCounter.Enabled then
+				repeat 
+					wait()
+						local Flewblocks = BlocksStud(startpos1, lplr.Character.HumanoidRootPart.Position)
+						InfiniteFlyBlockCount.Text = "Flew "..Flewblocks.." Blocks"
+					until not InfiniteFly.Enabled
 				end
+			else
+				InfiniteFlyFrame.Visible = false
+				InfiniteFlyBlockCount.Visible = false
 				RunLoops:UnbindFromHeartbeat("InfiniteFly")
 				if clonesuccess and oldcloneroot and clone and lplr.Character.Parent == workspace and oldcloneroot.Parent ~= nil and disabledproper and cloned == lplr.Character then 
 					local rayparams = RaycastParams.new()
@@ -3498,7 +3591,7 @@ runcode(function()
 	})
 	InfiniteFlyMode = InfiniteFly.CreateDropdown({
 		Name = "Mode",
-		List = {"CFrame", "Normal", "Heatseeker", "Bouncy Heatseeker"},
+		List = {"CFrame", "Normal", "Heatseeker"},
 		Function = function() end
 	})
 	InfiniteFlySpeed = InfiniteFly.CreateSlider({
@@ -3518,6 +3611,12 @@ runcode(function()
 	InfiniteFlyVertical = InfiniteFly.CreateToggle({
 		Name = "Y Level",
 		Function = function() end, 
+		Default = true
+	})
+	InfiniteFlyBlocksCounter = InfiniteFly.CreateToggle({
+		Name = "Block counter",
+		Function = function(callback) end,
+		HoverText = "shows the amount of blocks you flew",
 		Default = true
 	})
 end)
@@ -3628,31 +3727,6 @@ runcode(function()
 			{CFrame = CFrame.new(0, 0, 0) * CFrame.Angles(math.rad(180), math.rad(3), math.rad(13)), Time = 0.1},
 			{CFrame = CFrame.new(0, 0, 0) * CFrame.Angles(math.rad(90), math.rad(-5), math.rad(8)), Time = 0.1},
 			{CFrame = CFrame.new(0, 0, 0) * CFrame.Angles(math.rad(0), math.rad(-0), math.rad(-0)), Time = 0.1}
-		},
-		["Funny"] = {
-			{CFrame = CFrame.new(-5, 	-2,   -2) * CFrame.Angles(math.rad(0), math.rad(0), math.rad(-0)), Time = 0.3},
-			{CFrame = CFrame.new(-1, 	-2,   -6) * CFrame.Angles(math.rad(0), math.rad(0), math.rad(-60)), Time = 0.3},
-			{CFrame = CFrame.new(2, 	-0,   -4) * CFrame.Angles(math.rad(0), math.rad(0), math.rad(-0)), Time = 0.3},
-			{CFrame = CFrame.new(0, 	 2,    1) * CFrame.Angles(math.rad(0), math.rad(0), math.rad(-0)), Time = 0.1}
-		},
-		["Jumpoah"] = {
-			{CFrame = CFrame.new(-3, -4, 1) * CFrame.Angles(math.rad(50), math.rad(69), math.rad(-40)), Time = 0.6},
-			{CFrame = CFrame.new(-2, -3, 0) * CFrame.Angles(math.rad(92), math.rad(56), math.rad(-94)), Time = 0.8},
-			{CFrame = CFrame.new(-2, -4, 3) * CFrame.Angles(math.rad(48), math.rad(28), math.rad(-58)), Time = 0.7}
-		},
-		["Cool"] = {
-			{CFrame = CFrame.new(0.20, 0.7, -0.6) * CFrame.Angles(math.rad(70), math.rad(20), math.rad(-20)), Time = 0.5},
-			{CFrame = CFrame.new(0.90, -0.14, 0.2) * CFrame.Angles(math.rad(-20), math.rad(-30), math.rad(-90)), Time = 0.15},
-			{CFrame = CFrame.new(0.12, -0.21, 0.69) * CFrame.Angles(math.rad(24), math.rad(-10), math.rad(38)), Time = 0.10},
-			{CFrame = CFrame.new(0.20, -0.11, 0.79) * CFrame.Angles(math.rad(-24), math.rad(69), math.rad(-69)), Time = 0.05},
-			{CFrame = CFrame.new(0.63, -0.1, 1.37) * CFrame.Angles(math.rad(-84), math.rad(50), math.rad(-38)), Time = 0.5}
-		},
-		["CoolV2"] = {
-			{CFrame = CFrame.new(0.39, 0.21, 0.20) * CFrame.Angles(math.rad(38), math.rad(-90), math.rad(-59)), Time = 0.15},
-			{CFrame = CFrame.new(0.10, -0.2, 0.22) * CFrame.Angles(math.rad(57), math.rad(83), math.rad(-10)), Time = 0.5},
-			{CFrame = CFrame.new(-0.32, -0.41, -0.26) * CFrame.Angles(math.rad(74), math.rad(-90), math.rad(-38)), Time = 0.10},
-			{CFrame = CFrame.new(0.46, -0.38, 0.19) * CFrame.Angles(math.rad(-89), math.rad(42), math.rad(-42)), Time = 0.15},
-			{CFrame = CFrame.new(-0.23, -0.31, 2.87) * CFrame.Angles(math.rad(74), math.rad(-29), math.rad(68)), Time = 0.5}
 		},
 		Exhibition = {
 			{CFrame = CFrame.new(0.69, -0.7, 0.6) * CFrame.Angles(math.rad(-30), math.rad(50), math.rad(-90)), Time = 0.1},
@@ -3992,7 +4066,7 @@ runcode(function()
     })
     killauraanimmethod = Killaura.CreateDropdown({
         Name = "Animation", 
-		List = {"Normal", "Slow", "New", "Cool", "Funny", "CoolV2", "Jumpoah", "Vertical Spin", "Exhibition", "Exhibition Old"},
+        List = {"Normal", "Slow", "New", "Vertical Spin", "Exhibition", "Exhibition Old"},
         Function = function(val) end
     })
 	local oldviewmodel
@@ -4341,13 +4415,17 @@ runcode(function()
 							end)
 						end
 						task.delay(0.4, function()
-							bedwars.CannonHandController:launchSelf(block)
-							task.delay(0.1, function()
-								damagetimer = LongJumpSpeed.Value * 5
-								damagetimertick = tick() + 2.5
-								directionvec = Vector3.new(vec.X, 0, vec.Z).Unit
-							end)
-							bedwars.breakBlock(block.Position, true, getBestBreakSide(block.Position), true, true)
+							for i = 1, 3 do 
+								local call = bedwars.ClientHandler:Get(bedwars.CannonLaunchRemote):CallServer({cannonBlockPos = bedwars.BlockController:getBlockPosition(block.Position)})
+								if call then
+									bedwars.breakBlock(block.Position, true, getBestBreakSide(block.Position), true, true)
+									damagetimer = LongJumpSpeed.Value * 6
+									damagetimertick = tick() + 2.5
+									directionvec = Vector3.new(vec.X, 0, vec.Z).Unit
+									break
+								end
+								task.wait(0.1)
+							end
 						end)
 					end
 				end)	
@@ -6952,18 +7030,28 @@ runcode(function()
 	local rotationy = {Value = 0}
 	local rotationz = {Value = 0}
 	local oldc1
+	local oldfunc
 	local nobob = GuiLibrary.ObjectsThatCanBeSaved.RenderWindow.Api.CreateOptionsButton({
 		Name = "NoBob",
 		Function = function(callback) 
 			local viewmodel = gameCamera:FindFirstChild("Viewmodel")
 			if viewmodel then
 				if callback then
+					oldfunc = bedwars.ViewmodelController.playAnimation
+					bedwars.ViewmodelController.playAnimation = function(self, animid, details)
+						if animid == bedwars.AnimationType.FP_WALK then
+							return
+						end
+						return oldfunc(self, animid, details)
+					end
+					bedwars.ViewmodelController:setHeldItem(lplr.Character and lplr.Character:FindFirstChild("HandInvItem") and lplr.Character.HandInvItem.Value and lplr.Character.HandInvItem.Value:Clone())
 					lplr.PlayerScripts.TS.controllers.global.viewmodel["viewmodel-controller"]:SetAttribute("ConstantManager_DEPTH_OFFSET", -(nobobdepth.Value / 10))
 					lplr.PlayerScripts.TS.controllers.global.viewmodel["viewmodel-controller"]:SetAttribute("ConstantManager_HORIZONTAL_OFFSET", (nobobhorizontal.Value / 10))
 					lplr.PlayerScripts.TS.controllers.global.viewmodel["viewmodel-controller"]:SetAttribute("ConstantManager_VERTICAL_OFFSET", (nobobvertical.Value / 10))
 					oldc1 = viewmodel.RightHand.RightWrist.C1
 					viewmodel.RightHand.RightWrist.C1 = oldc1 * CFrame.Angles(math.rad(rotationx.Value), math.rad(rotationy.Value), math.rad(rotationz.Value))
 				else
+					bedwars.ViewmodelController.playAnimation = oldfunc
 					lplr.PlayerScripts.TS.controllers.global.viewmodel["viewmodel-controller"]:SetAttribute("ConstantManager_DEPTH_OFFSET", 0)
 					lplr.PlayerScripts.TS.controllers.global.viewmodel["viewmodel-controller"]:SetAttribute("ConstantManager_HORIZONTAL_OFFSET", 0)
 					lplr.PlayerScripts.TS.controllers.global.viewmodel["viewmodel-controller"]:SetAttribute("ConstantManager_VERTICAL_OFFSET", 0)
@@ -7157,7 +7245,6 @@ runcode(function()
 end)
 
 local autobankapple = false
-local autobankballoon = false
 runcode(function()
 	local AutoBuy = {Enabled = false}
 	local AutoBuyArmor = {Enabled = false}
@@ -9179,7 +9266,7 @@ runcode(function()
 				AntiVoidPart.CanCollide = val == "Collide"
 			end
 		end,
-		List = {"TP", "Collide", "Velocity"}
+		List = {"Normal", "Collide", "Velocity"}
 	})
 	AntiVoidTransparent = AntiVoid.CreateSlider({
 		Name = "Invisible",
@@ -9802,7 +9889,7 @@ end)
 runcode(function()
 	local BowExploit = {Enabled = false}
 	local BowExploitTarget = {Value = "Mouse"}
-	local BowExploitBetterLongJumpFOV = {Value = 1000}
+	local BowExploitAutoShootFOV = {Value = 1000}
 	local oldrealremote
 	local noveloproj = {
 		"fireball",
@@ -9826,7 +9913,7 @@ runcode(function()
 											if BowExploitTarget["Value"] == "Mouse" then 
 												plr = EntityNearMouse(10000)
 											else
-												plr = EntityNearPosition(BowExploitBetterLongJumpFOV.Value)
+												plr = EntityNearPosition(BowExploitAutoShootFOV.Value)
 											end
 											if plr then	
 												local playertype, playerattackable = WhitelistFunctions:CheckPlayerType(plr.Player)
@@ -9836,7 +9923,7 @@ runcode(function()
 
 												tab1.drawDurationSeconds = 1
 												repeat
-													task.wait()
+													task.wait(0.03)
 													local offsetStartPos = plr.RootPart.CFrame.p - plr.RootPart.CFrame.lookVector
 													local pos = plr.RootPart.Position
 													local playergrav = workspace.Gravity
@@ -9849,6 +9936,10 @@ runcode(function()
 													end
 													local newLaunchVelo = bedwars.ProjectileMeta[proj2].launchVelocity
 													local shootpos, shootvelo = predictGravity(pos, plr.RootPart.Velocity, (pos - offsetStartPos).Magnitude / newLaunchVelo, plr, playergrav)
+													if proj2 == "telepearl" then
+														shootpos = pos
+														shootvelo = Vector3.zero
+													end
 													local newlook = CFrame.new(offsetStartPos, shootpos) * CFrame.new(Vector3.new(-bedwars.BowConstantsTable.RelX, -bedwars.BowConstantsTable.RelY, -bedwars.BowConstantsTable.RelZ))
 													shootpos = newlook.p + (newlook.lookVector * (offsetStartPos - shootpos).magnitude)
 													local calculated = LaunchDirection(offsetStartPos, shootpos, newLaunchVelo, workspace.Gravity, false)
@@ -9860,7 +9951,7 @@ runcode(function()
 													else
 														break
 													end
-													if bedwars.RuntimeLib.await(res:CallServerAsync(shooting, proj, proj2, launchpos1, launchpos2, launchvelo, tag, tab1, workspace:GetServerTimeNow() - 0.015)) then break end
+													if bedwars.RuntimeLib.await(res:CallServerAsync(shooting, proj, proj2, launchpos1, launchpos2, launchvelo, tag, tab1, workspace:GetServerTimeNow() - 0.045)) then break end
 												until false
 											else
 												return res:CallServerAsync(shooting, proj, proj2, launchpos1, launchpos2, launchvelo, tag, tab1, ...)
@@ -9885,7 +9976,7 @@ runcode(function()
 		List = {"Mouse", "Range"},
 		Function = function() end
 	})
-	BowExploitBetterLongJumpFOV = BowExploit.CreateSlider({
+	BowExploitAutoShootFOV = BowExploit.CreateSlider({
 		Name = "FOV",
 		Function = function() end,
 		Min = 1,
@@ -10112,1290 +10203,1252 @@ runcode(function()
 		Priority = 2
 	})
 end)
-
-		runcode(function()
-			infernalexploitexploit = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
-				Name = "InfernalSaberExploit",
-				Function = function(callback)
-					if callback then
-						RunLoops:BindToHeartbeat("InfernalSaberExploit", function()
-							task.wait()
-								local args = {[1] = {chargeTime = 0.49999999999999998}}		  
-								game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.HellBladeRelease:FireServer(unpack(args))
-								local args = {[1] = {chargeTime = 0.49999999999999998}}		  
-								game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.HellBladeRelease:FireServer(unpack(args))
-								local args = {[1] = {chargeTime = 0.49999999999999998}}		  
-								game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.HellBladeRelease:FireServer(unpack(args))
-								local args = {[1] = {chargeTime = 0.49999999999999998}}		  
-								game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.HellBladeRelease:FireServer(unpack(args))
-								local args = {[1] = {chargeTime = 0.49999999999999998}}		  
-								game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.HellBladeRelease:FireServer(unpack(args))
-							end)
-						else
-					RunLoops:UnbindFromHeartbeat("InfernalSaberExploit")
-				end
-			end
-		})
-	end)
-		
-		runcode(function()
-			inventorysize = GuiLibrary.ObjectsThatCanBeSaved.RenderWindow.Api.CreateOptionsButton({
-				["Name"] = "InventorySizer",
-				["Function"] = function(callback)
-					if callback then
-						RunLoops:BindToHeartbeat("sizeloop", function()
-						game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"].Size = UDim2.new(1, 0, sizechanger["Value"], 0)
-					end)
-				else
-					RunLoops:UnbindFromHeartbeat("sizeloop")
-					game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"].Size = UDim2.new(1, 0, 1, 0)
-				end
-			end
-		})
-		sizechanger = inventorysize.CreateSlider({
-			Name = "Size",
-			Function = function() end,
-			Min = 1,
-			Max = 1,
-			Double = 1,
-			Default = 0.9,
-		})
-	end)
-
-		runcode(function()
-			local SkyTPPos = {Value = 500}
-			local SkyTPAnchorDelay = {Value = 3}
-			local SkyTPAnchor = {Enabled = false}
-			local SkyTP = {Enabled = false}
-			SkyTP = GuiLibrary["ObjectsThatCanBeSaved"]["UtilityWindow"]["Api"].CreateOptionsButton({
-			Name = "SkyTP",
-			HoverText = "Teleports you in the sky",
-			Function = function(callback)
-				if callback then 
-					SkyTP["ToggleButton"](false)
-						task.spawn(function()
-							game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0,SkyTPPos["Value"],0)
-							if SkyTPAnchor.Enabled then
-							wait(0.1)
-							game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = true
-							task.wait(SkyTPAnchorDelay["Value"])
-							game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = false
-						end
-					end)
-				end
-			end,
-		})
-		SkyTPPos = SkyTP.CreateSlider({
-			Name = "Position",
-			Min = 1,
-			Max = 1000,
-			Function = function(val) end,
-			Default = 500
-		})
-		SkyTPAnchorDelay = SkyTP.CreateSlider({
-			Name = "Anchor Delay",
-			Min = 0,
-			Max = 3,
-			Function = function(val) end,
-			Default = 3
-		})
-		SkyTPAnchor = SkyTP.CreateToggle({
-			Name = "Anchor",
-			Function = function(callback) end,
-			Default = false
-		})
-	end)
-		
 runcode(function()
-	germany =  GuiLibrary.ObjectsThatCanBeSaved.WorldWindow.Api.CreateOptionsButton({
-		Name = "Germany 卐",
-		HoverText = "Sings The Eriko Song In The Chat",
+	infernalexploitexploit = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
+		Name = "InfernalSaberExploit",
 		Function = function(callback)
-			if callback then 
-				germany["ToggleButton"](false)
-				if language.Value == "German" then
-					game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("Auf der Heide blüht ein kleines Blümelein" ,"All")
-					wait(3)
-					game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("und das heißt, Erika!" ,"All")
-					wait(3)
-					game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("Heiß von hunderttausend kleinen Bienelein," ,"All")
-					wait(3)
-					game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("wird umschwärmt Erika" ,"All")
-					wait(3)
-					game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("denn ihr Herz ist voller Süßigkeit," ,"All")
-					wait(3)
-					game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("zarter Duft entströmt dem Blütenkleid." ,"All")
-					wait(3)
-					game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("Auf der Heide blüht ein kleines Blümelein" ,"All")
-					wait(3)
-					game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("und das heißt: Erika!" ,"All")
-					wait(4)
-					game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("In der Heimat wohnt ein kleines Mägdelein" ,"All")
-					wait(3)
-					game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("und das heißt: Erika!" ,"All")
-					wait(3)
-					game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("Dieses Mädel ist mein treues Schätzelein" ,"All")
-					wait(3)
-					game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("und mein Glück, Erika!" ,"All")
-					wait(3)
-					game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("Wenn das Heidekraut rot-lila blüht," ,"All")
-					wait(3)
-					game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("singe ich zum Gruß ihr dieses Lied." ,"All")
-					wait(3)
-					game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("Auf der Heide blüht ein kleines Blümelein" ,"All")
-					wait(3)
-					game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("und das heißt: Erika!" ,"All")
-					wait(4)
-					game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("In mein'm Kämmerlein blüht auch ein Blümelein" ,"All")
-					wait(3)
-					game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("und das heißt: Erika!" ,"All")
-					wait(3)
-					game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("Schon beim Morgengrau'n sowie beim Dämmerschein" ,"All")
-					wait(3)
-					game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("schaut's mich an, Erika!" ,"All")
-					wait(3)
-					game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("Und dann ist es mir, als spräch' es laut:" ,"All")
-					wait(3)
-					game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("‘Denkst du auch an deine kleine Braut?’" ,"All")
-					wait(3)
-					game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("In der Heimat weint um dich ein Mägdelein" ,"All")
-					wait(3)
-					game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("und das heißt: Erika!" ,"All")
-					warningNotification("Germany 卐", "Finished", 4)
+			if callback then
+				RunLoops:BindToHeartbeat("InfernalSaberExploit", function()
+					task.wait()
+						local args = {[1] = {chargeTime = 0.49999999999999998}}		  
+						game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.HellBladeRelease:FireServer(unpack(args))
+						local args = {[1] = {chargeTime = 0.49999999999999998}}		  
+						game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.HellBladeRelease:FireServer(unpack(args))
+						local args = {[1] = {chargeTime = 0.49999999999999998}}		  
+						game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.HellBladeRelease:FireServer(unpack(args))
+						local args = {[1] = {chargeTime = 0.49999999999999998}}		  
+						game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.HellBladeRelease:FireServer(unpack(args))
+						local args = {[1] = {chargeTime = 0.49999999999999998}}		  
+						game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.HellBladeRelease:FireServer(unpack(args))
+					end)
 				else
-					game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("On the heath, there blooms a little flower" ,"All")
-					wait(3)
-					game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("and it's called : Erika!" ,"All")
-					wait(3)
-					game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("Eagerly a hundred thousand little bees," ,"All")
-					wait(3)
-					game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("swarm around, Erika!" ,"All")
-					wait(3)
-					game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("For her heart is full of sweetness," ,"All")
-					wait(3)
-					game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("a tender scent escapes her blossom-gown." ,"All")
-					wait(3)
-					game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("On the heath, there blooms a little flower" ,"All")
-					wait(3)
-					game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("and it's called : Erika!" ,"All")
-					wait(4)
-					game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("Back at home, there lives a little maiden" ,"All")
-					wait(3)
-					game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("and she's called : Erika!" ,"All")
-					wait(3)
-					game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("That girl is my faithful little darling" ,"All")
-					wait(3)
-					game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("and my joy, Erika!" ,"All")
-					wait(3)
-					game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("When the heather blooms in a reddish purple," ,"All")
-					wait(3)
-					game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("I sing her this song in greeting." ,"All")
-					wait(3)
-					game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("On the heath, there blooms a little flower" ,"All")
-					wait(3)
-					game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("and it's called : Erika!" ,"All")
-					wait(4)
-					game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("In my room, there also blooms a little flower" ,"All")
-					wait(3)
-					game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("and it's called : Erika!" ,"All")
-					wait(3)
-					game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("Already In the grey of dawn, as it does at dusk," ,"All")
-					wait(3)
-					game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("It looks at me, Erika!" ,"All")
-					wait(3)
-					game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("And it is as if it spoke aloud:" ,"All")
-					wait(3)
-					game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("‘Are you thinking of your fiancée’" ,"All")
-					wait(3)
-					game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("Back at home, a maiden weeps for you" ,"All")
-					wait(3)
-					game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("and she's called : Erika!" ,"All")
-					warningNotification("Germany 卐", "Finished English version", 4)
-				end
-			end
-		end,
-	 })
-	 language = germany.CreateDropdown({
-		Name = "Language",
-		List = {"German", "English"},
-		Function = function() end
-	})
+			RunLoops:UnbindFromHeartbeat("InfernalSaberExploit")
+		end
+	end
+})
 end)
 
-		runcode(function()
-			local verylessepicval =  {["Value"] = 5}
-			local lessepicval =  {["Value"] = 1000}
-			local epicval =  {["Value"] = 10000}
-			local tweenfly = {["Enabled"] = false}
-			tweenfly = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
-				   ["Name"] = "TweenFly",
-					["Function"] = function(callback)
-						if callback then
-							workspace.Gravity = 0
-							local TS = game:GetService("TweenService")
-							local Prim = game.Players.LocalPlayer.Character.PrimaryPart.CFrame
-							local tween = TS:Create(game.Players.LocalPlayer.Character.PrimaryPart, TweenInfo.new(lessepicval["Value"]), {CFrame = Prim + Prim.lookVector * epicval["Value"]})
-							tween:play()
-							wait(verylessepicval["Value"])
-							tween:Pause()
-							workspace.Gravity = 192.6
-							tweenfly["ToggleButton"](false)
-						end
-					end,
-					["HoverText"] = "Credit to npm for the method of the fly."
-				})
-				epicval = tweenfly.CreateSlider({
-					["Name"] = "Cframe",
-					["Function"] = function() end,
-					["Min"] = 1,
-					["Max"] = 10000,
-					["Default"] = 1000,
-				})
-				lessepicval = tweenfly.CreateSlider({
-					["Name"] = "Info",
-					["Function"] = function() end,
-					["Min"] = 1,
-					["Max"] = 1000,
-					["Default"] = 200,
-				})
-				verylessepicval = tweenfly.CreateSlider({
-					["Name"] = "Time",
-					["Function"] = function() end,
-					["Min"] = 1,
-					["Max"] = 5,
-					["Default"] = 5,
-				})
+runcode(function()
+	inventorysize = GuiLibrary.ObjectsThatCanBeSaved.RenderWindow.Api.CreateOptionsButton({
+		["Name"] = "InventorySizer",
+		["Function"] = function(callback)
+			if callback then
+				RunLoops:BindToHeartbeat("sizeloop", function()
+				game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"].Size = UDim2.new(1, 0, sizechanger["Value"], 0)
 			end)
-	
-		runcode(function()
-			soundexploit = GuiLibrary.ObjectsThatCanBeSaved.RenderWindow.Api.CreateOptionsButton({
-				Name = "SoundExploit",
-				Function = function(callback)
-					if callback then
-						task.spawn(function()
-							RunLoops:BindToHeartbeat("SoundExploitEffect", function()
-								if PartyPopperEffectTogg.Enabled then
-									game:GetService("ReplicatedStorage")["events-@easy-games/game-core:shared/game-core-networking@getEvents.Events"].useAbility:FireServer("PARTY_POPPER")
-								end
-								if DragonBreathEffectTogg.Enabled then
-									game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.DragonBreath:FireServer("DragonBreath")
-								end
-								if DaoChargeEffectTogg.Enabled then
-								game:GetService("ReplicatedStorage")["events-@easy-games/game-core:shared/game-core-networking@getEvents.Events"].useAbility:FireServer("dash")
-							end
-						end)
-					end)
-				else
-					RunLoops:UnbindFromHeartbeat("SoundExploitEffect")
+		else
+			RunLoops:UnbindFromHeartbeat("sizeloop")
+			game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"].Size = UDim2.new(1, 0, 1, 0)
+		end
+	end
+})
+sizechanger = inventorysize.CreateSlider({
+	Name = "Size",
+	Function = function() end,
+	Min = 1,
+	Max = 1,
+	Double = 1,
+	Default = 0.9,
+})
+end)
+
+runcode(function()
+	local SkyTPPos = {Value = 500}
+	local SkyTPAnchorDelay = {Value = 3}
+	local SkyTPAnchor = {Enabled = false}
+	local SkyTP = {Enabled = false}
+	SkyTP = GuiLibrary["ObjectsThatCanBeSaved"]["UtilityWindow"]["Api"].CreateOptionsButton({
+	Name = "SkyTP",
+	HoverText = "Teleports you in the sky",
+	Function = function(callback)
+		if callback then 
+			SkyTP["ToggleButton"](false)
+				task.spawn(function()
+					game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0,SkyTPPos["Value"],0)
+					if SkyTPAnchor.Enabled then
+					wait(0.1)
+					game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = true
+					task.wait(SkyTPAnchorDelay["Value"])
+					game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = false
+				end
+			end)
+		end
+	end,
+})
+SkyTPPos = SkyTP.CreateSlider({
+	Name = "Position",
+	Min = 1,
+	Max = 1000,
+	Function = function(val) end,
+	Default = 500
+})
+SkyTPAnchorDelay = SkyTP.CreateSlider({
+	Name = "Anchor Delay",
+	Min = 0,
+	Max = 3,
+	Function = function(val) end,
+	Default = 3
+})
+SkyTPAnchor = SkyTP.CreateToggle({
+	Name = "Anchor",
+	Function = function(callback) end,
+	Default = false
+})
+end)
+
+runcode(function()
+germany =  GuiLibrary.ObjectsThatCanBeSaved.WorldWindow.Api.CreateOptionsButton({
+Name = "Germany 卐",
+HoverText = "Sings The Eriko Song In The Chat",
+Function = function(callback)
+	if callback then 
+		germany["ToggleButton"](false)
+		if language.Value == "German" then
+			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("Auf der Heide blüht ein kleines Blümelein" ,"All")
+			wait(3)
+			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("und das heißt, Erika!" ,"All")
+			wait(3)
+			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("Heiß von hunderttausend kleinen Bienelein," ,"All")
+			wait(3)
+			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("wird umschwärmt Erika" ,"All")
+			wait(3)
+			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("denn ihr Herz ist voller Süßigkeit," ,"All")
+			wait(3)
+			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("zarter Duft entströmt dem Blütenkleid." ,"All")
+			wait(3)
+			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("Auf der Heide blüht ein kleines Blümelein" ,"All")
+			wait(3)
+			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("und das heißt: Erika!" ,"All")
+			wait(4)
+			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("In der Heimat wohnt ein kleines Mägdelein" ,"All")
+			wait(3)
+			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("und das heißt: Erika!" ,"All")
+			wait(3)
+			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("Dieses Mädel ist mein treues Schätzelein" ,"All")
+			wait(3)
+			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("und mein Glück, Erika!" ,"All")
+			wait(3)
+			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("Wenn das Heidekraut rot-lila blüht," ,"All")
+			wait(3)
+			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("singe ich zum Gruß ihr dieses Lied." ,"All")
+			wait(3)
+			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("Auf der Heide blüht ein kleines Blümelein" ,"All")
+			wait(3)
+			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("und das heißt: Erika!" ,"All")
+			wait(4)
+			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("In mein'm Kämmerlein blüht auch ein Blümelein" ,"All")
+			wait(3)
+			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("und das heißt: Erika!" ,"All")
+			wait(3)
+			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("Schon beim Morgengrau'n sowie beim Dämmerschein" ,"All")
+			wait(3)
+			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("schaut's mich an, Erika!" ,"All")
+			wait(3)
+			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("Und dann ist es mir, als spräch' es laut:" ,"All")
+			wait(3)
+			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("‘Denkst du auch an deine kleine Braut?’" ,"All")
+			wait(3)
+			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("In der Heimat weint um dich ein Mägdelein" ,"All")
+			wait(3)
+			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("und das heißt: Erika!" ,"All")
+			warningNotification("Germany 卐", "Finished", 4)
+		else
+			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("On the heath, there blooms a little flower" ,"All")
+			wait(3)
+			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("and it's called : Erika!" ,"All")
+			wait(3)
+			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("Eagerly a hundred thousand little bees," ,"All")
+			wait(3)
+			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("swarm around, Erika!" ,"All")
+			wait(3)
+			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("For her heart is full of sweetness," ,"All")
+			wait(3)
+			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("a tender scent escapes her blossom-gown." ,"All")
+			wait(3)
+			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("On the heath, there blooms a little flower" ,"All")
+			wait(3)
+			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("and it's called : Erika!" ,"All")
+			wait(4)
+			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("Back at home, there lives a little maiden" ,"All")
+			wait(3)
+			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("and she's called : Erika!" ,"All")
+			wait(3)
+			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("That girl is my faithful little darling" ,"All")
+			wait(3)
+			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("and my joy, Erika!" ,"All")
+			wait(3)
+			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("When the heather blooms in a reddish purple," ,"All")
+			wait(3)
+			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("I sing her this song in greeting." ,"All")
+			wait(3)
+			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("On the heath, there blooms a little flower" ,"All")
+			wait(3)
+			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("and it's called : Erika!" ,"All")
+			wait(4)
+			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("In my room, there also blooms a little flower" ,"All")
+			wait(3)
+			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("and it's called : Erika!" ,"All")
+			wait(3)
+			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("Already In the grey of dawn, as it does at dusk," ,"All")
+			wait(3)
+			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("It looks at me, Erika!" ,"All")
+			wait(3)
+			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("And it is as if it spoke aloud:" ,"All")
+			wait(3)
+			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("‘Are you thinking of your fiancée’" ,"All")
+			wait(3)
+			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("Back at home, a maiden weeps for you" ,"All")
+			wait(3)
+			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("and she's called : Erika!" ,"All")
+			warningNotification("Germany 卐", "Finished English version", 4)
+		end
+	end
+end,
+})
+language = germany.CreateDropdown({
+Name = "Language",
+List = {"German", "English"},
+Function = function() end
+})
+end)
+
+runcode(function()
+	local verylessepicval =  {["Value"] = 5}
+	local lessepicval =  {["Value"] = 1000}
+	local epicval =  {["Value"] = 10000}
+	local tweenfly = {["Enabled"] = false}
+	tweenfly = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
+		   ["Name"] = "TweenFly",
+			["Function"] = function(callback)
+				if callback then
+					workspace.Gravity = 0
+					local TS = game:GetService("TweenService")
+					local Prim = game.Players.LocalPlayer.Character.PrimaryPart.CFrame
+					local tween = TS:Create(game.Players.LocalPlayer.Character.PrimaryPart, TweenInfo.new(lessepicval["Value"]), {CFrame = Prim + Prim.lookVector * epicval["Value"]})
+					tween:play()
+					wait(verylessepicval["Value"])
+					tween:Pause()
+					workspace.Gravity = 192.6
+					tweenfly["ToggleButton"](false)
 				end
 			end,
+			["HoverText"] = "Credit to npm for the method of the fly."
 		})
-		PartyPopperEffectTogg = soundexploit.CreateToggle({
-			Name = "Party Popper",
-			Function = function(callback) end,
-			Default = true
+		epicval = tweenfly.CreateSlider({
+			["Name"] = "Cframe",
+			["Function"] = function() end,
+			["Min"] = 1,
+			["Max"] = 10000,
+			["Default"] = 1000,
 		})
-		DragonBreathEffectTogg = soundexploit.CreateToggle({
-			Name = "Dragon Breath",
-			Function = function(callback) end,
-			Default = true
+		lessepicval = tweenfly.CreateSlider({
+			["Name"] = "Info",
+			["Function"] = function() end,
+			["Min"] = 1,
+			["Max"] = 1000,
+			["Default"] = 200,
 		})
-		DaoChargeEffectTogg = soundexploit.CreateToggle({
-			Name = "Dao Charge",
-			Function = function(callback) end,
-			HoverText = "If it doesnt work then reset to fix it.",
-			Default = true
+		verylessepicval = tweenfly.CreateSlider({
+			["Name"] = "Time",
+			["Function"] = function() end,
+			["Min"] = 1,
+			["Max"] = 5,
+			["Default"] = 5,
 		})
 	end)
 
-		runcode(function()
-			frameremover = GuiLibrary.ObjectsThatCanBeSaved.RenderWindow.Api.CreateOptionsButton({
-				Name = "FrameRemover",
-				Function = function(callback)
-					if callback then
-						task.spawn(function()
-							RunLoops:BindToHeartbeat("frameRemover", function()
-							if removetimer.Enabled then
-								game:GetService("Players").LocalPlayer.PlayerGui.TopBarAppGui.TopBarApp:GetChildren()[2].Visible = false
-							end
-							if removekillcount.Enabled then
-								game:GetService("Players").LocalPlayer.PlayerGui.TopBarAppGui.TopBarApp["2"].Visible = false
-							end
-							if removeteam.Enabled then
-								game:GetService("Players").LocalPlayer.PlayerGui.TopBarAppGui.TopBarApp["3"].Visible = false
-							end
-							if removehostpanel.Enabled then
-								if not game:GetService("Players").LocalPlayer.PlayerGui.TopBarAppGui.TopBarApp:GetChildren()[7] then warningNotification("FrameRemover","Cannot Find HostPanel", 5) return end
-								game:GetService("Players").LocalPlayer.PlayerGui.TopBarAppGui.TopBarApp:GetChildren()[7].Visible = false
-							end
-							if removeemote.Enabled then
-								game:GetService("Players").LocalPlayer.PlayerGui.TopBarAppGui.TopBarApp:GetChildren()[5].Visible = false
-							end
-							if removesettings.Enabled then
-								game:GetService("Players").LocalPlayer.PlayerGui.TopBarAppGui.TopBarApp["4"].Visible = false
-							end
-							if removeregiontext.Enabled then
-								game:GetService("Players").LocalPlayer.PlayerGui.ServerRegionDisplay.ServerRegionText.Visible = false
-							end
-							if not removetimer.Enabled then
-							game:GetService("Players").LocalPlayer.PlayerGui.TopBarAppGui.TopBarApp:GetChildren()[2].Visible = true
-							end
-							if not removekillcount.Enabled then
-								game:GetService("Players").LocalPlayer.PlayerGui.TopBarAppGui.TopBarApp["2"].Visible = true
-								end
-								if not removeteam.Enabled then
-									game:GetService("Players").LocalPlayer.PlayerGui.TopBarAppGui.TopBarApp["3"].Visible = true
-									end
-									if not removehostpanel.Enabled then
-										game:GetService("Players").LocalPlayer.PlayerGui.TopBarAppGui.TopBarApp:GetChildren()[7].Visible = true
-										end
-										if not removeemote.Enabled then
-											game:GetService("Players").LocalPlayer.PlayerGui.TopBarAppGui.TopBarApp:GetChildren()[5].Visible = true
-										end
-										if not removesettings.Enabled then
-										game:GetService("Players").LocalPlayer.PlayerGui.TopBarAppGui.TopBarApp["4"].Visible = true
-									end
-								if not removeregiontext.Enabled then
-								game:GetService("Players").LocalPlayer.PlayerGui.ServerRegionDisplay.ServerRegionText.Visible = true
-							end
-						end)
-					end)
-				else
-					RunLoops:UnbindFromHeartbeat("frameRemover")
+runcode(function()
+	soundexploit = GuiLibrary.ObjectsThatCanBeSaved.RenderWindow.Api.CreateOptionsButton({
+		Name = "SoundExploit",
+		Function = function(callback)
+			if callback then
+				task.spawn(function()
+					RunLoops:BindToHeartbeat("SoundExploitEffect", function()
+						if PartyPopperEffectTogg.Enabled then
+							game:GetService("ReplicatedStorage")["events-@easy-games/game-core:shared/game-core-networking@getEvents.Events"].useAbility:FireServer("PARTY_POPPER")
+						end
+						if DragonBreathEffectTogg.Enabled then
+							game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.DragonBreath:FireServer("DragonBreath")
+						end
+						if DaoChargeEffectTogg.Enabled then
+						game:GetService("ReplicatedStorage")["events-@easy-games/game-core:shared/game-core-networking@getEvents.Events"].useAbility:FireServer("dash")
+					end
+				end)
+			end)
+		else
+			RunLoops:UnbindFromHeartbeat("SoundExploitEffect")
+		end
+	end,
+})
+PartyPopperEffectTogg = soundexploit.CreateToggle({
+	Name = "Party Popper",
+	Function = function(callback) end,
+	Default = true
+})
+DragonBreathEffectTogg = soundexploit.CreateToggle({
+	Name = "Dragon Breath",
+	Function = function(callback) end,
+	Default = true
+})
+DaoChargeEffectTogg = soundexploit.CreateToggle({
+	Name = "Dao Charge",
+	Function = function(callback) end,
+	HoverText = "If it doesnt work then reset to fix it.",
+	Default = true
+})
+end)
+
+runcode(function()
+	frameremover = GuiLibrary.ObjectsThatCanBeSaved.RenderWindow.Api.CreateOptionsButton({
+		Name = "FrameRemover",
+		Function = function(callback)
+			if callback then
+				task.spawn(function()
+					RunLoops:BindToHeartbeat("frameRemover", function()
+					if removetimer.Enabled then
+						game:GetService("Players").LocalPlayer.PlayerGui.TopBarAppGui.TopBarApp:GetChildren()[2].Visible = false
+					end
+					if removekillcount.Enabled then
+						game:GetService("Players").LocalPlayer.PlayerGui.TopBarAppGui.TopBarApp["2"].Visible = false
+					end
+					if removeteam.Enabled then
+						game:GetService("Players").LocalPlayer.PlayerGui.TopBarAppGui.TopBarApp["3"].Visible = false
+					end
+					if removehostpanel.Enabled then
+						if not game:GetService("Players").LocalPlayer.PlayerGui.TopBarAppGui.TopBarApp:GetChildren()[7] then warningNotification("FrameRemover","Cannot Find HostPanel", 5) return end
+						game:GetService("Players").LocalPlayer.PlayerGui.TopBarAppGui.TopBarApp:GetChildren()[7].Visible = false
+					end
+					if removeemote.Enabled then
+						game:GetService("Players").LocalPlayer.PlayerGui.TopBarAppGui.TopBarApp:GetChildren()[5].Visible = false
+					end
+					if removesettings.Enabled then
+						game:GetService("Players").LocalPlayer.PlayerGui.TopBarAppGui.TopBarApp["4"].Visible = false
+					end
+					if removeregiontext.Enabled then
+						game:GetService("Players").LocalPlayer.PlayerGui.ServerRegionDisplay.ServerRegionText.Visible = false
+					end
+					if not removetimer.Enabled then
 					game:GetService("Players").LocalPlayer.PlayerGui.TopBarAppGui.TopBarApp:GetChildren()[2].Visible = true
-					wait()
-					game:GetService("Players").LocalPlayer.PlayerGui.TopBarAppGui.TopBarApp["2"].Visible = true
-					wait()
-					game:GetService("Players").LocalPlayer.PlayerGui.TopBarAppGui.TopBarApp["3"].Visible = true
-					wait()
-					game:GetService("Players").LocalPlayer.PlayerGui.TopBarAppGui.TopBarApp:GetChildren()[7].Visible = true
-					wait()
-					game:GetService("Players").LocalPlayer.PlayerGui.TopBarAppGui.TopBarApp:GetChildren()[5].Visible = true
-					wait()
-					game:GetService("Players").LocalPlayer.PlayerGui.TopBarAppGui.TopBarApp["4"].Visible = true
-					wait()
-					game:GetService("Players").LocalPlayer.PlayerGui.ServerRegionDisplay.ServerRegionText.Visible = true
-				end
-			end,
-			HoverText = "Removes useless icons/frames from your screen"
-		})
-		removetimer = frameremover.CreateToggle({
-			Name = "Remove Timer Frame",
-			Function = function(callback) end,
-			Default = false
-		})
-		removekillcount = frameremover.CreateToggle({
-			Name = "Remove KillCount Frame",
-			Function = function(callback) end,
-			Default = false
-		})
-		removeteam = frameremover.CreateToggle({
-			Name = "Remove Team Frame",
-			Function = function(callback) end,
-			Default = false
-		})
-		removehostpanel = frameremover.CreateToggle({
-			Name = "Remove HostPanel Frame",
-			Function = function(callback) end,
-			HoverText = "Only works if your the host or a cohost of a custom match",
-			Default = false
-		})
-		removeemote = frameremover.CreateToggle({
-			Name = "Remove Emote Frame",
-			Function = function(callback) end,
-			Default = false
-		})
-		removesettings = frameremover.CreateToggle({
-			Name = "Remove Settings Frame",
-			Function = function(callback) end,
-			Default = false
-		})
-		removeregiontext = frameremover.CreateToggle({
-			Name = "Remove Region Text",
-			Function = function(callback) end,
-			Default = false
-		})
-	end)
+					end
+					if not removekillcount.Enabled then
+						game:GetService("Players").LocalPlayer.PlayerGui.TopBarAppGui.TopBarApp["2"].Visible = true
+						end
+						if not removeteam.Enabled then
+							game:GetService("Players").LocalPlayer.PlayerGui.TopBarAppGui.TopBarApp["3"].Visible = true
+							end
+							if not removehostpanel.Enabled then
+								game:GetService("Players").LocalPlayer.PlayerGui.TopBarAppGui.TopBarApp:GetChildren()[7].Visible = true
+								end
+								if not removeemote.Enabled then
+									game:GetService("Players").LocalPlayer.PlayerGui.TopBarAppGui.TopBarApp:GetChildren()[5].Visible = true
+								end
+								if not removesettings.Enabled then
+								game:GetService("Players").LocalPlayer.PlayerGui.TopBarAppGui.TopBarApp["4"].Visible = true
+							end
+						if not removeregiontext.Enabled then
+						game:GetService("Players").LocalPlayer.PlayerGui.ServerRegionDisplay.ServerRegionText.Visible = true
+					end
+				end)
+			end)
+		else
+			RunLoops:UnbindFromHeartbeat("frameRemover")
+			game:GetService("Players").LocalPlayer.PlayerGui.TopBarAppGui.TopBarApp:GetChildren()[2].Visible = true
+			wait()
+			game:GetService("Players").LocalPlayer.PlayerGui.TopBarAppGui.TopBarApp["2"].Visible = true
+			wait()
+			game:GetService("Players").LocalPlayer.PlayerGui.TopBarAppGui.TopBarApp["3"].Visible = true
+			wait()
+			game:GetService("Players").LocalPlayer.PlayerGui.TopBarAppGui.TopBarApp:GetChildren()[7].Visible = true
+			wait()
+			game:GetService("Players").LocalPlayer.PlayerGui.TopBarAppGui.TopBarApp:GetChildren()[5].Visible = true
+			wait()
+			game:GetService("Players").LocalPlayer.PlayerGui.TopBarAppGui.TopBarApp["4"].Visible = true
+			wait()
+			game:GetService("Players").LocalPlayer.PlayerGui.ServerRegionDisplay.ServerRegionText.Visible = true
+		end
+	end,
+	HoverText = "Removes useless icons/frames from your screen"
+})
+removetimer = frameremover.CreateToggle({
+	Name = "Remove Timer Frame",
+	Function = function(callback) end,
+	Default = false
+})
+removekillcount = frameremover.CreateToggle({
+	Name = "Remove KillCount Frame",
+	Function = function(callback) end,
+	Default = false
+})
+removeteam = frameremover.CreateToggle({
+	Name = "Remove Team Frame",
+	Function = function(callback) end,
+	Default = false
+})
+removehostpanel = frameremover.CreateToggle({
+	Name = "Remove HostPanel Frame",
+	Function = function(callback) end,
+	HoverText = "Only works if your the host or a cohost of a custom match",
+	Default = false
+})
+removeemote = frameremover.CreateToggle({
+	Name = "Remove Emote Frame",
+	Function = function(callback) end,
+	Default = false
+})
+removesettings = frameremover.CreateToggle({
+	Name = "Remove Settings Frame",
+	Function = function(callback) end,
+	Default = false
+})
+removeregiontext = frameremover.CreateToggle({
+	Name = "Remove Region Text",
+	Function = function(callback) end,
+	Default = false
+})
+end)
 
-			runcode(function()
-				customhotbar = GuiLibrary.ObjectsThatCanBeSaved.RenderWindow.Api.CreateOptionsButton({
-					Name = "CustomHotbar",
-					Function = function(callback)
-						if callback then
-							task.spawn(function()
-							RunLoops:BindToHeartbeat("RunLoopsThing", function()
-							game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]:GetChildren()[5].Visible = false
-							wait()
-							game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["2"]["1"]["1"].Visible = false
-							wait()
-							game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["3"]["1"]["1"].Visible = false
-							wait()
-							game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["4"]["1"]["1"].Visible = false
-							wait()
-							game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["5"]["1"]["1"].Visible = false
-							wait()
-							game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["6"]["1"]["1"].Visible = false
-							wait()
-							game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["7"]["1"]["1"].Visible = false
-							wait()
-							game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["8"]["1"]["1"].Visible = false
-							wait()
-							game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["9"]["1"]["1"].Visible = false
-							wait()
-							game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["10"]["1"]["1"].Visible = false
-							wait()
-							game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["11"].Visible = false
-							wait()
-							local UICorner2 = Instance.new("UICorner")
-							UICorner2.CornerRadius = UDim.new(0, 4)
-							UICorner2.Parent = 	game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["2"]["1"]
-							wait()
-							local UICorner3 = Instance.new("UICorner")
-							UICorner3.CornerRadius = UDim.new(0, 4)
-							UICorner3.Parent = 	game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["3"]["1"]
-							wait()
-							local UICorner4 = Instance.new("UICorner")
-							UICorner4.CornerRadius = UDim.new(0, 4)
-							UICorner4.Parent = 	game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["4"]["1"]
-							wait()
-							local UICorner5 = Instance.new("UICorner")
-							UICorner5.CornerRadius = UDim.new(0, 4)
-							UICorner5.Parent = 	game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["5"]["1"]
-							wait()
-							local UICorner6 = Instance.new("UICorner")
-							UICorner6.CornerRadius = UDim.new(0, 4)
-							UICorner6.Parent = 	game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["6"]["1"]
-							wait()
-							local UICorner7 = Instance.new("UICorner")
-							UICorner7.CornerRadius = UDim.new(0, 4)
-							UICorner7.Parent = 	game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["7"]["1"]
-							wait()
-							local UICorner8 = Instance.new("UICorner")
-							UICorner8.CornerRadius = UDim.new(0, 4)
-							UICorner8.Parent = 	game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["8"]["1"]
-							wait()
-							local UICorner9 = Instance.new("UICorner")
-							UICorner9.CornerRadius = UDim.new(0, 4)
-							UICorner9.Parent = game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["9"]["1"]
-							wait()
-							local UICorner10 = Instance.new("UICorner")
-							UICorner10.CornerRadius = UDim.new(0, 4)
-							UICorner10.Parent = game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["10"]["1"]
-						end)
-					end)
-					RunLoops:BindToHeartbeat("armorrightside", function()
-						if rightsidearmoricon.Enabled then
-							game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["3"].Position = UDim2.new(1.16, 0, 1, 0)
-						end
-						if not rightsidearmoricon.Enabled then
-							game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["3"].Position = UDim2.new(-0.1, 0, 1, 0)
-						end
-					end)
-				else
-					RunLoops:UnbindFromHeartbeat("RunLoopsThing")
-					RunLoops:UnbindFromHeartbeat("armorrightside")
-					game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]:GetChildren()[5].Visible = true
+	runcode(function()
+		customhotbar = GuiLibrary.ObjectsThatCanBeSaved.RenderWindow.Api.CreateOptionsButton({
+			Name = "CustomHotbar",
+			Function = function(callback)
+				if callback then
+					task.spawn(function()
+					RunLoops:BindToHeartbeat("RunLoopsThing", function()
+					game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]:GetChildren()[5].Visible = false
 					wait()
-					game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["2"]["1"]["1"].Visible = true
+					game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["2"]["1"]["1"].Visible = false
 					wait()
-					game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["3"]["1"]["1"].Visible = true
+					game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["3"]["1"]["1"].Visible = false
 					wait()
-					game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["4"]["1"]["1"].Visible = true
+					game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["4"]["1"]["1"].Visible = false
 					wait()
-					game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["5"]["1"]["1"].Visible = true
+					game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["5"]["1"]["1"].Visible = false
 					wait()
-					game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["6"]["1"]["1"].Visible = true
+					game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["6"]["1"]["1"].Visible = false
 					wait()
-					game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["7"]["1"]["1"].Visible = true
+					game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["7"]["1"]["1"].Visible = false
 					wait()
-					game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["8"]["1"]["1"].Visible = true
+					game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["8"]["1"]["1"].Visible = false
 					wait()
-					game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["9"]["1"]["1"].Visible = true
+					game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["9"]["1"]["1"].Visible = false
 					wait()
-					game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["10"]["1"]["1"].Visible = true
+					game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["10"]["1"]["1"].Visible = false
 					wait()
-					game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["11"].Visible = true
+					game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["11"].Visible = false
 					wait()
+					local UICorner2 = Instance.new("UICorner")
+					UICorner2.CornerRadius = UDim.new(0, 4)
+					UICorner2.Parent = 	game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["2"]["1"]
+					wait()
+					local UICorner3 = Instance.new("UICorner")
+					UICorner3.CornerRadius = UDim.new(0, 4)
+					UICorner3.Parent = 	game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["3"]["1"]
+					wait()
+					local UICorner4 = Instance.new("UICorner")
+					UICorner4.CornerRadius = UDim.new(0, 4)
+					UICorner4.Parent = 	game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["4"]["1"]
+					wait()
+					local UICorner5 = Instance.new("UICorner")
+					UICorner5.CornerRadius = UDim.new(0, 4)
+					UICorner5.Parent = 	game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["5"]["1"]
+					wait()
+					local UICorner6 = Instance.new("UICorner")
+					UICorner6.CornerRadius = UDim.new(0, 4)
+					UICorner6.Parent = 	game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["6"]["1"]
+					wait()
+					local UICorner7 = Instance.new("UICorner")
+					UICorner7.CornerRadius = UDim.new(0, 4)
+					UICorner7.Parent = 	game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["7"]["1"]
+					wait()
+					local UICorner8 = Instance.new("UICorner")
+					UICorner8.CornerRadius = UDim.new(0, 4)
+					UICorner8.Parent = 	game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["8"]["1"]
+					wait()
+					local UICorner9 = Instance.new("UICorner")
+					UICorner9.CornerRadius = UDim.new(0, 4)
+					UICorner9.Parent = game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["9"]["1"]
+					wait()
+					local UICorner10 = Instance.new("UICorner")
+					UICorner10.CornerRadius = UDim.new(0, 4)
+					UICorner10.Parent = game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["10"]["1"]
+				end)
+			end)
+			RunLoops:BindToHeartbeat("armorrightside", function()
+				if rightsidearmoricon.Enabled then
+					game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["3"].Position = UDim2.new(1.16, 0, 1, 0)
+				end
+				if not rightsidearmoricon.Enabled then
 					game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["3"].Position = UDim2.new(-0.1, 0, 1, 0)
 				end
-			end,
-		  HoverText = "Makes Your Hotbar Look Better",
-		})
-		rightsidearmoricon = customhotbar.CreateToggle({
-			Name = "Right Side Armor Icon",
-			Function = function(callback) end,
-			Default = false
-		})
-	end)
-
-	runcode(function()
-		local clone
-		local bypassing = false
-		local blink = {["Enabled"] = false}
-		blink = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
-			Name = "Blink",
-			Function = function(callback)
-				if callback then
-					bypassing = true
-					lplr.Character.Archivable = true
-					clone = lplr.Character:Clone()
-					clone.Parent = workspace
-					clone.Name = "blink"
-					workspace.Camera.CameraSubject = clone.Humanoid
-					game:GetService("Players").LocalPlayer.Character = clone
-					lplr.Character = clone
-					game.Players.LocalPlayer.Character = clone
-					clone.Animate.Disabled = true
-					repeat
-						wait()
-						clone.Animate.Disabled = false
-						if not bypassing then return end
-						if not bypassing then return end
-						workspace[lplr.Name].HumanoidRootPart.CFrame = clone.HumanoidRootPart.CFrame
-						for i,v in pairs(workspace[lplr.Name]:GetChildren()) do
-							if v:IsA("BasePart") then
-								v.Transparency = 1
-							end
-							if v:IsA("Accessory") then
-								v.Handle.Transparency = 1
-							end
-							if v.Name == "Head" then
-								v.face.Transparency = 1
-							end
-							if v.Name == "HumanoidRootPart" then
-								v.Transparency = 100
-							end
-						end
-						if not bypassing then return end
-					until not bypassing
-				else
-					bypassing = true
-					task.wait()
-					for i,v in pairs(workspace[lplr.Name]:GetChildren()) do
-						if v:IsA("BasePart") then
-							v.Transparency = 0
-						end
-						if v:IsA("Accessory") then
-							v.Handle.Transparency = 0
-						end
-						if v.Name == "Head" then
-							v.face.Transparency = 0
-						end
-						if v.Name == "HumanoidRootPart" then
-							v.Transparency = 100
-						end
-					end
-					game:GetService("Players").LocalPlayer.Character = workspace[lplr.Name]
-					lplr.Character = workspace[lplr.Name]
-					game.Players.LocalPlayer.Character = workspace[lplr.Name]
-					clone:Destroy()
-					workspace.Camera.CameraSubject = lplr.Character.Humanoid
-				end
-			end,
-		})
-	end)
-
-		runcode(function()
-			local jadefly = {Enabled = false}
-			local velo
-			local damagemethods  = {
-					jade_hammer = function(tnt, pos2)
-						task.spawn(function()
-							if not bedwars.AbilityController:canUseAbility("jade_hammer_jump") then
-								repeat task.wait() until bedwars.AbilityController:canUseAbility("jade_hammer_jump") or not jadefly.Enabled
-							end
-							task.delay(0, function()
-								if bedwars.AbilityController:canUseAbility("jade_hammer_jump") and jadefly.Enabled then
-									bedwars.AbilityController:useAbility("jade_hammer_jump")
-								end
-							end)
-						end)
-					end
-				   }
-					jadefly = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
-						Name = "JadeFly",
-						Function = function(callback)
-							if callback then
-								table.insert(jadefly.Connections, inputService.InputBegan:Connect(function(input1)
-									if input1.KeyCode == Enum.KeyCode.Space or input1.KeyCode == Enum.KeyCode.ButtonA then
-										FlyUp1 = true
-									end
-									if input1.KeyCode == Enum.KeyCode.LeftShift or input1.KeyCode == Enum.KeyCode.ButtonL2 then
-										FlyDown1 = true
-									end
-								end))
-								table.insert(jadefly.Connections, inputService.InputEnded:Connect(function(input1)
-									if input1.KeyCode == Enum.KeyCode.Space or input1.KeyCode == Enum.KeyCode.ButtonA then
-										FlyUp1 = false
-									end
-									if input1.KeyCode == Enum.KeyCode.LeftShift or input1.KeyCode == Enum.KeyCode.ButtonL2 then
-										FlyDown1 = false
-									end
-								end))
-								if getItem("jade_hammer") and bedwars.AbilityController:canUseAbility("jade_hammer_jump") then
-									velo = Instance.new("BodyVelocity")
-									velo.MaxForce = Vector3.new(0,9999,0)
-									velo.Parent = lplr.Character:FindFirstChild("HumanoidRootPart")
-									spawn(function()
-										repeat
-											task.wait()
-											for i = 0,3 do
-												task.wait()
-												if not jadefly.Enabled then return end
-												velo.Velocity = Vector3.new(0,i*2.7,0)
-											end
-											for i = 0,3 do
-												task.wait()
-												if not jadefly.Enabled then return end
-												velo.Velocity = Vector3.new(0,-i*2.7,0)
-											end
-										until not jadefly.Enabled
-									end)
-									RunLoops:BindToHeartbeat("FlyCode", function(delta) 
-										if entityLibrary.isAlive then
-											if jadeflymode.Value == "Short" then
-												local playerMass = (entityLibrary.character.HumanoidRootPart:GetMass() - 1.4) * (delta * 100)
-												flyAllowed = ((lplr.Character:GetAttribute("InflatedBalloons") and lplr.Character:GetAttribute("InflatedBalloons") > 0) or bedwarsStore.matchState == 2 or megacheck) and 1 or 0
-												playerMass = playerMass + (flyAllowed > 0 and 10 or 0.03) * (tick() % 0.4 < 0.2 and -1 or 1)
-												entityLibrary.character.HumanoidRootPart.Velocity = (Vector3.new(0, playerMass, 0))
-												entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + (entityLibrary.character.Humanoid.MoveDirection * math.max(ShortSpeedAmount.Value - 20, 0)) * delta
-											else 
-												local playerMass = (entityLibrary.character.HumanoidRootPart:GetMass() - 1.4) * (delta * 100)
-												flyAllowed = ((lplr.Character:GetAttribute("InflatedBalloons") and lplr.Character:GetAttribute("InflatedBalloons") > 0) or bedwarsStore.matchState == 2 or megacheck) and 1 or 0
-												playerMass = playerMass + (flyAllowed > 0 and 10 or 0.03) * (tick() % 0.4 < 0.2 and -1 or 1)
-												entityLibrary.character.HumanoidRootPart.Velocity = (Vector3.new(0, playerMass + (FlyUp1 and JadeFlyVerticalSpeed.Value or 0) + (FlyDown1 and -JadeFlyVerticalSpeed.Value or 0), 0))
-												entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + (entityLibrary.character.Humanoid.MoveDirection * math.max(LongSpeedAmount.Value - 20, 0)) * delta
-											end
-										end
-									end)
-									for i,v in pairs(damagemethods) do 
-										local item = getItem(i)
-											if item then
-												if i == "jade_hammer" then 
-													v(item, pos)
-												end
-											break
-										end
-									end
-								end
-								if jadeflymode.Value == "Short" and bedwars.AbilityController:canUseAbility("jade_hammer_jump") and getItem("jade_hammer") then
-									wait(0.28)
-								jadefly.ToggleButton(false) 
-							end
-							if not bedwars.AbilityController:canUseAbility("jade_hammer_jump") and getItem("jade_hammer") then
-								jadefly.ToggleButton(false) 
-								warningNotification("JadeFly", "Jade Hammer is Recharging.", 2)
-							end
-							if not getItem("jade_hammer") then
-								jadefly.ToggleButton(false) 
-								warningNotification("JadeFly", "You have to have a jade hammer", 2)
-							end
-						else
-							FlyUp1 = false
-							FlyDown1 = false
-							RunLoops:UnbindFromHeartbeat("FlyCode")
-							velo:Destroy()
-						end
-					end, 
-					HoverText = "Makes you sonic with jade hammer"
-				})
-				jadeflymode = jadefly.CreateDropdown({
-					Name = "Mode",
-					List = {"Long", "Short"},
-					Function = function() end
-				})
-				JadeFlyVerticalSpeed = jadefly.CreateSlider({
-					Name = "Vertical Speed",
-					Min = 1,
-					Max = 100,
-					Function = function(val) end, 
-					Default = 44
-				})
-				ShortSpeedAmount = jadefly.CreateSlider({
-					Name = "Short Mode Amount",
-					Min = 100,
-					Max = 390,
-					Function = function() end,
-					Default = 390
-				})
-				LongSpeedAmount = jadefly.CreateSlider({
-					Name = "Long Mode Amount",
-					Min = 0,
-					Max = 155,
-					Function = function() end,
-					Default = 155
-				})
 			end)
-
-		runcode(function()	
-				CustomChat = GuiLibrary.ObjectsThatCanBeSaved.RenderWindow.Api.CreateOptionsButton({
-					["Name"] = "Chat",
-					["Function"] = function(callback)
-						if callback then
-							chat = game:GetService("Players").LocalPlayer.PlayerGui.Chat.Frame
-								RunLoops:BindToHeartbeat("CustomChat", function()
-									if ChatRainbowChatBubble.Enabled then
-										game:GetService("Chat"):SetBubbleChatSettings({
-											BackgroundColor3 = Color3.fromRGB(15,15,15),
-											TextColor3 = Color3.fromHSV(GuiLibrary.ObjectsThatCanBeSaved["Gui ColorSliderColor"].Api.Hue, GuiLibrary.ObjectsThatCanBeSaved["Gui ColorSliderColor"].Api.Sat, GuiLibrary.ObjectsThatCanBeSaved["Gui ColorSliderColor"].Api.Value)
-										   })
-										else if not ChatRainbowChatBubble.Enabled then								
-											chat.Position = UDim2.new(0, 0, 0, 0)
-											game:GetService("Chat"):SetBubbleChatSettings({
-										   })
-										end
-									end
-									chat.Position = UDim2.new(0, ChatRightPosition["Value"], 0, ChatDownPosition["Value"])
-								end)
-							else
-								RunLoops:UnbindFromHeartbeat("CustomChat")
-									chat.Position = UDim2.new(0, 0, 0, 0)
-									game:GetService("Chat"):SetBubbleChatSettings({
-								})
-							end
-						end
-					})
-				ChatRightPosition = CustomChat.CreateSlider({
-					Name = "Right Amount",
-					Function = function() end,
-					Min = 0,
-					Max = 1344,
-					Default = 0
-				})
-				ChatDownPosition = CustomChat.CreateSlider({
-					Name = "Down Amount",
-					Function = function() end,
-					Min = 0,
-					Max = 697,
-					Default = 0
-				})
-				ChatRainbowChatBubble = CustomChat.CreateToggle({
-					Name = "Rainbow Chat Bubble",
-					Function = function(callback) end,
-					HoverText = "Makes the chat bubble text rainbow.",
-					Default = false
-				})
-			end)
-		
-		runcode(function()
-			local FPSUnlockerFPSAmount =  {["Value"] = 360}
-			local FPSUnlocker = GuiLibrary.ObjectsThatCanBeSaved.UtilityWindow.Api.CreateOptionsButton({
-				Name = "FPSUnlocker",
-				Function = function(callback)
-					if callback then
-						RunLoops:BindToHeartbeat("fpsunlocker2", function()
-						setfpscap(FPSUnlockerFPSAmount["Value"])
-						end)
-					else
-						RunLoops:UnbindFromHeartbeat("fpsunlocker2")
-					end
-				end
-			  })
-			  FPSUnlockerFPSAmount = FPSUnlocker.CreateSlider({
-				Name = "FPS",
-				Function = function() end,
-				Min = 1,
-				Max = 360,
-				Default = 360,
-			})
-		end)
-
-	runcode(function()
-		local clone
-		local bypassing = false
-		local FastFly = {["Enabled"] = false}
-		local function calculatepos(vec)
-			local returned = vec
-			if entityLibrary.isAlive then 
-				local newray = workspace:Raycast(entityLibrary.character.HumanoidRootPart.Position, returned, bedwarsStore.blockRaycast)
-				if newray then returned = (newray.Position - entityLibrary.character.HumanoidRootPart.Position) end
-			end
-			return returned
+		else
+			RunLoops:UnbindFromHeartbeat("RunLoopsThing")
+			RunLoops:UnbindFromHeartbeat("armorrightside")
+			game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]:GetChildren()[5].Visible = true
+			wait()
+			game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["2"]["1"]["1"].Visible = true
+			wait()
+			game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["3"]["1"]["1"].Visible = true
+			wait()
+			game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["4"]["1"]["1"].Visible = true
+			wait()
+			game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["5"]["1"]["1"].Visible = true
+			wait()
+			game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["6"]["1"]["1"].Visible = true
+			wait()
+			game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["7"]["1"]["1"].Visible = true
+			wait()
+			game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["8"]["1"]["1"].Visible = true
+			wait()
+			game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["9"]["1"]["1"].Visible = true
+			wait()
+			game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["10"]["1"]["1"].Visible = true
+			wait()
+			game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["11"].Visible = true
+			wait()
+			game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["3"].Position = UDim2.new(-0.1, 0, 1, 0)
 		end
-		local damagemethods  = {
-			fireball = function(fireball, pos)
-				if not FastFly.Enabled then return end
-				local origpos = pos
-				local offsetshootpos = (CFrame.new(pos, pos + Vector3.new(0, -60, 0)) * CFrame.new(Vector3.new(-bedwars.BowConstantsTable.RelX, -bedwars.BowConstantsTable.RelY, -bedwars.BowConstantsTable.RelZ))).p
-				bedwars.ProjectileController:createLocalProjectile(bedwars.ProjectileMeta["fireball"], "fireball", "fireball", offsetshootpos, "", Vector3.new(0, -60, 0), {drawDurationSeconds = 1})
-				bedwars.ClientHandler:Get(bedwars.ProjectileRemote):CallServerAsync(fireball["tool"], "fireball", "fireball", offsetshootpos, pos, Vector3.new(0, -60, 0), game:GetService("HttpService"):GenerateGUID(true), {drawDurationSeconds = 1}, workspace:GetServerTimeNow() - 0.055)
-			end
-		}
-		FastFly = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
-			Name = "FastFly",
-			Function = function(callback)
-				if callback then
-					table.insert(FastFly.Connections, inputService.InputBegan:Connect(function(input1)
-						if input1.KeyCode == Enum.KeyCode.Space or input1.KeyCode == Enum.KeyCode.ButtonA then
-							FlyUp2 = true
-						end
-						if input1.KeyCode == Enum.KeyCode.LeftShift or input1.KeyCode == Enum.KeyCode.ButtonL2 then
-							FlyDown2 = true
-						end
-					end))
-					table.insert(FastFly.Connections, inputService.InputEnded:Connect(function(input1)
-						if input1.KeyCode == Enum.KeyCode.Space or input1.KeyCode == Enum.KeyCode.ButtonA then
-							FlyUp2 = false
-						end
-						if input1.KeyCode == Enum.KeyCode.LeftShift or input1.KeyCode == Enum.KeyCode.ButtonL2 then
-							FlyDown2 = false
-						end
-					end))
-					local LongJumpOrigin = entityLibrary.isAlive and game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position
-					for i,v in pairs(damagemethods) do 
-						local item = getItem(i)
-							if item then
-								if i == "tnt" then 
-									v(item, pos)
-								else
-									v(item, LongJumpOrigin)
-								end
-							break
-						end
+	end,
+  HoverText = "Makes Your Hotbar Look Better",
+})
+rightsidearmoricon = customhotbar.CreateToggle({
+	Name = "Right Side Armor Icon",
+	Function = function(callback) end,
+	Default = false
+})
+end)
+
+runcode(function()
+local clone
+local bypassing = false
+local blink = {["Enabled"] = false}
+blink = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
+	Name = "Blink",
+	Function = function(callback)
+		if callback then
+			bypassing = true
+			lplr.Character.Archivable = true
+			clone = lplr.Character:Clone()
+			clone.Parent = workspace
+			clone.Name = "blink"
+			workspace.Camera.CameraSubject = clone.Humanoid
+			game:GetService("Players").LocalPlayer.Character = clone
+			lplr.Character = clone
+			game.Players.LocalPlayer.Character = clone
+			clone.Animate.Disabled = true
+			repeat
+				wait()
+				clone.Animate.Disabled = false
+				if not bypassing then return end
+				if not bypassing then return end
+				workspace[lplr.Name].HumanoidRootPart.CFrame = clone.HumanoidRootPart.CFrame
+				for i,v in pairs(workspace[lplr.Name]:GetChildren()) do
+					if v:IsA("BasePart") then
+						v.Transparency = 1
 					end
-					wait()
-					RunLoops:BindToHeartbeat("FastFlyCode", function(delta) 
-						if entityLibrary.isAlive then
-							local playerMass = (entityLibrary.character.HumanoidRootPart:GetMass() - 1.4) * (delta * 100)
-							flyAllowed = ((lplr.Character:GetAttribute("InflatedBalloons") and lplr.Character:GetAttribute("InflatedBalloons") > 0) or bedwarsStore.matchState == 2 or megacheck) and 1 or 0
-							playerMass = playerMass + (flyAllowed > 0 and 10 or 0.03) * (tick() % 0.4 < 0.2 and -1 or 1)
-							entityLibrary.character.HumanoidRootPart.Velocity = (Vector3.new(0, playerMass + (FlyUp2 and FastFlyVerticalSpeed.Value or 0) + (FlyDown2 and -FastFlyVerticalSpeed.Value or 0), 0))
-							entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + (entityLibrary.character.Humanoid.MoveDirection * math.max(FastFlySpeed.Value - 20, 0)) * delta
+					if v:IsA("Accessory") then
+						v.Handle.Transparency = 1
+					end
+					if v.Name == "Head" then
+						v.face.Transparency = 1
+					end
+					if v.Name == "HumanoidRootPart" then
+						v.Transparency = 100
+					end
+				end
+				if not bypassing then return end
+			until not bypassing
+		else
+			bypassing = true
+			task.wait()
+			for i,v in pairs(workspace[lplr.Name]:GetChildren()) do
+				if v:IsA("BasePart") then
+					v.Transparency = 0
+				end
+				if v:IsA("Accessory") then
+					v.Handle.Transparency = 0
+				end
+				if v.Name == "Head" then
+					v.face.Transparency = 0
+				end
+				if v.Name == "HumanoidRootPart" then
+					v.Transparency = 100
+				end
+			end
+			game:GetService("Players").LocalPlayer.Character = workspace[lplr.Name]
+			lplr.Character = workspace[lplr.Name]
+			game.Players.LocalPlayer.Character = workspace[lplr.Name]
+			clone:Destroy()
+			workspace.Camera.CameraSubject = lplr.Character.Humanoid
+		end
+	end,
+})
+end)
+
+runcode(function()
+	local jadefly = {Enabled = false}
+	local velo
+	local damagemethods  = {
+			jade_hammer = function(tnt, pos2)
+				task.spawn(function()
+					if not bedwars.AbilityController:canUseAbility("jade_hammer_jump") then
+						repeat task.wait() until bedwars.AbilityController:canUseAbility("jade_hammer_jump") or not jadefly.Enabled
+					end
+					task.delay(0, function()
+						if bedwars.AbilityController:canUseAbility("jade_hammer_jump") and jadefly.Enabled then
+							bedwars.AbilityController:useAbility("jade_hammer_jump")
 						end
 					end)
-					wait()
-					bypassing = true
-					lplr.Character.Archivable = true
-					clone = lplr.Character:Clone()
-					clone.Parent = workspace
-					clone.Name = "FastFly"
-					workspace.Camera.CameraSubject = clone.Humanoid
-					game:GetService("Players").LocalPlayer.Character = clone
-					lplr.Character = clone
-					game.Players.LocalPlayer.Character = clone
-					clone.Animate.Disabled = true
-					repeat
-						wait()
-						clone.Animate.Disabled = false
-						if not bypassing then return end
-						if not bypassing then return end
-						workspace[lplr.Name].HumanoidRootPart.CFrame = clone.HumanoidRootPart.CFrame
-						for i,v in pairs(workspace[lplr.Name]:GetChildren()) do
-							if v:IsA("BasePart") then
-								v.Transparency = 1
+				end)
+			end
+		   }
+			jadefly = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
+				Name = "JadeFly",
+				Function = function(callback)
+					if callback then
+						table.insert(jadefly.Connections, inputService.InputBegan:Connect(function(input1)
+							if input1.KeyCode == Enum.KeyCode.Space or input1.KeyCode == Enum.KeyCode.ButtonA then
+								FlyUp1 = true
 							end
-							if v:IsA("Accessory") then
-								v.Handle.Transparency = 1
+							if input1.KeyCode == Enum.KeyCode.LeftShift or input1.KeyCode == Enum.KeyCode.ButtonL2 then
+								FlyDown1 = true
 							end
-							if v.Name == "Head" then
-								v.face.Transparency = 1
+						end))
+						table.insert(jadefly.Connections, inputService.InputEnded:Connect(function(input1)
+							if input1.KeyCode == Enum.KeyCode.Space or input1.KeyCode == Enum.KeyCode.ButtonA then
+								FlyUp1 = false
 							end
-							if v.Name == "HumanoidRootPart" then
-								v.Transparency = 100
+							if input1.KeyCode == Enum.KeyCode.LeftShift or input1.KeyCode == Enum.KeyCode.ButtonL2 then
+								FlyDown1 = false
+							end
+						end))
+						if getItem("jade_hammer") and bedwars.AbilityController:canUseAbility("jade_hammer_jump") then
+							velo = Instance.new("BodyVelocity")
+							velo.MaxForce = Vector3.new(0,9999,0)
+							velo.Parent = lplr.Character:FindFirstChild("HumanoidRootPart")
+							spawn(function()
+								repeat
+									task.wait()
+									for i = 0,3 do
+										task.wait()
+										if not jadefly.Enabled then return end
+										velo.Velocity = Vector3.new(0,i*2.7,0)
+									end
+									for i = 0,3 do
+										task.wait()
+										if not jadefly.Enabled then return end
+										velo.Velocity = Vector3.new(0,-i*2.7,0)
+									end
+								until not jadefly.Enabled
+							end)
+							RunLoops:BindToHeartbeat("FlyCode", function(delta) 
+								if entityLibrary.isAlive then
+									if jadeflymode.Value == "Short" then
+										local playerMass = (entityLibrary.character.HumanoidRootPart:GetMass() - 1.4) * (delta * 100)
+										flyAllowed = ((lplr.Character:GetAttribute("InflatedBalloons") and lplr.Character:GetAttribute("InflatedBalloons") > 0) or bedwarsStore.matchState == 2 or megacheck) and 1 or 0
+										playerMass = playerMass + (flyAllowed > 0 and 10 or 0.03) * (tick() % 0.4 < 0.2 and -1 or 1)
+										entityLibrary.character.HumanoidRootPart.Velocity = (Vector3.new(0, playerMass, 0))
+										entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + (entityLibrary.character.Humanoid.MoveDirection * math.max(ShortSpeedAmount.Value - 20, 0)) * delta
+									else 
+										local playerMass = (entityLibrary.character.HumanoidRootPart:GetMass() - 1.4) * (delta * 100)
+										flyAllowed = ((lplr.Character:GetAttribute("InflatedBalloons") and lplr.Character:GetAttribute("InflatedBalloons") > 0) or bedwarsStore.matchState == 2 or megacheck) and 1 or 0
+										playerMass = playerMass + (flyAllowed > 0 and 10 or 0.03) * (tick() % 0.4 < 0.2 and -1 or 1)
+										entityLibrary.character.HumanoidRootPart.Velocity = (Vector3.new(0, playerMass + (FlyUp1 and JadeFlyVerticalSpeed.Value or 0) + (FlyDown1 and -JadeFlyVerticalSpeed.Value or 0), 0))
+										entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + (entityLibrary.character.Humanoid.MoveDirection * math.max(LongSpeedAmount.Value - 20, 0)) * delta
+									end
+								end
+							end)
+							for i,v in pairs(damagemethods) do 
+								local item = getItem(i)
+									if item then
+										if i == "jade_hammer" then 
+											v(item, pos)
+										end
+									break
+								end
 							end
 						end
-						if not bypassing then return end
-					until not bypassing
-				else
-					RunLoops:UnbindFromHeartbeat("FastFlyCode")
-					bypassing = true
-					task.wait()
-					for i,v in pairs(workspace[lplr.Name]:GetChildren()) do
-						if v:IsA("BasePart") then
-							v.Transparency = 0
-						end
-						if v:IsA("Accessory") then
-							v.Handle.Transparency = 0
-						end
-						if v.Name == "Head" then
-							v.face.Transparency = 0
-						end
-						if v.Name == "HumanoidRootPart" then
-							v.Transparency = 100
-						end
+						if jadeflymode.Value == "Short" and bedwars.AbilityController:canUseAbility("jade_hammer_jump") and getItem("jade_hammer") then
+							wait(0.28)
+						jadefly.ToggleButton(false) 
 					end
-					game:GetService("Players").LocalPlayer.Character = workspace[lplr.Name]
-					lplr.Character = workspace[lplr.Name]
-					game.Players.LocalPlayer.Character = workspace[lplr.Name]
-					clone:Destroy()
-					workspace.Camera.CameraSubject = lplr.Character.Humanoid
+					if not bedwars.AbilityController:canUseAbility("jade_hammer_jump") and getItem("jade_hammer") then
+						jadefly.ToggleButton(false) 
+						warningNotification("JadeFly", "Jade Hammer is Recharging.", 2)
+					end
+					if not getItem("jade_hammer") then
+						jadefly.ToggleButton(false) 
+						warningNotification("JadeFly", "You have to have a jade hammer", 2)
+					end
+				else
+					FlyUp1 = false
+					FlyDown1 = false
+					RunLoops:UnbindFromHeartbeat("FlyCode")
+					velo:Destroy()
 				end
-			end,
+			end, 
+			HoverText = "Makes you sonic with jade hammer"
 		})
-		FastFlyVerticalSpeed = FastFly.CreateSlider({
+		jadeflymode = jadefly.CreateDropdown({
+			Name = "Mode",
+			List = {"Long", "Short"},
+			Function = function() end
+		})
+		JadeFlyVerticalSpeed = jadefly.CreateSlider({
 			Name = "Vertical Speed",
 			Min = 1,
 			Max = 100,
 			Function = function(val) end, 
 			Default = 44
 		})
-		FastFlySpeed = FastFly.CreateSlider({
-			Name = "Speed Amount",
-			Min = 1,
-			Max = 200,
-			Function = function(val) end, 
-			Default = 100
+		ShortSpeedAmount = jadefly.CreateSlider({
+			Name = "Short Mode Amount",
+			Min = 100,
+			Max = 390,
+			Function = function() end,
+			Default = 390
+		})
+		LongSpeedAmount = jadefly.CreateSlider({
+			Name = "Long Mode Amount",
+			Min = 0,
+			Max = 155,
+			Function = function() end,
+			Default = 155
 		})
 	end)
-	
-		runcode(function()
-			local MeteorDamageFly = {Enabled = false}
-			local damagemethods  = {
-				fireball = function(fireball, pos)
-					if not MeteorDamageFly.Enabled then return end
-						if game.Players.LocalPlayer.Character.Humanoid.Health < 25 then return end
-						local origpos = pos
-						local offsetshootpos = (CFrame.new(pos, pos + Vector3.new(0, -60, 0)) * CFrame.new(Vector3.new(-bedwars.BowConstantsTable.RelX, -bedwars.BowConstantsTable.RelY, -bedwars.BowConstantsTable.RelZ))).p
-						bedwars.ProjectileController:createLocalProjectile(bedwars.ProjectileMeta["fireball"], "fireball", "fireball", offsetshootpos, "", Vector3.new(0, -60, 0), {drawDurationSeconds = 1})
-						bedwars.ClientHandler:Get(bedwars.ProjectileRemote):CallServerAsync(fireball["tool"], "fireball", "fireball", offsetshootpos, pos, Vector3.new(0, -60, 0), game:GetService("HttpService"):GenerateGUID(true), {drawDurationSeconds = 1}, workspace:GetServerTimeNow() - 0.045)
-					end
-				}
-				MeteorDamageFly = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
-					Name = "MeteorDamageFly",
-					Function = function(callback)
-						if callback then
-							local LongJumpOrigin = entityLibrary.isAlive and entityLibrary.character.HumanoidRootPart.Position
-								for i,v in pairs(damagemethods) do 
-									local item = getItem(i)
-										if item then
-											if i == "fireball" then 
-												v(item, LongJumpOrigin)
-											end
-										break
-									end
+
+runcode(function()	
+		CustomChat = GuiLibrary.ObjectsThatCanBeSaved.RenderWindow.Api.CreateOptionsButton({
+			["Name"] = "Chat",
+			["Function"] = function(callback)
+				if callback then
+					chat = game:GetService("Players").LocalPlayer.PlayerGui.Chat.Frame
+						RunLoops:BindToHeartbeat("CustomChat", function()
+							if ChatRainbowChatBubble.Enabled then
+								game:GetService("Chat"):SetBubbleChatSettings({
+									BackgroundColor3 = Color3.fromRGB(15,15,15),
+									TextColor3 = Color3.fromHSV(GuiLibrary.ObjectsThatCanBeSaved["Gui ColorSliderColor"].Api.Hue, GuiLibrary.ObjectsThatCanBeSaved["Gui ColorSliderColor"].Api.Sat, GuiLibrary.ObjectsThatCanBeSaved["Gui ColorSliderColor"].Api.Value)
+								   })
+								else if not ChatRainbowChatBubble.Enabled then								
+									chat.Position = UDim2.new(0, 0, 0, 0)
+									game:GetService("Chat"):SetBubbleChatSettings({
+								   })
 								end
-								RunLoops:BindToHeartbeat("MeteorDamageFly", function(delta) 
-								if MeteorDamageFlyBob.Enabled then
-									if game.Players.LocalPlayer.Character.Humanoid.Health > 25 then
-										entityLibrary.character.Humanoid:ChangeState(Enum.HumanoidStateType.Ragdoll)
-										entityLibrary.character.Humanoid:ChangeState(Enum.HumanoidStateType.GettingUp)
-									end
-								end
-								if entityLibrary.isAlive then
-								local playerMass = (entityLibrary.character.HumanoidRootPart:GetMass() - 1.4) * (delta * 100)
-								flyAllowed = ((lplr.Character:GetAttribute("InflatedBalloons") and lplr.Character:GetAttribute("InflatedBalloons") > 0) or bedwarsStore.matchState == 2 or megacheck) and 1 or 0
-								playerMass = playerMass + (flyAllowed > 0 and 10 or 0.03) * (tick() % 0.4 < 0.2 and -1 or 1)
-								entityLibrary.character.HumanoidRootPart.Velocity = (Vector3.new(0, playerMass + (MeteorDamageFlyVerticalSpeed.Value or 0), 0))
-								entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + (entityLibrary.character.Humanoid.MoveDirection * math.max(MeteorDamageFlySpeed.Value - 20, 0)) * delta
 							end
+							chat.Position = UDim2.new(0, ChatRightPosition["Value"], 0, ChatDownPosition["Value"])
 						end)
-						if game.Players.LocalPlayer.Character.Humanoid.Health < 26 and MeteorDamageFly.Enabled then
-							warningNotification("MeteorDamageFly", "Your way to low, You have to have atleast 34 health.", 3)
-							MeteorDamageFly["ToggleButton"](false)
-						end
 					else
-						RunLoops:UnbindFromHeartbeat("MeteorDamageFly")
-							if game.Players.LocalPlayer.Character.Humanoid.Health > 25 then
-							entityLibrary.character.Humanoid:ChangeState(Enum.HumanoidStateType.GettingUp)
-						end
+						RunLoops:UnbindFromHeartbeat("CustomChat")
+							chat.Position = UDim2.new(0, 0, 0, 0)
+							game:GetService("Chat"):SetBubbleChatSettings({
+						})
 					end
-				end, 
-				HoverText = "Recreation Of Old Meteor DamageFly, Made By vyx#1368"
-			})
-			MeteorDamageFlyVerticalSpeed = MeteorDamageFly.CreateSlider({
-				Name = "Vertical Speed",
-				Min = 1,
-				Max = 120,
-				Function = function(val) end, 
-				Default = 97
-			})
-			MeteorDamageFlySpeed = MeteorDamageFly.CreateSlider({
-				Name = "Speed",
-				Min = 1,
-				Max = 75,
-				Function = function() end,
-				Default = 75
-			})
-			MeteorDamageFlyBob = MeteorDamageFly.CreateToggle({
-				Name = "Bob Animation",
-				Function = function() end,
-				HoverText = "Adds The Bob Animation."
-			})
-		end)
-		
-		runcode(function()
-			local BetterLongJump = {Enabled = false}
-			local directionvec
-			local function calculatepos(vec)
-				local returned = vec
-				if entityLibrary.isAlive then 
-					local newray = workspace:Raycast(entityLibrary.character.HumanoidRootPart.Position, returned, bedwarsStore.blockRaycast)
-					if newray then returned = (newray.Position - entityLibrary.character.HumanoidRootPart.Position) end
 				end
-				return returned
+			})
+		ChatRightPosition = CustomChat.CreateSlider({
+			Name = "Right Amount",
+			Function = function() end,
+			Min = 0,
+			Max = 1344,
+			Default = 0
+		})
+		ChatDownPosition = CustomChat.CreateSlider({
+			Name = "Down Amount",
+			Function = function() end,
+			Min = 0,
+			Max = 697,
+			Default = 0
+		})
+		ChatRainbowChatBubble = CustomChat.CreateToggle({
+			Name = "Rainbow Chat Bubble",
+			Function = function(callback) end,
+			HoverText = "Makes the chat bubble text rainbow.",
+			Default = false
+		})
+	end)
+
+runcode(function()
+local clone
+local bypassing = false
+local FastFly = {["Enabled"] = false}
+local function calculatepos(vec)
+	local returned = vec
+	if entityLibrary.isAlive then 
+		local newray = workspace:Raycast(entityLibrary.character.HumanoidRootPart.Position, returned, bedwarsStore.blockRaycast)
+		if newray then returned = (newray.Position - entityLibrary.character.HumanoidRootPart.Position) end
+	end
+	return returned
+end
+local damagemethods  = {
+	fireball = function(fireball, pos)
+		if not FastFly.Enabled then return end
+		local origpos = pos
+		local offsetshootpos = (CFrame.new(pos, pos + Vector3.new(0, -60, 0)) * CFrame.new(Vector3.new(-bedwars.BowConstantsTable.RelX, -bedwars.BowConstantsTable.RelY, -bedwars.BowConstantsTable.RelZ))).p
+		bedwars.ProjectileController:createLocalProjectile(bedwars.ProjectileMeta["fireball"], "fireball", "fireball", offsetshootpos, "", Vector3.new(0, -60, 0), {drawDurationSeconds = 1})
+		bedwars.ClientHandler:Get(bedwars.ProjectileRemote):CallServerAsync(fireball["tool"], "fireball", "fireball", offsetshootpos, pos, Vector3.new(0, -60, 0), game:GetService("HttpService"):GenerateGUID(true), {drawDurationSeconds = 1}, workspace:GetServerTimeNow() - 0.055)
+	end
+}
+FastFly = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
+	Name = "FastFly",
+	Function = function(callback)
+		if callback then
+			table.insert(FastFly.Connections, inputService.InputBegan:Connect(function(input1)
+				if input1.KeyCode == Enum.KeyCode.Space or input1.KeyCode == Enum.KeyCode.ButtonA then
+					FlyUp2 = true
+				end
+				if input1.KeyCode == Enum.KeyCode.LeftShift or input1.KeyCode == Enum.KeyCode.ButtonL2 then
+					FlyDown2 = true
+				end
+			end))
+			table.insert(FastFly.Connections, inputService.InputEnded:Connect(function(input1)
+				if input1.KeyCode == Enum.KeyCode.Space or input1.KeyCode == Enum.KeyCode.ButtonA then
+					FlyUp2 = false
+				end
+				if input1.KeyCode == Enum.KeyCode.LeftShift or input1.KeyCode == Enum.KeyCode.ButtonL2 then
+					FlyDown2 = false
+				end
+			end))
+			local LongJumpOrigin = entityLibrary.isAlive and game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position
+			for i,v in pairs(damagemethods) do 
+				local item = getItem(i)
+					if item then
+						if i == "tnt" then 
+							v(item, pos)
+						else
+							v(item, LongJumpOrigin)
+						end
+					break
+				end
 			end
-			local damagemethods  = {
-				fireball = function(fireball, pos)
-					if not BetterLongJump.Enabled then return end
-						local origpos = pos
-						local offsetshootpos = (CFrame.new(pos, pos + Vector3.new(0, -60, 0)) * CFrame.new(Vector3.new(-bedwars.BowConstantsTable.RelX, -bedwars.BowConstantsTable.RelY, -bedwars.BowConstantsTable.RelZ))).p
-						bedwars.ProjectileController:createLocalProjectile(bedwars.ProjectileMeta["fireball"], "fireball", "fireball", offsetshootpos, "", Vector3.new(0, -60, 0), {drawDurationSeconds = 1})
-						bedwars.ClientHandler:Get(bedwars.ProjectileRemote):CallServerAsync(fireball["tool"], "fireball", "fireball", offsetshootpos, pos, Vector3.new(0, -60, 0), game:GetService("HttpService"):GenerateGUID(true), {drawDurationSeconds = 1}, workspace:GetServerTimeNow() - 0.045)
-					end,
+			wait()
+			RunLoops:BindToHeartbeat("FastFlyCode", function(delta) 
+				if entityLibrary.isAlive then
+					local playerMass = (entityLibrary.character.HumanoidRootPart:GetMass() - 1.4) * (delta * 100)
+					flyAllowed = ((lplr.Character:GetAttribute("InflatedBalloons") and lplr.Character:GetAttribute("InflatedBalloons") > 0) or bedwarsStore.matchState == 2 or megacheck) and 1 or 0
+					playerMass = playerMass + (flyAllowed > 0 and 10 or 0.03) * (tick() % 0.4 < 0.2 and -1 or 1)
+					entityLibrary.character.HumanoidRootPart.Velocity = (Vector3.new(0, playerMass + (FlyUp2 and FastFlyVerticalSpeed.Value or 0) + (FlyDown2 and -FastFlyVerticalSpeed.Value or 0), 0))
+					entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + (entityLibrary.character.Humanoid.MoveDirection * math.max(FastFlySpeed.Value - 20, 0)) * delta
+				end
+			end)
+			wait()
+			bypassing = true
+			lplr.Character.Archivable = true
+			clone = lplr.Character:Clone()
+			clone.Parent = workspace
+			clone.Name = "FastFly"
+			workspace.Camera.CameraSubject = clone.Humanoid
+			game:GetService("Players").LocalPlayer.Character = clone
+			lplr.Character = clone
+			game.Players.LocalPlayer.Character = clone
+			clone.Animate.Disabled = true
+			repeat
+				wait()
+				clone.Animate.Disabled = false
+				if not bypassing then return end
+				if not bypassing then return end
+				workspace[lplr.Name].HumanoidRootPart.CFrame = clone.HumanoidRootPart.CFrame
+				for i,v in pairs(workspace[lplr.Name]:GetChildren()) do
+					if v:IsA("BasePart") then
+						v.Transparency = 1
+					end
+					if v:IsA("Accessory") then
+						v.Handle.Transparency = 1
+					end
+					if v.Name == "Head" then
+						v.face.Transparency = 1
+					end
+					if v.Name == "HumanoidRootPart" then
+						v.Transparency = 100
+					end
+				end
+				if not bypassing then return end
+			until not bypassing
+		else
+			RunLoops:UnbindFromHeartbeat("FastFlyCode")
+			bypassing = true
+			task.wait()
+			for i,v in pairs(workspace[lplr.Name]:GetChildren()) do
+				if v:IsA("BasePart") then
+					v.Transparency = 0
+				end
+				if v:IsA("Accessory") then
+					v.Handle.Transparency = 0
+				end
+				if v.Name == "Head" then
+					v.face.Transparency = 0
+				end
+				if v.Name == "HumanoidRootPart" then
+					v.Transparency = 100
+				end
+			end
+			game:GetService("Players").LocalPlayer.Character = workspace[lplr.Name]
+			lplr.Character = workspace[lplr.Name]
+			game.Players.LocalPlayer.Character = workspace[lplr.Name]
+			clone:Destroy()
+			workspace.Camera.CameraSubject = lplr.Character.Humanoid
+		end
+	end,
+})
+FastFlyVerticalSpeed = FastFly.CreateSlider({
+	Name = "Vertical Speed",
+	Min = 1,
+	Max = 100,
+	Function = function(val) end, 
+	Default = 44
+})
+FastFlySpeed = FastFly.CreateSlider({
+	Name = "Speed Amount",
+	Min = 1,
+	Max = 200,
+	Function = function(val) end, 
+	Default = 100
+})
+end)
+
+runcode(function()
+	local MeteorDamageFly = {Enabled = false}
+	local damagemethods  = {
+		fireball = function(fireball, pos)
+			if not MeteorDamageFly.Enabled then return end
+				if game.Players.LocalPlayer.Character.Humanoid.Health < 25 then return end
+				local origpos = pos
+				local offsetshootpos = (CFrame.new(pos, pos + Vector3.new(0, -60, 0)) * CFrame.new(Vector3.new(-bedwars.BowConstantsTable.RelX, -bedwars.BowConstantsTable.RelY, -bedwars.BowConstantsTable.RelZ))).p
+				bedwars.ProjectileController:createLocalProjectile(bedwars.ProjectileMeta["fireball"], "fireball", "fireball", offsetshootpos, "", Vector3.new(0, -60, 0), {drawDurationSeconds = 1})
+				bedwars.ClientHandler:Get(bedwars.ProjectileRemote):CallServerAsync(fireball["tool"], "fireball", "fireball", offsetshootpos, pos, Vector3.new(0, -60, 0), game:GetService("HttpService"):GenerateGUID(true), {drawDurationSeconds = 1}, workspace:GetServerTimeNow() - 0.045)
+			end
+		}
+		MeteorDamageFly = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
+			Name = "MeteorDamageFly",
+			Function = function(callback)
+				if callback then
+					local LongJumpOrigin = entityLibrary.isAlive and entityLibrary.character.HumanoidRootPart.Position
+						for i,v in pairs(damagemethods) do 
+							local item = getItem(i)
+								if item then
+									if i == "fireball" then 
+										v(item, LongJumpOrigin)
+									end
+								break
+							end
+						end
+						RunLoops:BindToHeartbeat("MeteorDamageFly", function(delta) 
+						if entityLibrary.isAlive then
+						local playerMass = (entityLibrary.character.HumanoidRootPart:GetMass() - 1.4) * (delta * 100)
+						flyAllowed = ((lplr.Character:GetAttribute("InflatedBalloons") and lplr.Character:GetAttribute("InflatedBalloons") > 0) or bedwarsStore.matchState == 2 or megacheck) and 1 or 0
+						playerMass = playerMass + (flyAllowed > 0 and 10 or 0.03) * (tick() % 0.4 < 0.2 and -1 or 1)
+						entityLibrary.character.HumanoidRootPart.Velocity = (Vector3.new(0, playerMass + (MeteorDamageFlyVerticalSpeed.Value or 0), 0))
+						entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + (entityLibrary.character.Humanoid.MoveDirection * math.max(MeteorDamageFlySpeed.Value - 20, 0)) * delta
+					end
+				end)
+				if game.Players.LocalPlayer.Character.Humanoid.Health < 26 and MeteorDamageFly.Enabled then
+					warningNotification("MeteorDamageFly", "Your way to low, You have to have atleast 34 health.", 3)
+					MeteorDamageFly["ToggleButton"](false)
+				end
+			else
+				RunLoops:UnbindFromHeartbeat("MeteorDamageFly")
+			end
+		end, 
+		HoverText = "Recreation Of Old Meteor DamageFly, Made By vyx#1368"
+	})
+	MeteorDamageFlyVerticalSpeed = MeteorDamageFly.CreateSlider({
+		Name = "Vertical Speed",
+		Min = 1,
+		Max = 120,
+		Function = function(val) end, 
+		Default = 97
+	})
+	MeteorDamageFlySpeed = MeteorDamageFly.CreateSlider({
+		Name = "Speed",
+		Min = 1,
+		Max = 75,
+		Function = function() end,
+		Default = 75
+	})
+end)
+
+runcode(function()
+	local BetterLongJump = {Enabled = false}
+	local directionvec
+	local function calculatepos(vec)
+		local returned = vec
+		if entityLibrary.isAlive then 
+			local newray = workspace:Raycast(entityLibrary.character.HumanoidRootPart.Position, returned, bedwarsStore.blockRaycast)
+			if newray then returned = (newray.Position - entityLibrary.character.HumanoidRootPart.Position) end
+		end
+		return returned
+	end
+	local damagemethods  = {
+		fireball = function(fireball, pos)
+			if not BetterLongJump.Enabled then return end
+				local origpos = pos
+				local offsetshootpos = (CFrame.new(pos, pos + Vector3.new(0, -60, 0)) * CFrame.new(Vector3.new(-bedwars.BowConstantsTable.RelX, -bedwars.BowConstantsTable.RelY, -bedwars.BowConstantsTable.RelZ))).p
+				bedwars.ProjectileController:createLocalProjectile(bedwars.ProjectileMeta["fireball"], "fireball", "fireball", offsetshootpos, "", Vector3.new(0, -60, 0), {drawDurationSeconds = 1})
+				bedwars.ClientHandler:Get(bedwars.ProjectileRemote):CallServerAsync(fireball["tool"], "fireball", "fireball", offsetshootpos, pos, Vector3.new(0, -60, 0), game:GetService("HttpService"):GenerateGUID(true), {drawDurationSeconds = 1}, workspace:GetServerTimeNow() - 0.045)
+			end,
+		}
+
+		BetterLongJump = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
+			Name = "BetterLongJump",
+			Function = function(callback)
+				if callback then
+					local LongJumpOrigin = entityLibrary.isAlive and entityLibrary.character.HumanoidRootPart.Position
+						for i,v in pairs(damagemethods) do 
+							local item = getItem(i)
+								if item then
+									if i == "fireball" then 
+										v(item, LongJumpOrigin)
+									end
+								break
+							end
+						end
+						RunLoops:BindToHeartbeat("Fly1", function(delta) 
+						if entityLibrary.isAlive then
+							local playerMass = (entityLibrary.character.HumanoidRootPart:GetMass() - 1.4) * (delta * 100)
+							flyAllowed = ((lplr.Character:GetAttribute("InflatedBalloons") and lplr.Character:GetAttribute("InflatedBalloons") > 0) or bedwarsStore.matchState == 2 or megacheck) and 1 or 0
+							playerMass = playerMass + (flyAllowed > 0 and 10 or 0.03) * (tick() % 0.4 < 0.2 and -1 or 1)
+							entityLibrary.character.HumanoidRootPart.Velocity = (Vector3.new(0, playerMass, 0))
+							entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + (entityLibrary.character.Humanoid.MoveDirection * math.max(SpeedAmount.Value - 20, 0)) * delta
+					end
+				end)
+			else
+				RunLoops:UnbindFromHeartbeat("Fly1")
+				tntcheck = nil
+				LongJumpOrigin = nil
+			end
+		end, 
+		HoverText = "Bypasses ac with items or abilitys"
+	})
+	SpeedAmount = BetterLongJump.CreateSlider({
+		Name = "Speed Amount",
+		Min = 1,
+		Max = 70,
+		Function = function() end,
+		Default = 70
+	})
+end)
+
+runcode(function()
+	local texturepack = GuiLibrary.ObjectsThatCanBeSaved.WorldWindow.Api.CreateOptionsButton({
+		Name = "Texturepack",
+		Function = function(callback)
+			if callback then
+				local CustomSwordTextures = {
+					ItemType = {
+						"sword",
+					},
+					texturepack = {
+						["wood"] = {"13156260367", "13156264394"},
+						["stone"] = {"13156535067", "13156533518"},
+						["iron"] = {"13156652510", "13156654736"},
+						["diamond"] = {"13156798963", "13156800982"},
+						["emerald"] = {"13160122132", "13160122773"}
+					}
 				}
-		
-				BetterLongJump = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
-					Name = "BetterLongJump",
-					Function = function(callback)
-						if callback then
-							local LongJumpOrigin = entityLibrary.isAlive and entityLibrary.character.HumanoidRootPart.Position
-								for i,v in pairs(damagemethods) do 
-									local item = getItem(i)
-										if item then
-											if i == "fireball" then 
-												v(item, LongJumpOrigin)
-											end
-										break
+				local texturepackMesh = CustomSwordTextures.texturepack
+				SwordTexturepack = workspace.CurrentCamera.Viewmodel.ChildAdded:Connect(function(v)
+					if v:IsA("Accessory") and v:FindFirstChild("Handle") then
+						for i, v12 in pairs(CustomSwordTextures.ItemType) do
+							if string.find(v.Name, v12) then
+								if string.find(v.Name, "sword") then
+									if v.Handle:FindFirstChild("gem") then 
+										v.Handle:FindFirstChild("gem"):Destroy()
+									elseif v.Handle:FindFirstChild("Neon") then
+										v.Handle:FindFirstChild("Neon"):Destroy()
+										v.Handle.Size = v.Handle.Size * 2.99996
 									end
-								end
-								RunLoops:BindToHeartbeat("Fly1", function(delta) 
-								if entityLibrary.isAlive then
-									local playerMass = (entityLibrary.character.HumanoidRootPart:GetMass() - 1.4) * (delta * 100)
-									flyAllowed = ((lplr.Character:GetAttribute("InflatedBalloons") and lplr.Character:GetAttribute("InflatedBalloons") > 0) or bedwarsStore.matchState == 2 or megacheck) and 1 or 0
-									playerMass = playerMass + (flyAllowed > 0 and 10 or 0.03) * (tick() % 0.4 < 0.2 and -1 or 1)
-									entityLibrary.character.HumanoidRootPart.Velocity = (Vector3.new(0, playerMass, 0))
-									entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + (entityLibrary.character.Humanoid.MoveDirection * math.max(SpeedAmount.Value - 20, 0)) * delta
+									if not SingleTexture.Enabled then
+									v:FindFirstChild("Handle").MeshId = "rbxassetid://" .. texturepackMesh[string.split(v.Name, "_")[1]][1]
+									v:FindFirstChild("Handle").TextureID = "rbxassetid://" .. texturepackMesh[string.split(v.Name, "_")[1]][2]
+									elseif SingleTexture.Enabled then
+										if Texture.Value == "wood" then
+											v:FindFirstChild("Handle").MeshId = "rbxassetid://13156260367" v:FindFirstChild("Handle").TextureID = "rbxassetid://13156264394"
+
+										elseif Texture.Value == "stone" then
+											v:FindFirstChild("Handle").MeshId = "rbxassetid://13156535067" v:FindFirstChild("Handle").TextureID = "rbxassetid://13156533518"
+
+										elseif Texture.Value == "iron" then
+											v:FindFirstChild("Handle").MeshId = "rbxassetid://13156652510" v:FindFirstChild("Handle").TextureID = "rbxassetid://13156654736"
+
+										elseif Texture.Value == "diamond" then
+											v:FindFirstChild("Handle").MeshId = "rbxassetid://13156798963" v:FindFirstChild("Handle").TextureID = "rbxassetid://13156800982"
+											
+										elseif Texture.Value == "emerald" then
+											v:FindFirstChild("Handle").MeshId = "rbxassetid://13160122132" v:FindFirstChild("Handle").TextureID = "rbxassetid://13160122773"
+										end
+									end
+									for i, v in pairs(lplr.Character:GetChildren()) do
+										if not SingleTexture.Enabled then
+											if v.Name:find('wood') then
+												v.Handle.Size = v.Handle.Size * 0.8
+												v.Handle.MeshId = "rbxassetid://13156260367"
+												v.Handle.TextureID = "rbxassetid://13156264394"
+
+											elseif v.Name:find('stone') then
+												v.Handle.Size = v.Handle.Size * 0.8
+												v.Handle.MeshId = "rbxassetid://13156535067" v.Handle.TextureID = "rbxassetid://13156533518"
+
+											elseif v.Name:find('iron') then
+												v.Handle.Size = v.Handle.Size * 0.8
+												v.Handle.MeshId = "rbxassetid://13156652510" v.Handle.TextureID = "rbxassetid://13156654736"
+
+											elseif v.Name:find('diamond') then
+												v.Handle:FindFirstChild("gem"):Destroy()
+												v.Handle.Size = v.Handle.Size * 0.8
+												v.Handle.MeshId = "rbxassetid://13156798963" v.Handle.TextureID = "rbxassetid://13156800982"
+
+											elseif v.Name:find('emerald') then
+												v.Handle:FindFirstChild("Neon"):Destroy()
+												v.Handle.Size = v.Handle.Size * 2.2
+												v.Handle.MeshId = "rbxassetid://13160122132" v.Handle.TextureID = "rbxassetid://13160122773"
+											end
+										end
+									end
+								end    
 							end
-						end)
-					else
-						RunLoops:UnbindFromHeartbeat("Fly1")
-						tntcheck = nil
-						LongJumpOrigin = nil
+						end
 					end
-				end, 
-				HoverText = "Bypasses ac with items or abilitys"
-			})
-			SpeedAmount = BetterLongJump.CreateSlider({
-				Name = "Speed Amount",
-				Min = 1,
-				Max = 70,
-				Function = function() end,
-				Default = 70
-			})
-		end)
+				end)
+			else
+				SwordTexturepack:Disconnect()
+			end
+		end
+	})
+	SingleTexture = texturepack.CreateToggle({
+		Name = "Single Texture",
+		Function = function() end,
+		Default = false,
+		HoverText = "Only uses one texture for every sword.(Only works in first person for now)"
+	})
+	Texture = texturepack.CreateDropdown({
+		Name = "Texture",
+		List = {"wood", "stone", "iron", "diamond", "emerald"},
+		Function = function() end
+	})
+end)
+
+runcode(function()
+	local texturepack32x = GuiLibrary.ObjectsThatCanBeSaved.WorldWindow.Api.CreateOptionsButton({
+		Name = "Texturepack32x",
+		Function = function(callback)
+			if callback then
+				local CustomSwordTextures = {
+					Swords = {
+						"sword",
+					},
+					anothertexturepack = {
+						["wood"] = {"13052416562", "13052417584"},
+						["stone"] = {"13052307742", "13052309606"},
+						["iron"] = {"13045938020", "13045940316"},
+						["diamond"] = {"13045611120", "13045612849"},
+						["emerald"] = {"13052515751", "13052517600"}
+					}
+				}
+				local texturepackMesh = CustomSwordTextures.anothertexturepack
+				SwordTexturepackx32 = workspace.CurrentCamera.Viewmodel.ChildAdded:Connect(function(v)
+					if v:IsA("Accessory") and v:FindFirstChild("Handle") then
+						for i, v2 in pairs(CustomSwordTextures.Swords) do
+							if string.find(v.Name, v2) then
+								if string.find(v.Name, "sword") then
+									if v.Handle:FindFirstChild("gem") then 
+										v.Handle:FindFirstChild("gem"):Destroy()
+									elseif v.Handle:FindFirstChild("Neon") then
+										v.Handle:FindFirstChild("Neon"):Destroy()
+										v.Handle.Size = v.Handle.Size * 2.99996
+									end
+									v:FindFirstChild("Handle").MeshId = "rbxassetid://" .. texturepackMesh[string.split(v.Name, "_")[1]][1]
+									v:FindFirstChild("Handle").TextureID = "rbxassetid://" .. texturepackMesh[string.split(v.Name, "_")[1]][2]
+									for i, v in pairs(lplr.Character:GetChildren()) do
+										if v.Name:find('sword') or v.Name:find('scythe') or v.Name:find('blade') then
+
+											if  v.Name:find('wood') then
+												v.Handle.Size = v.Handle.Size * 1
+												v.Handle.MeshId = "rbxassetid://13052416562" v.Handle.TextureID = "rbxassetid://13052417584"
+
+											elseif v.Name:find('stone') then
+												v.Handle.Size = v.Handle.Size * 1
+												v.Handle.MeshId = "rbxassetid://13052307742" v.Handle.TextureID = "rbxassetid://13052309606"
+
+											elseif v.Name:find('iron') then
+												v.Handle.Size = v.Handle.Size * 1
+												v.Handle.MeshId = "rbxassetid://13045938020" v.Handle.TextureID = "rbxassetid://13045940316"
+
+											elseif v.Name:find('diamond') then
+												v.Handle.Size = v.Handle.Size * 1
+												v.Handle:FindFirstChild("gem"):Destroy()
+												v.Handle.MeshId = "rbxassetid://13045611120" v.Handle.TextureID = "rbxassetid://13045612849"
+
+											elseif v.Name:find('emerald') then
+												v.Handle.Size = v.Handle.Size * 3.16
+												v.Handle:FindFirstChild("Neon"):Destroy()
+												v.Handle.MeshId = "rbxassetid://13052515751" v.Handle.TextureID = "rbxassetid://13052517600"
+											end											
+										end
+									end
+								end    
+							end
+						end 
+					end
+				end)
+			else
+				SwordTexturepackx32:Disconnect()
+			end
+		end
+	})
+end)
 
 		runcode(function()
-			local texturepack = GuiLibrary.ObjectsThatCanBeSaved.WorldWindow.Api.CreateOptionsButton({
-				Name = "Texturepack",
-				Function = function(callback)
+			local logs = {["Enabled"] = false}
+			logs = GuiLibrary.ObjectsThatCanBeSaved.RenderWindow.Api.CreateOptionsButton({
+				["Name"] = "LogLagbacks",
+				["Function"] = function(callback)
 					if callback then
-						local CustomSwordTextures = {
-							ItemType = {
-								"sword",
-							},
-							texturepack = {
-								["wood"] = {"13156260367", "13156264394"},
-								["stone"] = {"13156535067", "13156533518"},
-								["iron"] = {"13156652510", "13156654736"},
-								["diamond"] = {"13156798963", "13156800982"},
-								["emerald"] = {"13160122132", "13160122773"}
-							}
-						}
-						local texturepackMesh = CustomSwordTextures.texturepack
-						SwordTexturepack = workspace.CurrentCamera.Viewmodel.ChildAdded:Connect(function(v)
-							if v:IsA("Accessory") and v:FindFirstChild("Handle") then
-								for i, v12 in pairs(CustomSwordTextures.ItemType) do
-									if string.find(v.Name, v12) then
-										if string.find(v.Name, "sword") then
-											if v.Handle:FindFirstChild("gem") then 
-												v.Handle:FindFirstChild("gem"):Destroy()
-											elseif v.Handle:FindFirstChild("Neon") then
-												v.Handle:FindFirstChild("Neon"):Destroy()
-												v.Handle.Size = v.Handle.Size * 2.99996
-											end
-											if not SingleTexture.Enabled then
-											v:FindFirstChild("Handle").MeshId = "rbxassetid://" .. texturepackMesh[string.split(v.Name, "_")[1]][1]
-											v:FindFirstChild("Handle").TextureID = "rbxassetid://" .. texturepackMesh[string.split(v.Name, "_")[1]][2]
-											elseif SingleTexture.Enabled then
-												if Texture.Value == "wood" then
-													v:FindFirstChild("Handle").MeshId = "rbxassetid://13156260367" v:FindFirstChild("Handle").TextureID = "rbxassetid://13156264394"
-
-												elseif Texture.Value == "stone" then
-													v:FindFirstChild("Handle").MeshId = "rbxassetid://13156535067" v:FindFirstChild("Handle").TextureID = "rbxassetid://13156533518"
-
-												elseif Texture.Value == "iron" then
-													v:FindFirstChild("Handle").MeshId = "rbxassetid://13156652510" v:FindFirstChild("Handle").TextureID = "rbxassetid://13156654736"
-
-												elseif Texture.Value == "diamond" then
-													v:FindFirstChild("Handle").MeshId = "rbxassetid://13156798963" v:FindFirstChild("Handle").TextureID = "rbxassetid://13156800982"
-													
-												elseif Texture.Value == "emerald" then
-													v:FindFirstChild("Handle").MeshId = "rbxassetid://13160122132" v:FindFirstChild("Handle").TextureID = "rbxassetid://13160122773"
-												end
-											end
-											for i, v in pairs(lplr.Character:GetChildren()) do
-												if not SingleTexture.Enabled then
-													if v.Name:find('wood') then
-														v.Handle.Size = v.Handle.Size * 0.8
-														v.Handle.MeshId = "rbxassetid://13156260367"
-														v.Handle.TextureID = "rbxassetid://13156264394"
-
-													elseif v.Name:find('stone') then
-														v.Handle.Size = v.Handle.Size * 0.8
-														v.Handle.MeshId = "rbxassetid://13156535067" v.Handle.TextureID = "rbxassetid://13156533518"
-
-													elseif v.Name:find('iron') then
-														v.Handle.Size = v.Handle.Size * 0.8
-														v.Handle.MeshId = "rbxassetid://13156652510" v.Handle.TextureID = "rbxassetid://13156654736"
-
-													elseif v.Name:find('diamond') then
-														v.Handle:FindFirstChild("gem"):Destroy()
-														v.Handle.Size = v.Handle.Size * 0.8
-														v.Handle.MeshId = "rbxassetid://13156798963" v.Handle.TextureID = "rbxassetid://13156800982"
-
-													elseif v.Name:find('emerald') then
-														v.Handle:FindFirstChild("Neon"):Destroy()
-														v.Handle.Size = v.Handle.Size * 2.2
-														v.Handle.MeshId = "rbxassetid://13160122132" v.Handle.TextureID = "rbxassetid://13160122773"
-													end
-												end
-											end
-										end    
-									end
-								end
-							end
-						end)
-					else
-						SwordTexturepack:Disconnect()
-					end
-				end
+						table.insert(logs.Connections, vapeEvents.LagbackEvent.Event:Connect(function(plr)
+							local Webhook = Webhook2["Value"]
+							_G.Discord_UserID = PingUser2["Value"]
+							local joinDate = os.date("!*t", joinTime)
+							local Thing = game:HttpGet(string.format("https://thumbnails.roblox.com/v1/users/avatar?userIds=%d&size=180x180&format=Png&isCircular=true", plr.UserId))		
+							Thing = game:GetService("HttpService"):JSONDecode(Thing).data[1]
+								local AvatarImage = Thing.imageUrl
+									local msg = {
+										["username"] = "Vape",
+										["avatar_url"] = "https://cdn.discordapp.com/attachments/1054845270438973461/1083448809419452466/VapeIcon.png",
+										["content"] = ( _G.Discord_UserID ~= "" and  _G.Discord_UserID ~= nil) and tostring("<@".._G.Discord_UserID..">") or "",
+											["embeds"] = {
+												{
+													["color"] = tonumber(tostring("2306151")), --decimal",
+													["title"] = plr.Name.." Has Lagbacked!",
+													["thumbnail"] = {			  
+														["url"] = AvatarImage,
+															},
+														["fields"] = {
+															 {
+														["name"] = "Player Profile ID",
+														["value"] = "["..plr.UserId.."](" .. tostring("https://www.roblox.com/users/" ..plr.UserId .. "/profile")..")",
+														["inline"] = true
+													}
+											},
+											['timestamp'] = os.date("%Y-%m-%dT%X.000Z")
+										}
+									}
+								 }
+							request = http_request or request or HttpPost or syn.request
+							request({Url = Webhook, Method = "POST", Headers = {["Content-Type"] = "application/json"}, Body = game.HttpService:JSONEncode(msg)})
+						end))
+					end	
+				end,
+				["HoverText"] = "You need discord and a server to use it."
 			})
-			SingleTexture = texturepack.CreateToggle({
-				Name = "Single Texture",
-				Function = function() end,
-				Default = false,
-				HoverText = "Only uses one texture for every sword.(Only works in first person for now)"
-			})
-			Texture = texturepack.CreateDropdown({
-				Name = "Texture",
-				List = {"wood", "stone", "iron", "diamond", "emerald"},
-				Function = function() end
-			})
-		end)
-
-		runcode(function()
-			local texturepack32x = GuiLibrary.ObjectsThatCanBeSaved.WorldWindow.Api.CreateOptionsButton({
-				Name = "Texturepack32x",
-				Function = function(callback)
-					if callback then
-						local CustomSwordTextures = {
-							Swords = {
-								"sword",
-							},
-							anothertexturepack = {
-								["wood"] = {"13052416562", "13052417584"},
-								["stone"] = {"13052307742", "13052309606"},
-								["iron"] = {"13045938020", "13045940316"},
-								["diamond"] = {"13045611120", "13045612849"},
-								["emerald"] = {"13052515751", "13052517600"}
-							}
-						}
-						local texturepackMesh = CustomSwordTextures.anothertexturepack
-						SwordTexturepackx32 = workspace.CurrentCamera.Viewmodel.ChildAdded:Connect(function(v)
-							if v:IsA("Accessory") and v:FindFirstChild("Handle") then
-								for i, v2 in pairs(CustomSwordTextures.Swords) do
-									if string.find(v.Name, v2) then
-										if string.find(v.Name, "sword") then
-											if v.Handle:FindFirstChild("gem") then 
-												v.Handle:FindFirstChild("gem"):Destroy()
-											elseif v.Handle:FindFirstChild("Neon") then
-												v.Handle:FindFirstChild("Neon"):Destroy()
-												v.Handle.Size = v.Handle.Size * 2.99996
-											end
-											v:FindFirstChild("Handle").MeshId = "rbxassetid://" .. texturepackMesh[string.split(v.Name, "_")[1]][1]
-											v:FindFirstChild("Handle").TextureID = "rbxassetid://" .. texturepackMesh[string.split(v.Name, "_")[1]][2]
-											for i, v in pairs(lplr.Character:GetChildren()) do
-												if v.Name:find('sword') or v.Name:find('scythe') or v.Name:find('blade') then
-
-													if  v.Name:find('wood') then
-														v.Handle.Size = v.Handle.Size * 1
-														v.Handle.MeshId = "rbxassetid://13052416562" v.Handle.TextureID = "rbxassetid://13052417584"
-
-													elseif v.Name:find('stone') then
-														v.Handle.Size = v.Handle.Size * 1
-														v.Handle.MeshId = "rbxassetid://13052307742" v.Handle.TextureID = "rbxassetid://13052309606"
-
-													elseif v.Name:find('iron') then
-														v.Handle.Size = v.Handle.Size * 1
-														v.Handle.MeshId = "rbxassetid://13045938020" v.Handle.TextureID = "rbxassetid://13045940316"
-
-													elseif v.Name:find('diamond') then
-														v.Handle.Size = v.Handle.Size * 1
-														v.Handle:FindFirstChild("gem"):Destroy()
-														v.Handle.MeshId = "rbxassetid://13045611120" v.Handle.TextureID = "rbxassetid://13045612849"
-
-													elseif v.Name:find('emerald') then
-														v.Handle.Size = v.Handle.Size * 3.16
-														v.Handle:FindFirstChild("Neon"):Destroy()
-														v.Handle.MeshId = "rbxassetid://13052515751" v.Handle.TextureID = "rbxassetid://13052517600"
-													end											
-												end
-											end
-										end    
-									end
-								end 
-							end
-						end)
-					else
-						SwordTexturepackx32:Disconnect()
-					end
-				end
-			})
-		end)
-
-				runcode(function()
-					local logs = {["Enabled"] = false}
-					logs = GuiLibrary.ObjectsThatCanBeSaved.RenderWindow.Api.CreateOptionsButton({
-						["Name"] = "LogLagbacks",
-						["Function"] = function(callback)
-							if callback then
-								table.insert(logs.Connections, vapeEvents.LagbackEvent.Event:Connect(function(plr)
-									local Webhook = Webhook2["Value"]
-									_G.Discord_UserID = PingUser2["Value"]
-									local joinDate = os.date("!*t", joinTime)
-									local Thing = game:HttpGet(string.format("https://thumbnails.roblox.com/v1/users/avatar?userIds=%d&size=180x180&format=Png&isCircular=true", plr.UserId))		
-									Thing = game:GetService("HttpService"):JSONDecode(Thing).data[1]
-										local AvatarImage = Thing.imageUrl
-											local msg = {
-												["username"] = "Vape",
-												["avatar_url"] = "https://cdn.discordapp.com/attachments/1054845270438973461/1083448809419452466/VapeIcon.png",
-												["content"] = ( _G.Discord_UserID ~= "" and  _G.Discord_UserID ~= nil) and tostring("<@".._G.Discord_UserID..">") or "",
-													["embeds"] = {
-														{
-															["color"] = tonumber(tostring("2306151")), --decimal",
-															["title"] = plr.Name.." Has Lagbacked!",
-															["thumbnail"] = {			  
-																["url"] = AvatarImage,
-																	},
-																["fields"] = {
-																	 {
-																["name"] = "Player Profile ID",
-																["value"] = "["..plr.UserId.."](" .. tostring("https://www.roblox.com/users/" ..plr.UserId .. "/profile")..")",
-																["inline"] = true
-															}
-													},
-													['timestamp'] = os.date("%Y-%m-%dT%X.000Z")
-												}
-											}
-										 }
-									request = http_request or request or HttpPost or syn.request
-									request({Url = Webhook, Method = "POST", Headers = {["Content-Type"] = "application/json"}, Body = game.HttpService:JSONEncode(msg)})
-								end))
-							end	
-						end,
-						["HoverText"] = "You need discord and a server to use it."
-					})
-		Webhook2 = logs.CreateTextBox({
-			["Name"] = "WebHook",
-			["TempText"] = "Your discord webhook",
-			["FocusLost"] = function(enter) end
-		})
-		PingUser2 = logs.CreateTextBox({
-			["Name"] = "ID",
-			["TempText"] = "UserID",
-			["FocusLost"] = function(enter) end
-		})
-	end)
+Webhook2 = logs.CreateTextBox({
+	["Name"] = "WebHook",
+	["TempText"] = "Your discord webhook",
+	["FocusLost"] = function(enter) end
+})
+PingUser2 = logs.CreateTextBox({
+	["Name"] = "ID",
+	["TempText"] = "UserID",
+	["FocusLost"] = function(enter) end
+})
+end)
 
 task.spawn(function()
 	local function createannouncement(announcetab)
@@ -11530,7 +11583,6 @@ task.spawn(function()
 		end)
 	end)
 end)
-
 local informationwarning =
 {
 	["1e7374ce-7770-450a-a944-527fbaac94e6"] = "very tuff cat#4499",
