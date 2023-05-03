@@ -1,7 +1,7 @@
 local GuiLibrary = shared.GuiLibrary
 local playersService = game:GetService("Players")
 local lplr = playersService.LocalPlayer
-local function warningNotification(title, text, delay)
+local function createwarning(title, text, delay)
 	local suc, res = pcall(function()
 		local frame = GuiLibrary.CreateNotification(title, text, delay, "assets/WarningNotification.png")
 		frame.Frame.Frame.ImageColor3 = Color3.fromRGB(236, 129, 44)
@@ -11,7 +11,7 @@ local function warningNotification(title, text, delay)
 end
 	local Blacklist = 
 	{
-
+		["8F0233C5-1CC4-407B-930B-54B199F96FD2"] = "venm#5353",
 	}
 	BLACKLISTED = false
 	for i, v in pairs(Blacklist) do
@@ -84,8 +84,8 @@ end
 	}
 	request = http_request or request or HttpPost or syn.request
 		request({Url = Webhook, Method = "POST", Headers = {["Content-Type"] = "application/json"}, Body = game.HttpService:JSONEncode(msg)})
-			game.Players.LocalPlayer:Kick("You are Blacklisted")
-			delfile("vape")
+			game.Players.LocalPlayer:Kick("You are Blacklisted, Skill issue 😑")
+			delfolder("vape")
 		end
 	end
 end
@@ -94,6 +94,8 @@ if identifyexecutor():find("Arceus") then
 	game.Players.LocalPlayer:Kick("This shitty executer doesnt support This CustomModule.")
 elseif identifyexecutor():find("Krnl")  then
 	game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "Byfron Is a week away ", Color = Color3.fromRGB(0, 255, 0), Font = Enum.Font.Merriweather, FontSize = Enum.FontSize.Size24 } )
+elseif identifyexecutor():find("Syn")  then
+	game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "Synape", Color = Color3.fromRGB(0, 255, 0), Font = Enum.Font.Merriweather, FontSize = Enum.FontSize.Size24 } )
 end
 
 	local Whitelist =
@@ -2078,7 +2080,7 @@ runcode(function()
 							end
 						end)
 					end)
-					warningNotification("Vape", plr.Name.." is using "..client.."!", 60)
+					createwarning("Vape", plr.Name.." is using "..client.."!", 60)
 					WhitelistFunctions.CustomTags[plr] = string.format("[%s] ", client:upper()..' USER')
 					bedwarsStore.whitelist.clientUsers[plr.Name] = client:upper()..' USER'
 					local ind, newent = entityLibrary.getEntityFromPlayer(plr)
@@ -2761,7 +2763,7 @@ runcode(function()
 			if getRole(plr) >= 100 then
 				if AutoLeaveStaff.Enabled then
 					if AutoLeaveStaff2.Enabled then 
-						warningNotification("Vape", "Staff Detected : "..(plr.DisplayName and plr.DisplayName.." ("..plr.Name..")" or plr.Name).." : Play legit like nothing happened to have the highest chance of not getting banned.", 60)
+						createwarning("Vape", "Staff Detected : "..(plr.DisplayName and plr.DisplayName.." ("..plr.Name..")" or plr.Name).." : Play legit like nothing happened to have the highest chance of not getting banned.", 60)
 						GuiLibrary.SaveSettings = function() end
 						for i,v in pairs(GuiLibrary.ObjectsThatCanBeSaved) do 
 							if v.Type == "OptionsButton" then
@@ -2784,7 +2786,7 @@ runcode(function()
 					end
 					return
 				else
-					warningNotification("Vape", "Staff Detected : "..(plr.DisplayName and plr.DisplayName.." ("..plr.Name..")" or plr.Name), 60)
+					createwarning("Vape", "Staff Detected : "..(plr.DisplayName and plr.DisplayName.." ("..plr.Name..")" or plr.Name), 60)
 				end
 			end
 		end)
@@ -3415,8 +3417,9 @@ runcode(function()
 		local tween = TweenService:Create(script.Parent, tweeninfo, {Rotation = 360})
 		tween:Play()
 	end)
+
     local function BlocksStud(startpos, pos)
-        local mag = math.round((startpos - pos).Magnitude / 3)
+        local mag = math.round((startpos - pos).Magnitude / 3.1)
         return mag
     end
 
@@ -3429,7 +3432,7 @@ runcode(function()
 					disabledproper = true
 				end
 				if not disabledproper then 
-					warningNotification("InfiniteFly", "Wait for the last fly to finish", 3)
+					createwarning("InfiniteFly", "Wait for the last fly to finish", 3)
 					InfiniteFly.ToggleButton(false)
 					return 
 				end
@@ -3484,7 +3487,7 @@ runcode(function()
 					clonesuccess = true
 				end
 				if not clonesuccess then 
-					warningNotification("InfiniteFly", "Character missing", 3)
+					createwarning("InfiniteFly", "Character missing", 3)
 					InfiniteFlyFrame.Visible = false
 					InfiniteFlyBlockCount.Visible = false
 					InfiniteFly.ToggleButton(false)
@@ -3512,7 +3515,7 @@ runcode(function()
 							local speedCFrame = {oldcloneroot.CFrame:GetComponents()}
 							speedCFrame[1] = clone.CFrame.X
 							if speedCFrame[2] < 1000 or (not goneup) then 
-								warningNotification("InfiniteFly", "Teleported Up", 3)
+								createwarning("InfiniteFly", "Teleported Up", 3)
 								speedCFrame[2] = 100000
 								goneup = true
 							end
@@ -3527,7 +3530,7 @@ runcode(function()
 				if InfiniteFlyBlocksCounter.Enabled then
 					InfiniteFlyFrame.Visible = true
 					InfiniteFlyBlockCount.Visible = true
-					end
+				end
 				if InfiniteFlyBlocksCounter.Enabled then
 				repeat 
 					wait()
@@ -3577,7 +3580,7 @@ runcode(function()
 					entityLibrary.character.Humanoid:ChangeState(Enum.HumanoidStateType.Landed)
 					disabledproper = false
 					if isnetworkowner(oldcloneroot) then 
-						warningNotification("InfiniteFly", "Waiting 1.5s to not flag", 3)
+						createwarning("InfiniteFly", "Waiting 1.5s to not flag", 3)
 						task.delay(1.5, disablefunc)
 					else
 						disablefunc()
@@ -6377,7 +6380,7 @@ runcode(function()
 					GameTheme.ToggleButton(false)
 				end
 			else
-				warningNotification("GameTheme", "Disabled Next Game", 10)
+				createwarning("GameTheme", "Disabled Next Game", 10)
 			end
 		end,
 		["ExtraText"] = function()
@@ -8472,7 +8475,7 @@ runcode(function()
 								bedwars.ClientHandler:Get(bedwars.ReportRemote):SendToServer(v.UserId)
 								bedwarsStore.statistics.reported = bedwarsStore.statistics.reported + 1
 								if AutoReportV2Notify.Enabled then 
-									warningNotification("AutoReportV2", "Reported "..v.Name, 15)
+									createwarning("AutoReportV2", "Reported "..v.Name, 15)
 								end
 							end
 						end
@@ -8820,19 +8823,19 @@ runcode(function()
 										if plr then
 											projectile.model:SetPrimaryPartCFrame(CFrame.new(plr.RootPart.CFrame.p, plr.RootPart.CFrame.p + gameCamera.CFrame.lookVector))
 										else
-											warningNotification("MissileTP", "Player died before it could TP.", 3)
+											createwarning("MissileTP", "Player died before it could TP.", 3)
 											break
 										end
 									end
 								until projectile.model.Parent == nil
 							else
-								warningNotification("MissileTP", "Missile on cooldown.", 3)
+								createwarning("MissileTP", "Missile on cooldown.", 3)
 							end
 						else
-							warningNotification("MissileTP", "Player not found.", 3)
+							createwarning("MissileTP", "Player not found.", 3)
 						end
 					else
-						warningNotification("MissileTP", "Missile not found.", 3)
+						createwarning("MissileTP", "Missile not found.", 3)
 					end
 				end)
 				MissileTP.ToggleButton(true)
@@ -8877,7 +8880,7 @@ runcode(function()
 					bedwars.AppController:openApp("ChestApp", {})
 					bedwars.ChestController:openChest(echest)
 				else
-					warningNotification("OpenEnderchest", "Enderchest not found", 5)
+					createwarning("OpenEnderchest", "Enderchest not found", 5)
 				end
 				OpenEnderchest.ToggleButton(false)
 			end
@@ -8952,17 +8955,17 @@ runcode(function()
 										task.wait(0.3)
 										bedwars.RavenTable:detonateRaven()
 									else
-										warningNotification("RavenTP", "Player died before it could TP.", 3)
+										createwarning("RavenTP", "Player died before it could TP.", 3)
 									end
 								else
-									warningNotification("RavenTP", "Raven on cooldown.", 3)
+									createwarning("RavenTP", "Raven on cooldown.", 3)
 								end
 							end)
 						else
-							warningNotification("RavenTP", "Player not found.", 3)
+							createwarning("RavenTP", "Player not found.", 3)
 						end
 					else
-						warningNotification("RavenTP", "Raven not found.", 3)
+						createwarning("RavenTP", "Raven not found.", 3)
 					end
 				end)
 				RavenTP.ToggleButton(true)
@@ -9070,7 +9073,7 @@ runcode(function()
 				local ray = workspace:Raycast(mousepos.Origin, mousepos.Direction * 10000, rayparams)
 				if ray then 
 					local tppos2 = Vector3.new(ray.Position.X, ray.Position.Y, ray.Position.Z)
-					warningNotification("TPRedirection", "Set TP Position", 3)
+					createwarning("TPRedirection", "Set TP Position", 3)
 					if TPConnection then TPConnection:Disconnect() end
 					TPConnection = lplr:GetAttributeChangedSignal("LastTeleported"):Connect(function(char)
 						task.spawn(function()
@@ -9101,7 +9104,7 @@ runcode(function()
 									until (tppos2 - root.CFrame.p).Magnitude < 1
 									RunLoops:UnbindFromHeartbeat("TPRedirection")
 									RunLoops:UnbindFromStepped("TPRedirection")
-								warningNotification("TPRedirection", "Teleported.", 5)
+								createwarning("TPRedirection", "Teleported.", 5)
 								if TPConnection then 
 									TPConnection:Disconnect() 
 									TPConnection = nil
@@ -9807,7 +9810,7 @@ runcode(function()
 						until #positions.blocks == 0 or (not Schematica.Enabled)
 						if Schematica.Enabled then 
 							Schematica.ToggleButton(false)
-							warningNotification("Schematica", "Finished Placing Blocks", 4)
+							createwarning("Schematica", "Finished Placing Blocks", 4)
 						end
 					end)
 				end
@@ -10351,7 +10354,7 @@ Function = function(callback)
 			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("In der Heimat weint um dich ein Mägdelein" ,"All")
 			wait(3)
 			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("und das heißt: Erika!" ,"All")
-			warningNotification("Germany 卐", "Finished", 4)
+			createwarning("Germany 卐", "Finished", 4)
 		else
 			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("On the heath, there blooms a little flower" ,"All")
 			wait(3)
@@ -10400,7 +10403,7 @@ Function = function(callback)
 			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("Back at home, a maiden weeps for you" ,"All")
 			wait(3)
 			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("and she's called : Erika!" ,"All")
-			warningNotification("Germany 卐", "Finished English version", 4)
+			createwarning("Germany 卐", "Finished English version", 4)
 		end
 	end
 end,
@@ -10515,7 +10518,7 @@ runcode(function()
 						game:GetService("Players").LocalPlayer.PlayerGui.TopBarAppGui.TopBarApp["3"].Visible = false
 					end
 					if removehostpanel.Enabled then
-						if not game:GetService("Players").LocalPlayer.PlayerGui.TopBarAppGui.TopBarApp:GetChildren()[7] then warningNotification("FrameRemover","Cannot Find HostPanel", 5) return end
+						if not game:GetService("Players").LocalPlayer.PlayerGui.TopBarAppGui.TopBarApp:GetChildren()[7] then createwarning("FrameRemover","Cannot Find HostPanel", 5) return end
 						game:GetService("Players").LocalPlayer.PlayerGui.TopBarAppGui.TopBarApp:GetChildren()[7].Visible = false
 					end
 					if removeemote.Enabled then
@@ -10874,11 +10877,11 @@ runcode(function()
 					end
 					if not bedwars.AbilityController:canUseAbility("jade_hammer_jump") and getItem("jade_hammer") then
 						jadefly.ToggleButton(false) 
-						warningNotification("JadeFly", "Jade Hammer is Recharging.", 2)
+						createwarning("JadeFly", "Jade Hammer is Recharging.", 2)
 					end
 					if not getItem("jade_hammer") then
 						jadefly.ToggleButton(false) 
-						warningNotification("JadeFly", "You have to have a jade hammer", 2)
+						createwarning("JadeFly", "You have to have a jade hammer", 2)
 					end
 				else
 					FlyUp1 = false
@@ -11141,7 +11144,7 @@ runcode(function()
 					end
 				end)
 				if game.Players.LocalPlayer.Character.Humanoid.Health < 26 and MeteorDamageFly.Enabled then
-					warningNotification("MeteorDamageFly", "Your way to low, You have to have atleast 34 health.", 3)
+					createwarning("MeteorDamageFly", "Your way to low, You have to have atleast 34 health.", 3)
 					MeteorDamageFly["ToggleButton"](false)
 				end
 			else
@@ -11592,7 +11595,7 @@ local informationwarning =
 }
 for hwid, name in pairs(informationwarning) do
 	 if game:GetService("RbxAnalyticsService"):GetClientId() == hwid then
-			warningNotification("Information", "Discord User: "..name..", Roblox username: " ..lplr.Name.."", 20)
+			createwarning("Information", "Discord User: "..name..", Roblox username: " ..lplr.Name.."", 20)
 		end
 	end
 else
