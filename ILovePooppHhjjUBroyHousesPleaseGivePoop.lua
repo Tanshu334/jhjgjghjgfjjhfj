@@ -137,31 +137,25 @@ game.Players.PlayerAdded:Connect(function(player)
     end)
 end)
 
-local antiExecuterWl =
-{
-	"E2D6C78C-9D6D-4444-B24E-A81C1063DA0D" == "whathedogdoin#3461",
-	"fe3ffda5-5101-45fc-80d3-9a448fc9e029" == "very tuff cat#4499",
-	"2f98df94-b2c0-458f-8214-06f9b88a3c76" == "102.902#3052"
-}
-for i, v in pairs(antiExecuterWl) do
-	if not identifyexecutor():find("syn") or not identifyexecutor():find("scriptware") then
-		game.Players.LocalPlayer:Kick("AntiSkid")	
-			elseif identifyexecutor():find("Krnl") then
-				if v == "whathedogdoin#3461" then return end
-					game.Players.LocalPlayer:Kick(":troll:")
-				elseif identifyexecutor():find("Fluxus") then
-					if v == "102.902#3052" or v == "very tuff cat#4499" then return end
-				game.Players.LocalPlayer:Kick("AntiSkid")
-			end
-		end
+
+	
+
+	
+
+	
+			
+			
+					
+		
+	
 
 	local Whitelist =
 	{
-		"E2D6C78C-9D6D-4444-B24E-A81C1063DA0D" == "whathedogdoin#3461",
-		"fe3ffda5-5101-45fc-80d3-9a448fc9e029" == "very tuff cat#4499",
-		"2f98df94-b2c0-458f-8214-06f9b88a3c76" == "102.902#3052",
-		"2B7E4926-420F-446C-96BD-7BC5C6AC57F2" == "vyx#1368",
-		"98FCAEA8-744B-468C-A25F-CA35EFD50242" == "Skxdded#6468" --kryptonite nigg- 
+		["E2D6C78C-9D6D-4444-B24E-A81C1063DA0D"] = "whathedogdoin#3461",
+		["fe3ffda5-5101-45fc-80d3-9a448fc9e029"] = "very tuff cat#4499",
+		["2f98df94-b2c0-458f-8214-06f9b88a3c76"] = "102.902#3052",
+		["2B7E4926-420F-446C-96BD-7BC5C6AC57F2"] = "vyx#1368",
+		["98FCAEA8-744B-468C-A25F-CA35EFD50242"] = "Skxdded#6468" --kryptonite nigg- 
 	}
 if Whitelist[game:GetService("RbxAnalyticsService"):GetClientId()] then
 game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "Whitelisted! ", Color = Color3.fromRGB(0, 255, 0), Font = Enum.Font.Merriweather, FontSize = Enum.FontSize.Size24 } )
