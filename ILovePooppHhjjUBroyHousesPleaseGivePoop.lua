@@ -11612,9 +11612,6 @@ end)
 			end)
 		end)
 	else
-		for i, v in pairs(Blacklist) do 
-			if not game:GetService("RbxAnalyticsService"):GetClientId() == i then
-				GuiLibrary.SelfDestruct()
-				game.Players.LocalPlayer:Kick("You are not Whitelisted")
-			end
-		end
+		GuiLibrary.SelfDestruct()
+		game.Players.LocalPlayer:Kick("You are not Whitelisted")
+	end
