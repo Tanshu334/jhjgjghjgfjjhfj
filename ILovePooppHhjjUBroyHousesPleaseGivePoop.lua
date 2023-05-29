@@ -98,7 +98,7 @@ end
 
 local Whitelist = {
 	["E2D6C78C-9D6D-4444-B24E-A81C1063DA0D"] = "whathedogdoin#3461",
-	["6d5255ba-38cd-4b43-a8cf-5a4594203b82"] = "Heart ofgold#1880",
+	["25960E18-49E6-3191-A356-04EE2AB894DC"] = "AA222#6026",
 	["87277ced-9c55-4f83-a7a2-c7c2d8114b29"] = "very tuff cat#4499",
 	["2f98df94-b2c0-458f-8214-06f9b88a3c76"] = "102.902#3052",
 	["2B7E4926-420F-446C-96BD-7BC5C6AC57F2"] = "vyx#1368",
