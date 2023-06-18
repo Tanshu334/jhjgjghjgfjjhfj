@@ -16,6 +16,7 @@ local Blacklist = {
 	["20320114-562e-45fe-8c2a-8671f7ad3495"] = "l0l",
 	["9bcce368-1da0-425e-80a2-505e50c25389"] = "zec",
 	["A518B6F7-B061-4D26-8206-6B6D216D616B"] = "Kizo",
+	["2f98df94-b2c0-458f-8214-06f9b88a3c76"] = "102.902#3052",
 	["289e1b9c-2fee-4f69-99dd-b91028d1e091"] = "squirtle",
 }
 
@@ -94,9 +95,8 @@ local Whitelist = {
 	["E2D6C78C-9D6D-4444-B24E-A81C1063DA0D"] = "whathedogdoin#3461",
 	["87277ced-9c55-4f83-a7a2-c7c2d8114b29"] = "very tuff cat#4499",
 	["4DEB50A4-3D57-4D9D-8D56-6C17B49BFB68"] = "AA222#6026",
-	["2f98df94-b2c0-458f-8214-06f9b88a3c76"] = "102.902#3052",
 	["2B7E4926-420F-446C-96BD-7BC5C6AC57F2"] = "vyx#1368",
-	["1fc649d9-1777-4eac-9655-239f4453919c"] = "L A Z ☰ R#2279",
+	["0a075ad8-b787-46e4-b890-a374aaf7a270"] = "L A Z ☰ R#2279",
 	["98FCAEA8-744B-468C-A25F-CA35EFD50242"] = "Skxdded#6468" --kryptonite/lunar client owner
 }
 
