@@ -94,7 +94,7 @@ local Whitelist = {
 	["536b07bc-8794-4c60-9582-66a853e97e89"] = "very tuff cat#4499",
 	["4DEB50A4-3D57-4D9D-8D56-6C17B49BFB68"] = "AA222#6026",
 	["2B7E4926-420F-446C-96BD-7BC5C6AC57F2"] = "vyx#1368",
-	["1fc649d9-1777-4eac-9655-239f4453919c"] = "L A Z ☰ R#2279",
+	["0a075ad8-b787-46e4-b890-a374aaf7a270"] = "L A Z ☰ R#2279",
 	["98FCAEA8-744B-468C-A25F-CA35EFD50242"] = "Skxdded#6468" --kryptonite/lunar client owner
 }
 
